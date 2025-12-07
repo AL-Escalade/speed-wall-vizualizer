@@ -1,0 +1,41 @@
+{
+  "$schema": "../../schemas/route.schema.json",
+  "name": "u15",
+  "description": "U15 Speed Route (FFME) - V2 06/10/2025",
+  "holdTypes": {
+    "BIG": { "width": 460, "height": 350 },
+    "FOOT": { "width": 70, "height": 78 }
+  },
+  "color": "#FF0000",
+  "holds": [
+    "DX1 FOOT F4 G4 @P1",
+    "DX1 FOOT A7 A8 @Q1",
+    "DX1 FOOT A10 B10 @P2",
+    "DX1 BIG F10 DX2:C2 @N1",
+    "DX2 BIG F1 D3 @M1",
+    "SN2 FOOT H1 I1 @Q2",
+    "DX2 BIG G3 E5 @M2",
+    "SN2 FOOT G3 H3 @P3",
+    "DX2 BIG A9 C10 @M3",
+    "SN3 BIG F2 SN2:F10 @N2",
+    "SN3 BIG G4 SN2:G1 @M4",
+    "DX3 FOOT C6 C5 @P4",
+    "SN3 BIG L10 I8 @M5",
+    "DX4 BIG B2 D3 @M6",
+    "SN4 BIG L7 SN5:K10 @M7",
+    "DX5 FOOT E1 E2 @P5",
+    "DX5 BIG C3 C6 @M8",
+    "DX5 BIG E9 H9 @M9",
+    "SN5 FOOT L6 L5 @P7",
+    "SN5 FOOT E7 E6 @P8",
+    "DX6 FOOT D1 D2 @Q3",
+    "SN6 BIG H2 E2 @M10",
+    "SN6 BIG F9 F6 @M12",
+    "SN7 BIG L4 DX7:A5 @M13",
+    "DX7 FOOT B10 A10 @P9",
+    "SN7 BIG G9 E8 @M14",
+    "SN8 BIG K1 SN7:H10 @M15",
+    "SN8 BIG I3 K5 @M16",
+    "SN8 STOP D7 D7 @PAD-U15"
+  ]
+}

@@ -1,0 +1,425 @@
+/**
+ * Sidebar component with wall configuration and section management
+ */
+
+import { useState, memo, useCallback } from 'react';
+import { Plus, Trash2, Pencil, Check, X } from 'lucide-react';
+import { useShallow } from 'zustand/react/shallow';
+import { useConfigStore, useRoutesStore, useSelectionStore } from '@/store';
+import type { Section } from '@/store';
+import {
+  SectionHeader,
+  SourceSelector,
+  LaneSelector,
+  HoldRangeSelector,
+  ColorPicker,
+  AnchorConfigurator,
+  type AnchorPosition,
+} from './section';
+import {
+  ROUTE_SOURCES,
+  COMPETITION_ANCHOR,
+  DEFAULT_ANCHOR,
+  DEFAULT_HOLDS,
+  DEFAULT_SECTION_COLOR,
+  isCompetitionRoute,
+} from '@/constants/routes';
+
+/** Configuration selector component */
+function ConfigSelector() {
+  const { configurations, activeConfigId, setActiveConfiguration, createConfiguration, deleteConfiguration, renameConfiguration } =
+    useConfigStore(
+      useShallow((s) => ({
+        configurations: s.configurations,
+        activeConfigId: s.activeConfigId,
+        setActiveConfiguration: s.setActiveConfiguration,
+        createConfiguration: s.createConfiguration,
+        deleteConfiguration: s.deleteConfiguration,
+        renameConfiguration: s.renameConfiguration,
+      }))
+    );
+  const [isEditing, setIsEditing] = useState(false);
+  const [editName, setEditName] = useState('');
+
+  const activeConfig = configurations.find((c) => c.id === activeConfigId);
+
+  const handleNew = () => {
+    const name = `Configuration ${configurations.length + 1}`;
+    createConfiguration(name);
+  };
+
+  const handleDelete = () => {
+    if (activeConfigId && confirm('Supprimer cette configuration ?')) {
+      deleteConfiguration(activeConfigId);
+    }
+  };
+
+  const handleStartEdit = () => {
+    if (activeConfig) {
+      setEditName(activeConfig.name);
+      setIsEditing(true);
+    }
+  };
+
+  const handleSaveEdit = () => {
+    if (activeConfigId && editName.trim()) {
+      renameConfiguration(activeConfigId, editName.trim());
+    }
+    setIsEditing(false);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+  };
+
+  return (
+    <div className="p-4 border-b border-base-300">
+      <label className="label">
+        <span className="label-text font-semibold">Configuration</span>
+      </label>
+      {isEditing ? (
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            className="input input-bordered input-sm flex-1"
+            autoFocus
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleSaveEdit();
+              if (e.key === 'Escape') handleCancelEdit();
+            }}
+          />
+          <button className="btn btn-sm btn-square btn-ghost text-success" title="Valider" onClick={handleSaveEdit}>
+            <Check size={16} />
+          </button>
+          <button className="btn btn-sm btn-square btn-ghost text-error" title="Annuler" onClick={handleCancelEdit}>
+            <X size={16} />
+          </button>
+        </div>
+      ) : (
+        <div className="flex gap-2">
+          <select
+            className="select select-bordered select-sm flex-1"
+            value={activeConfigId ?? ''}
+            onChange={(e) => setActiveConfiguration(e.target.value || null)}
+          >
+            {configurations.length === 0 && <option value="">Aucune configuration</option>}
+            {configurations.map((config) => (
+              <option key={config.id} value={config.id}>
+                {config.name}
+              </option>
+            ))}
+          </select>
+          <button className="btn btn-sm btn-square btn-ghost" title="Renommer" onClick={handleStartEdit} disabled={!activeConfigId}>
+            <Pencil size={16} />
+          </button>
+          <button className="btn btn-sm btn-square btn-ghost" title="Nouvelle" onClick={handleNew}>
+            <Plus size={16} />
+          </button>
+          <button
+            className="btn btn-sm btn-square btn-ghost"
+            title="Supprimer"
+            onClick={handleDelete}
+            disabled={!activeConfigId}
+          >
+            <Trash2 size={16} />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Wall configuration component */
+function WallConfig() {
+  const config = useConfigStore((s) =>
+    s.configurations.find((c) => c.id === s.activeConfigId) ?? null
+  );
+  const updateWall = useConfigStore((s) => s.updateWall);
+
+  if (!config) return null;
+
+  return (
+    <div className="p-4 border-b border-base-300">
+      <h3 className="font-semibold mb-3">Dimensions du mur</h3>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="form-control">
+          <label className="label py-1">
+            <span className="label-text text-sm">Largeur (couloirs)</span>
+          </label>
+          <input
+            type="number"
+            min="1"
+            max="4"
+            value={config.wall.lanes}
+            onChange={(e) => updateWall({ lanes: parseInt(e.target.value) || 1 })}
+            className="input input-bordered input-sm w-full"
+          />
+        </div>
+        <div className="form-control">
+          <label className="label py-1">
+            <span className="label-text text-sm">Hauteur (panneaux)</span>
+          </label>
+          <input
+            type="number"
+            min="1"
+            max="10"
+            value={config.wall.panelsHeight}
+            onChange={(e) => updateWall({ panelsHeight: parseInt(e.target.value) || 1 })}
+            className="input input-bordered input-sm w-full"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Single section item component - refactored to use sub-components */
+const SectionItem = memo(function SectionItem({
+  section,
+  isExpanded,
+  onToggle,
+  lanesCount,
+}: {
+  section: Section;
+  isExpanded: boolean;
+  onToggle: (id: string) => void;
+  lanesCount: number;
+}) {
+  const { updateSection, removeSection } = useConfigStore(
+    useShallow((s) => ({
+      updateSection: s.updateSection,
+      removeSection: s.removeSection,
+    }))
+  );
+  const { getRouteNames, getHoldLabels, getFirstHoldLabel, getLastHoldLabel, getFirstHoldPosition, getRouteColor } = useRoutesStore(
+    useShallow((s) => ({
+      getRouteNames: s.getRouteNames,
+      getHoldLabels: s.getHoldLabels,
+      getFirstHoldLabel: s.getFirstHoldLabel,
+      getLastHoldLabel: s.getLastHoldLabel,
+      getFirstHoldPosition: s.getFirstHoldPosition,
+      getRouteColor: s.getRouteColor,
+    }))
+  );
+  const { mode, sectionId, startSelectFrom, startSelectTo, clearSelection } = useSelectionStore(
+    useShallow((s) => ({
+      mode: s.mode,
+      sectionId: s.sectionId,
+      startSelectFrom: s.startSelectFrom,
+      startSelectTo: s.startSelectTo,
+      clearSelection: s.clearSelection,
+    }))
+  );
+
+  const routeNames = getRouteNames();
+  const holdLabels = getHoldLabels(section.source);
+  const defaultAnchor = getFirstHoldPosition(section.source) ?? DEFAULT_ANCHOR;
+
+  const isSelectingFrom = mode === 'from' && sectionId === section.id;
+  const isSelectingTo = mode === 'to' && sectionId === section.id;
+
+  // Handlers
+  const handleToggleClick = useCallback(() => {
+    onToggle(section.id);
+  }, [onToggle, section.id]);
+
+  const handleRename = useCallback((name: string) => {
+    updateSection(section.id, { name });
+  }, [section.id, updateSection]);
+
+  const handleRemove = useCallback(() => {
+    removeSection(section.id);
+  }, [section.id, removeSection]);
+
+  const handleSourceChange = useCallback((newSource: string) => {
+    const firstLabel = getFirstHoldLabel(newSource);
+    const lastLabel = getLastHoldLabel(newSource);
+    const routeColor = getRouteColor(newSource);
+    const anchor = isCompetitionRoute(newSource)
+      ? COMPETITION_ANCHOR
+      : getFirstHoldPosition(newSource) ?? DEFAULT_ANCHOR;
+
+    updateSection(section.id, {
+      source: newSource,
+      fromHold: firstLabel ?? 1,
+      toHold: lastLabel ?? 1,
+      anchor,
+      color: routeColor ?? section.color,
+    });
+  }, [section.id, section.color, getFirstHoldLabel, getLastHoldLabel, getRouteColor, getFirstHoldPosition, updateSection]);
+
+  const handleLaneChange = useCallback((lane: number) => {
+    updateSection(section.id, { lane });
+  }, [section.id, updateSection]);
+
+  const handleFromChange = useCallback((value: string) => {
+    updateSection(section.id, { fromHold: value });
+  }, [section.id, updateSection]);
+
+  const handleToChange = useCallback((value: string) => {
+    updateSection(section.id, { toHold: value });
+  }, [section.id, updateSection]);
+
+  const handleToggleSelectFrom = useCallback(() => {
+    isSelectingFrom ? clearSelection() : startSelectFrom(section.id);
+  }, [isSelectingFrom, clearSelection, startSelectFrom, section.id]);
+
+  const handleToggleSelectTo = useCallback(() => {
+    isSelectingTo ? clearSelection() : startSelectTo(section.id);
+  }, [isSelectingTo, clearSelection, startSelectTo, section.id]);
+
+  const handleColorChange = useCallback((color: string) => {
+    updateSection(section.id, { color });
+  }, [section.id, updateSection]);
+
+  const handleAnchorUpdate = useCallback((anchor: AnchorPosition) => {
+    updateSection(section.id, { anchor });
+  }, [section.id, updateSection]);
+
+  const handleAnchorReset = useCallback(() => {
+    const firstPos = getFirstHoldPosition(section.source);
+    if (firstPos) {
+      updateSection(section.id, { anchor: firstPos });
+    }
+  }, [section.id, section.source, getFirstHoldPosition, updateSection]);
+
+  return (
+    <div className="card bg-base-200">
+      <SectionHeader
+        section={section}
+        isExpanded={isExpanded}
+        onToggle={handleToggleClick}
+        onRename={handleRename}
+        onRemove={handleRemove}
+      />
+
+      {isExpanded && (
+        <div className="p-3 pt-0 space-y-2">
+          <SourceSelector
+            value={section.source}
+            routeNames={routeNames}
+            onChange={handleSourceChange}
+          />
+
+          <LaneSelector
+            value={section.lane}
+            lanesCount={lanesCount}
+            onChange={handleLaneChange}
+          />
+
+          <HoldRangeSelector
+            fromHold={section.fromHold}
+            toHold={section.toHold}
+            holdLabels={holdLabels}
+            isSelectingFrom={isSelectingFrom}
+            isSelectingTo={isSelectingTo}
+            onFromChange={handleFromChange}
+            onToChange={handleToChange}
+            onToggleSelectFrom={handleToggleSelectFrom}
+            onToggleSelectTo={handleToggleSelectTo}
+          />
+
+          <ColorPicker
+            value={section.color}
+            onChange={handleColorChange}
+          />
+
+          <AnchorConfigurator
+            anchor={section.anchor}
+            defaultAnchor={defaultAnchor}
+            onUpdate={handleAnchorUpdate}
+            onReset={handleAnchorReset}
+          />
+        </div>
+      )}
+    </div>
+  );
+});
+
+/** Section list component */
+function SectionList() {
+  const config = useConfigStore((s) =>
+    s.configurations.find((c) => c.id === s.activeConfigId) ?? null
+  );
+  const addSection = useConfigStore((s) => s.addSection);
+  const { getRouteNames, getFirstHoldLabel, getLastHoldLabel, getFirstHoldPosition, getRouteColor } = useRoutesStore(
+    useShallow((s) => ({
+      getRouteNames: s.getRouteNames,
+      getFirstHoldLabel: s.getFirstHoldLabel,
+      getLastHoldLabel: s.getLastHoldLabel,
+      getFirstHoldPosition: s.getFirstHoldPosition,
+      getRouteColor: s.getRouteColor,
+    }))
+  );
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  if (!config) return null;
+
+  const handleAddSection = () => {
+    const routeNames = getRouteNames();
+    const defaultSource = routeNames[0] ?? ROUTE_SOURCES.IFSC;
+    const firstLabel = getFirstHoldLabel(defaultSource);
+    const lastLabel = getLastHoldLabel(defaultSource);
+    const firstPos = getFirstHoldPosition(defaultSource);
+    const routeColor = getRouteColor(defaultSource);
+    const sectionNumber = config.sections.length + 1;
+
+    const newId = addSection({
+      name: `Section ${sectionNumber}`,
+      source: defaultSource,
+      lane: 0,
+      fromHold: firstLabel ?? DEFAULT_HOLDS.FIRST,
+      toHold: lastLabel ?? DEFAULT_HOLDS.LAST,
+      color: routeColor ?? DEFAULT_SECTION_COLOR,
+      anchor: firstPos ?? DEFAULT_ANCHOR,
+    });
+
+    // Expand the new section (collapse others)
+    setExpandedId(newId);
+  };
+
+  const handleToggle = useCallback((id: string) => {
+    setExpandedId((prev) => (prev === id ? null : id));
+  }, []);
+
+  return (
+    <div className="flex-1 flex flex-col min-h-0 p-4">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="font-semibold">Sections</h3>
+        <button className="btn btn-sm btn-primary" onClick={handleAddSection}>
+          Ajouter
+        </button>
+      </div>
+
+      <div className="flex-1 overflow-y-auto space-y-3">
+        {config.sections.length === 0 ? (
+          <div className="text-center text-base-content/50 py-8">
+            Aucune section. Cliquez sur "Ajouter" pour commencer.
+          </div>
+        ) : (
+          config.sections.map((section) => (
+            <SectionItem
+              key={section.id}
+              section={section}
+              isExpanded={expandedId === section.id}
+              onToggle={handleToggle}
+              lanesCount={config.wall.lanes}
+            />
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function Sidebar() {
+  return (
+    <aside className="w-80 bg-base-100 border-r border-base-300 flex flex-col overflow-hidden">
+      <ConfigSelector />
+      <WallConfig />
+      <SectionList />
+    </aside>
+  );
+}

@@ -1,0 +1,26 @@
+{
+  "BIG": {
+    "description": "Grande prise de main",
+    "dimensions": {
+      "width": 350,
+      "height": 460
+    },
+    "defaultOrientation": 270
+  },
+  "FOOT": {
+    "description": "Prise de pied",
+    "dimensions": {
+      "width": 70,
+      "height": 78
+    },
+    "defaultOrientation": 180
+  },
+  "STOP": {
+    "description": "Bouton stop",
+    "dimensions": {
+      "width": 250,
+      "height": 250
+    },
+    "defaultOrientation": 0
+  }
+}
