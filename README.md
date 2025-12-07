@@ -2,6 +2,28 @@
 
 Outil de visualisation pour murs de vitesse d'escalade. Permet de générer des SVG représentant le placement des prises sur un mur selon différentes voies de référence (IFSC, catégories jeunes, etc.).
 
+## Exemples de rendus
+
+### Configuration complète (2 couloirs, toutes les voies)
+
+![Configuration base](docs/images/base.svg)
+
+### Voie IFSC officielle
+
+![Voie IFSC](docs/images/ifsc.svg)
+
+### Voie U15
+
+![Voie U15](docs/images/u15.svg)
+
+### Voie U11-U13 (entraînement)
+
+![Voie U11-U13 entraînement](docs/images/u11-u13-training.svg)
+
+### Voie U11-U13 (compétition)
+
+![Voie U11-U13 compétition](docs/images/u11-u13-comp.svg)
+
 ## Installation
 
 ```bash
