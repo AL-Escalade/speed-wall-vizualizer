@@ -35,6 +35,7 @@ jobs:
           name: web-dist
           path: web/dist
           retention-days: 1
+          include-hidden-files: true
 
   deploy:
     runs-on: ubuntu-latest
