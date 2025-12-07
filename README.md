@@ -4,7 +4,10 @@ Outil de visualisation pour murs de vitesse d'escalade. Permet de générer des 
 
 ## Exemples de rendus
 
-### Configuration complète (2 couloirs, toutes les voies)
+### Configuration 2 voies complètes + section de fin
+
+Les 2 voies complètes U15 sont sur le mur, ainsi que 2 voies complètes U11/U13. Entre les 2 couloirs, la section de fin de la voie U15 et plus est ajoutée.
+Il y a quelques collisions avec les prises bleues dans cette configuration, qui obligent à enlever des prises ou les remplacer.
 
 ![Configuration base](docs/images/base.svg)
 
