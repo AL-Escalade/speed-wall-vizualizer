@@ -25,5 +25,8 @@
   "optionalDependencies": {
     "pdfkit": "^0.15.0",
     "sharp": "^0.33.0"
+  },
+  "dependencies": {
+    "@xmldom/xmldom": "^0.8.11"
   }
 }

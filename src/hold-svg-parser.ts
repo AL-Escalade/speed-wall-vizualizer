@@ -10,7 +10,8 @@ import { readFile } from 'fs/promises';
 import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import type { HoldSvgData, Point, Dimensions, HoldTypeConfig, HoldTypesConfig, LabelZones, LabelZone, ArrowDirection } from './types.js';
+import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
+import type { HoldSvgData, Point, Dimensions, HoldTypeConfig, HoldTypesConfig, LabelZones, ArrowDirection } from './types.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ASSETS_DIR = join(__dirname, '..', 'assets', 'holds');
@@ -22,10 +23,139 @@ const svgCache = new Map<string, HoldSvgData>();
 /** Cache for hold type configurations */
 let holdTypesConfigCache: HoldTypesConfig | null = null;
 
+// ============================================================================
+// DOM Parser Infrastructure
+// ============================================================================
+
+/**
+ * Parse SVG content into a DOM Document
+ */
+function parseSvgDocument(svgContent: string): Document {
+  const parser = new DOMParser();
+  return parser.parseFromString(svgContent, 'image/svg+xml');
+}
+
+/**
+ * Find an element by attribute value within a parent
+ */
+function findElementByAttribute(
+  parent: Document | Element,
+  tagName: string,
+  attrName: string,
+  attrValue: string
+): Element | null {
+  const elements = parent.getElementsByTagName(tagName);
+  for (let i = 0; i < elements.length; i++) {
+    if (elements[i].getAttribute(attrName) === attrValue) {
+      return elements[i];
+    }
+  }
+  return null;
+}
+
+/**
+ * Find an element by id or inkscape:label
+ */
+function findElementByIdOrLabel(
+  doc: Document,
+  tagName: string,
+  idOrLabel: string
+): Element | null {
+  // Try by id first
+  const byId = findElementByAttribute(doc, tagName, 'id', idOrLabel);
+  if (byId) return byId;
+
+  // Try by inkscape:label
+  return findElementByAttribute(doc, tagName, 'inkscape:label', idOrLabel);
+}
+
+/**
+ * Find an element by id or inkscape:label across multiple tag names
+ */
+function findElementByIdOrLabelMultiTag(
+  doc: Document,
+  tagNames: string[],
+  idOrLabel: string
+): Element | null {
+  for (const tagName of tagNames) {
+    const element = findElementByIdOrLabel(doc, tagName, idOrLabel);
+    if (element) return element;
+  }
+  return null;
+}
+
+/**
+ * Serialize a DOM element to string
+ */
+function elementToString(element: Element): string {
+  const serializer = new XMLSerializer();
+  return serializer.serializeToString(element);
+}
+
+/**
+ * Remove namespaced and unwanted attributes from an element (in place)
+ */
+function removeUnwantedAttributes(element: Element, removeId: boolean = true): void {
+  const attrsToRemove: string[] = [];
+  const attrs = element.attributes;
+
+  for (let i = 0; i < attrs.length; i++) {
+    const attrName = attrs[i].name;
+    // Remove inkscape:* and sodipodi:* attributes
+    if (attrName.startsWith('inkscape:') || attrName.startsWith('sodipodi:')) {
+      attrsToRemove.push(attrName);
+    }
+    // Remove xml:space
+    if (attrName === 'xml:space') {
+      attrsToRemove.push(attrName);
+    }
+    // Remove id if requested
+    if (removeId && attrName === 'id') {
+      attrsToRemove.push(attrName);
+    }
+  }
+
+  attrsToRemove.forEach(attr => element.removeAttribute(attr));
+
+  // Recursively clean child elements
+  const children = element.childNodes;
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    if (child.nodeType === 1) { // Element node
+      removeUnwantedAttributes(child as Element, removeId);
+    }
+  }
+}
+
+/**
+ * Remove fill and stroke from style attribute
+ */
+function cleanStyleAttribute(element: Element): void {
+  const style = element.getAttribute('style');
+  if (style) {
+    const cleanedStyle = style
+      .replace(/fill\s*:\s*[^;}"']+;?/gi, '')
+      .replace(/stroke\s*:\s*[^;}"']+;?/gi, '')
+      .replace(/stroke-opacity\s*:\s*[^;}"']+;?/gi, '')
+      .trim();
+
+    if (cleanedStyle) {
+      element.setAttribute('style', cleanedStyle);
+    } else {
+      element.removeAttribute('style');
+    }
+  }
+
+  // Remove standalone fill attribute
+  element.removeAttribute('fill');
+}
+
+// ============================================================================
+// ViewBox and Dimensions
+// ============================================================================
+
 /**
  * Parse viewBox attribute
- * @param viewBox - viewBox string (e.g., "0 0 100 200")
- * @returns Parsed dimensions
  */
 function parseViewBox(viewBox: string): Dimensions {
   const parts = viewBox.split(/\s+/).map(Number);
@@ -39,35 +169,37 @@ function parseViewBox(viewBox: string): Dimensions {
 }
 
 /**
- * Extract viewBox from SVG content
- * @param svgContent - SVG file content
- * @returns ViewBox dimensions
+ * Extract viewBox from SVG document
  */
-function extractViewBox(svgContent: string): Dimensions {
+function extractViewBox(doc: Document): Dimensions {
+  const svg = doc.documentElement;
+
   // Try viewBox attribute
-  const viewBoxMatch = svgContent.match(/viewBox\s*=\s*["']([^"']+)["']/);
-  if (viewBoxMatch) {
-    return parseViewBox(viewBoxMatch[1]);
+  const viewBox = svg.getAttribute('viewBox');
+  if (viewBox) {
+    return parseViewBox(viewBox);
   }
 
   // Try width/height attributes
-  const widthMatch = svgContent.match(/width\s*=\s*["']([0-9.]+)(?:mm)?["']/);
-  const heightMatch = svgContent.match(/height\s*=\s*["']([0-9.]+)(?:mm)?["']/);
-  if (widthMatch && heightMatch) {
+  const width = svg.getAttribute('width');
+  const height = svg.getAttribute('height');
+  if (width && height) {
     return {
-      width: parseFloat(widthMatch[1]),
-      height: parseFloat(heightMatch[1]),
+      width: parseFloat(width.replace(/mm$/, '')),
+      height: parseFloat(height.replace(/mm$/, '')),
     };
   }
 
   throw new Error('Could not determine SVG dimensions (no viewBox or width/height)');
 }
 
+// ============================================================================
+// Transform Parsing (String-based - kept as-is)
+// ============================================================================
+
 /**
  * Parse a transform matrix from a transform attribute
  * Supports: matrix(a,b,c,d,e,f), translate(x,y), rotate(angle), scale(x,y)
- * @param transform - Transform attribute value
- * @returns Matrix components [a, b, c, d, e, f] or null if no transform
  */
 function parseTransformMatrix(transform: string | null): [number, number, number, number, number, number] | null {
   if (!transform) return null;
@@ -98,9 +230,6 @@ function parseTransformMatrix(transform: string | null): [number, number, number
 
 /**
  * Apply a transform matrix to a point
- * @param point - Original point
- * @param matrix - Transform matrix [a, b, c, d, e, f]
- * @returns Transformed point
  */
 function applyTransform(point: Point, matrix: [number, number, number, number, number, number]): Point {
   const [a, b, c, d, e, f] = matrix;
@@ -112,20 +241,15 @@ function applyTransform(point: Point, matrix: [number, number, number, number, n
 
 /**
  * Extract rotation angle from a transform matrix
- * @param matrix - Transform matrix [a, b, c, d, e, f]
- * @returns Rotation angle in degrees
  */
 function extractRotationFromMatrix(matrix: [number, number, number, number, number, number]): number {
   const [a, b] = matrix;
-  // For a rotation matrix: a = cos(θ), b = sin(θ)
   const radians = Math.atan2(b, a);
   return radians * (180 / Math.PI);
 }
 
 /**
  * Extract rotation from a transform attribute string
- * @param transform - Transform attribute value
- * @returns Rotation angle in degrees
  */
 function extractRotation(transform: string | null): number {
   if (!transform) return 0;
@@ -144,67 +268,36 @@ function extractRotation(transform: string | null): number {
   return 0;
 }
 
+// ============================================================================
+// Circle Extraction
+// ============================================================================
+
 /**
- * Extract circle center from SVG content
- * Supports both id="name" and inkscape:label="name" attributes
- * Applies any transform on the circle element to get actual coordinates
- * @param svgContent - SVG content
- * @param circleId - ID or label of the circle element
- * @returns Center point of the circle (after transform applied)
+ * Extract circle center from SVG document
  */
-function extractCircleCenter(svgContent: string, circleId: string): Point {
-  // Match circle element with the given id or inkscape:label
-  const patterns = [
-    new RegExp(`<circle[^>]*id\\s*=\\s*["']${circleId}["'][^>]*(?:/>|>)`, 'i'),
-    new RegExp(`<circle[^>]*inkscape:label\\s*=\\s*["']${circleId}["'][^>]*(?:/>|>)`, 'i'),
-  ];
+function extractCircleCenter(doc: Document, circleId: string): Point {
+  const circle = findElementByIdOrLabel(doc, 'circle', circleId);
 
-  let circleElement: string | null = null;
-
-  for (const pattern of patterns) {
-    const match = svgContent.match(pattern);
-    if (match) {
-      circleElement = match[0];
-      break;
-    }
-  }
-
-  if (!circleElement) {
-    // Try finding all circles and checking each one
-    const circleMatches = svgContent.match(/<circle[^>]*(?:\/?>)/gi) || [];
-    for (const circle of circleMatches) {
-      if (
-        circle.includes(`id="${circleId}"`) ||
-        circle.includes(`id='${circleId}'`) ||
-        circle.includes(`inkscape:label="${circleId}"`) ||
-        circle.includes(`inkscape:label='${circleId}'`)
-      ) {
-        circleElement = circle;
-        break;
-      }
-    }
-  }
-
-  if (!circleElement) {
+  if (!circle) {
     throw new Error(`Circle with id or label "${circleId}" not found in SVG`);
   }
 
-  const cxMatch = circleElement.match(/cx\s*=\s*["']([0-9.-]+)["']/);
-  const cyMatch = circleElement.match(/cy\s*=\s*["']([0-9.-]+)["']/);
+  const cx = circle.getAttribute('cx');
+  const cy = circle.getAttribute('cy');
 
-  if (!cxMatch || !cyMatch) {
+  if (!cx || !cy) {
     throw new Error(`Circle "${circleId}" missing cx or cy attributes`);
   }
 
   let center: Point = {
-    x: parseFloat(cxMatch[1]),
-    y: parseFloat(cyMatch[1]),
+    x: parseFloat(cx),
+    y: parseFloat(cy),
   };
 
-  // Check for transform attribute and apply it
-  const transformMatch = circleElement.match(/transform\s*=\s*["']([^"']+)["']/);
-  if (transformMatch) {
-    const matrix = parseTransformMatrix(transformMatch[1]);
+  // Apply transform if present
+  const transform = circle.getAttribute('transform');
+  if (transform) {
+    const matrix = parseTransformMatrix(transform);
     if (matrix) {
       center = applyTransform(center, matrix);
     }
@@ -214,19 +307,33 @@ function extractCircleCenter(svgContent: string, circleId: string): Point {
 }
 
 /**
+ * Extract all circle elements
+ */
+function extractAllCircles(doc: Document): string[] {
+  const circles: string[] = [];
+  const elements = doc.getElementsByTagName('circle');
+
+  for (let i = 0; i < elements.length; i++) {
+    const circle = elements[i].cloneNode(true) as Element;
+    removeUnwantedAttributes(circle);
+    circles.push(elementToString(circle));
+  }
+
+  return circles;
+}
+
+// ============================================================================
+// Path/Shape Extraction
+// ============================================================================
+
+/**
  * Simplify compound path by keeping only the first subpath
- * This converts outline shapes (with inner/outer boundaries) to solid shapes
- * @param d - SVG path d attribute value
- * @returns Simplified path with only the first subpath
  */
 function simplifyCompoundPath(d: string): string {
-  // Find the first 'z' or 'Z' (close path) and keep everything up to and including it
   const closeIndex = d.search(/[zZ]/);
   if (closeIndex !== -1) {
-    // Check if there's another subpath after the first one
     const afterClose = d.substring(closeIndex + 1).trim();
     if (afterClose.match(/^[mM]/)) {
-      // There's another subpath, keep only the first one
       return d.substring(0, closeIndex + 1);
     }
   }
@@ -234,194 +341,106 @@ function simplifyCompoundPath(d: string): string {
 }
 
 /**
- * Clean SVG element by removing Inkscape/Sodipodi namespaced attributes
- * and cleaning up style attributes
- * @param element - SVG element string
- * @returns Cleaned SVG element
+ * Clean a path element's d attribute
  */
-function cleanSvgElement(element: string): string {
-  let cleaned = element
-    // Remove sodipodi: attributes
-    .replace(/\s+sodipodi:[a-z-]+\s*=\s*["'][^"']*["']/gi, '')
-    // Remove inkscape: attributes
-    .replace(/\s+inkscape:[a-z-]+\s*=\s*["'][^"']*["']/gi, '')
-    // Remove xml:space attribute
-    .replace(/\s+xml:space\s*=\s*["'][^"']*["']/gi, '')
-    // Remove id attributes (not needed in output)
-    .replace(/\s+id\s*=\s*["'][^"']*["']/gi, '')
-    // Keep transform attribute - it's needed for the shape to render correctly
-    // Remove fill from style attributes (will be set via fill attribute)
-    .replace(/fill\s*:\s*[^;}"']+;?/gi, '')
-    // Remove stroke from style attributes
-    .replace(/stroke\s*:\s*[^;}"']+;?/gi, '')
-    // Remove stroke-opacity from style attributes
-    .replace(/stroke-opacity\s*:\s*[^;}"']+;?/gi, '')
-    // Clean up empty style attributes
-    .replace(/\s+style\s*=\s*["']\s*["']/gi, '')
-    // Remove standalone fill attribute (will be added by generator)
-    .replace(/\s+fill\s*=\s*["'][^"']*["']/gi, '');
+function cleanPathD(element: Element): void {
+  const d = element.getAttribute('d');
+  if (d) {
+    element.setAttribute('d', simplifyCompoundPath(d));
+  }
 
-  // Simplify compound paths to solid shapes
-  cleaned = cleaned.replace(/d\s*=\s*"([^"]+)"/g, (_match, d) => {
-    return `d="${simplifyCompoundPath(d)}"`;
-  });
-
-  return cleaned;
+  // Recursively clean child paths
+  const paths = element.getElementsByTagName('path');
+  for (let i = 0; i < paths.length; i++) {
+    const childD = paths[i].getAttribute('d');
+    if (childD) {
+      paths[i].setAttribute('d', simplifyCompoundPath(childD));
+    }
+  }
 }
 
 /**
  * Extract path element content and its rotation
- * Supports both id="name" and inkscape:label="name" attributes
- * @param svgContent - SVG content
- * @param pathId - ID or label of the path element
- * @returns Object with path element (cleaned, or null if not found) and rotation angle from transform
  */
-function extractPathElement(svgContent: string, pathId: string): { element: string | null; rotation: number } {
-  // Try different patterns for path and g elements with id or inkscape:label
-  const patterns = [
-    // path with id
-    new RegExp(`<path[^>]*id\\s*=\\s*["']${pathId}["'][^>]*(?:/>|>[^<]*</path>)`, 'i'),
-    // path with inkscape:label
-    new RegExp(`<path[^>]*inkscape:label\\s*=\\s*["']${pathId}["'][^>]*(?:/>|>[^<]*</path>)`, 'i'),
-    // g with id
-    new RegExp(`<g[^>]*id\\s*=\\s*["']${pathId}["'][^>]*>[\\s\\S]*?</g>`, 'i'),
-    // g with inkscape:label
-    new RegExp(`<g[^>]*inkscape:label\\s*=\\s*["']${pathId}["'][^>]*>[\\s\\S]*?</g>`, 'i'),
-  ];
+function extractPathElement(doc: Document, pathId: string): { element: string | null; rotation: number } {
+  const element = findElementByIdOrLabelMultiTag(doc, ['path', 'g'], pathId);
 
-  for (const pattern of patterns) {
-    const match = svgContent.match(pattern);
-    if (match) {
-      const rawElement = match[0];
-      // Extract rotation from transform before cleaning
-      const transformMatch = rawElement.match(/transform\s*=\s*["']([^"']+)["']/);
-      const rotation = extractRotation(transformMatch ? transformMatch[1] : null);
-      return {
-        element: cleanSvgElement(rawElement),
-        rotation,
-      };
-    }
+  if (!element) {
+    return { element: null, rotation: 0 };
   }
 
-  // Element not found - return null (no colored shape)
-  return { element: null, rotation: 0 };
+  // Extract rotation from transform before cleaning
+  const transform = element.getAttribute('transform');
+  const rotation = extractRotation(transform);
+
+  // Clone and clean the element
+  const clone = element.cloneNode(true) as Element;
+  removeUnwantedAttributes(clone);
+  cleanStyleAttribute(clone);
+  cleanPathD(clone);
+
+  return {
+    element: elementToString(clone),
+    rotation,
+  };
+}
+
+// ============================================================================
+// Visual Elements Extraction
+// ============================================================================
+
+/**
+ * Check if an element should be skipped (insert circle, prise, label zones)
+ */
+function shouldSkipElement(element: Element): boolean {
+  const id = element.getAttribute('id');
+  const label = element.getAttribute('inkscape:label');
+
+  // Skip insert circle
+  if (id === 'insert') return true;
+
+  // Skip prise element
+  if (id === 'prise' || label === 'prise') return true;
+
+  // Skip label zone text elements
+  if (label && label.startsWith('label')) return true;
+
+  return false;
 }
 
 /**
- * Clean a circle element for output, preserving fill and stroke styles
- * @param element - Circle element string
- * @returns Cleaned circle element
+ * Extract all visual elements from SVG
  */
-function cleanCircleElement(element: string): string {
-  return element
-    // Remove sodipodi: attributes
-    .replace(/\s+sodipodi:[a-z-]+\s*=\s*["'][^"']*["']/gi, '')
-    // Remove inkscape: attributes
-    .replace(/\s+inkscape:[a-z-]+\s*=\s*["'][^"']*["']/gi, '')
-    // Remove id attributes
-    .replace(/\s+id\s*=\s*["'][^"']*["']/gi, '')
-    // Keep style, fill, stroke attributes as they are
-    .trim();
-}
-
-/**
- * Extract all circle elements (inserts, screw holes, etc.)
- * @param svgContent - SVG content
- * @returns Array of cleaned circle element strings
- */
-function extractAllCircles(svgContent: string): string[] {
-  const circles: string[] = [];
-
-  // Find all circle elements
-  const circleMatches = svgContent.match(/<circle[^>]*(?:\/?>)/gi) || [];
-
-  for (const circle of circleMatches) {
-    circles.push(cleanCircleElement(circle));
-  }
-
-  return circles;
-}
-
-/**
- * Extract all visual elements from SVG (for holds without "prise" element)
- * Excludes: svg wrapper, defs, metadata, namedview, and the insert circle
- * @param svgContent - SVG content
- * @returns Array of element strings
- */
-function extractAllVisualElements(svgContent: string): string[] {
+function extractAllVisualElements(doc: Document): string[] {
   const elements: string[] = [];
+  const visualTags = ['path', 'rect', 'circle', 'text', 'ellipse', 'polygon', 'polyline', 'line'];
 
-  // Extract content between <svg> tags
-  const svgBodyMatch = svgContent.match(/<svg[^>]*>([\s\S]*)<\/svg>/i);
-  if (!svgBodyMatch) return elements;
+  for (const tagName of visualTags) {
+    const nodeList = doc.getElementsByTagName(tagName);
+    for (let i = 0; i < nodeList.length; i++) {
+      const element = nodeList[i];
 
-  const svgBody = svgBodyMatch[1];
+      if (shouldSkipElement(element)) continue;
 
-  // Find all visual elements (path, rect, circle, text, g, etc.)
-  // Exclude: defs, sodipodi:namedview, metadata
-  const elementPatterns = [
-    /<path[^>]*(?:\/>|>[\s\S]*?<\/path>)/gi,
-    /<rect[^>]*(?:\/>|>[\s\S]*?<\/rect>)/gi,
-    /<circle[^>]*(?:\/>|>[\s\S]*?<\/circle>)/gi,
-    /<text[^>]*>[\s\S]*?<\/text>/gi,
-    /<ellipse[^>]*(?:\/>|>[\s\S]*?<\/ellipse>)/gi,
-    /<polygon[^>]*(?:\/>|>[\s\S]*?<\/polygon>)/gi,
-    /<polyline[^>]*(?:\/>|>[\s\S]*?<\/polyline>)/gi,
-    /<line[^>]*(?:\/>|>[\s\S]*?<\/line>)/gi,
-  ];
-
-  for (const pattern of elementPatterns) {
-    const matches = svgBody.match(pattern) || [];
-    for (const match of matches) {
-      // Skip the insert circle (used for positioning only)
-      if (match.includes('id="insert"') || match.includes("id='insert'")) {
-        continue;
-      }
-      // Skip elements with id="prise" (should be handled separately)
-      if (match.includes('id="prise"') || match.includes("id='prise'")) {
-        continue;
-      }
-      // Skip label zone text elements (they are handled separately)
-      if (match.includes('inkscape:label="label')) {
-        continue;
-      }
-      elements.push(cleanCircleElement(match));
+      const clone = element.cloneNode(true) as Element;
+      removeUnwantedAttributes(clone);
+      elements.push(elementToString(clone));
     }
   }
 
   return elements;
 }
 
-/**
- * Clean a text element for output
- * Removes inkscape/sodipodi attributes but keeps transform, x, y, text-anchor
- * @param element - Text element string
- * @returns Cleaned text element
- */
-function cleanTextElement(element: string): string {
-  return element
-    // Remove sodipodi: attributes
-    .replace(/\s+sodipodi:[a-z-]+\s*=\s*["'][^"']*["']/gi, '')
-    // Remove inkscape: attributes
-    .replace(/\s+inkscape:[a-z-]+\s*=\s*["'][^"']*["']/gi, '')
-    // Remove xml:space attribute
-    .replace(/\s+xml:space\s*=\s*["'][^"']*["']/gi, '')
-    // Remove id attributes
-    .replace(/\s+id\s*=\s*["'][^"']*["']/gi, '')
-    .trim();
-}
+// ============================================================================
+// Label Zones Extraction
+// ============================================================================
 
 /**
- * Extract label zones from SVG content
- * Label zones are <text> elements with inkscape:label like "label-up", "label-down", etc.
- * The text element is cleaned and stored to be included in the hold's transform group.
- * @param svgContent - SVG content
- * @returns Label zones indexed by direction
+ * Extract label zones from SVG document
  */
-function extractLabelZones(svgContent: string): LabelZones {
+function extractLabelZones(doc: Document): LabelZones {
   const zones: LabelZones = {};
 
-  // Map of inkscape:label values to zone keys
   const labelMap: Record<string, ArrowDirection | 'default'> = {
     'label-up': 'up',
     'label-down': 'down',
@@ -430,43 +449,48 @@ function extractLabelZones(svgContent: string): LabelZones {
     'label': 'default',
   };
 
-  // Find all text elements
-  const textPattern = /<text[^>]*>[\s\S]*?<\/text>|<text[^>]*\/>/gi;
-  const textElements = svgContent.match(textPattern) || [];
+  const textElements = doc.getElementsByTagName('text');
 
-  for (const textElement of textElements) {
-    // Check for inkscape:label attribute
-    const labelMatch = textElement.match(/inkscape:label\s*=\s*["']([^"']+)["']/i);
-    if (!labelMatch) continue;
+  for (let i = 0; i < textElements.length; i++) {
+    const textElement = textElements[i];
+    const inkscapeLabel = textElement.getAttribute('inkscape:label');
 
-    const inkscapeLabel = labelMatch[1];
+    if (!inkscapeLabel) continue;
+
     const zoneKey = labelMap[inkscapeLabel];
     if (!zoneKey) continue;
 
-    // Clean the text element and store it
-    const cleanedElement = cleanTextElement(textElement);
-    zones[zoneKey] = { element: cleanedElement };
+    // Clone and clean the text element
+    const clone = textElement.cloneNode(true) as Element;
+    removeUnwantedAttributes(clone, false); // Keep id for text elements? No, remove it
+    removeUnwantedAttributes(clone, true);
+
+    zones[zoneKey] = { element: elementToString(clone) };
   }
 
   return zones;
 }
 
+// ============================================================================
+// Main Parse Function
+// ============================================================================
+
 /**
  * Parse a hold SVG file
- * @param svgContent - SVG file content
- * @returns Parsed SVG data
  */
 export function parseHoldSvg(svgContent: string): HoldSvgData {
-  const viewBox = extractViewBox(svgContent);
-  const insertCenter = extractCircleCenter(svgContent, 'insert');
-  const { element: pathElement, rotation: svgRotation } = extractPathElement(svgContent, 'prise');
-  const labelZones = extractLabelZones(svgContent);
+  const doc = parseSvgDocument(svgContent);
+
+  const viewBox = extractViewBox(doc);
+  const insertCenter = extractCircleCenter(doc, 'insert');
+  const { element: pathElement, rotation: svgRotation } = extractPathElement(doc, 'prise');
+  const labelZones = extractLabelZones(doc);
 
   // If no "prise" element, extract all visual elements (uncolored)
   // Otherwise, just extract circles (inserts, screw holes)
   const additionalElements = pathElement === null
-    ? extractAllVisualElements(svgContent)
-    : extractAllCircles(svgContent);
+    ? extractAllVisualElements(doc)
+    : extractAllCircles(doc);
 
   return {
     pathElement,
@@ -478,15 +502,16 @@ export function parseHoldSvg(svgContent: string): HoldSvgData {
   };
 }
 
+// ============================================================================
+// File Loading Functions
+// ============================================================================
+
 /**
  * Load and parse a hold SVG file by type
- * @param holdType - Type of hold (e.g., "BIG", "FOOT")
- * @returns Parsed SVG data
  */
 export async function loadHoldSvg(holdType: string): Promise<HoldSvgData> {
   const upperType = holdType.toUpperCase();
 
-  // Check cache
   if (svgCache.has(upperType)) {
     return svgCache.get(upperType)!;
   }
@@ -495,7 +520,6 @@ export async function loadHoldSvg(holdType: string): Promise<HoldSvgData> {
   const content = await readFile(filePath, 'utf-8');
   const svgData = parseHoldSvg(content);
 
-  // Cache the result
   svgCache.set(upperType, svgData);
 
   return svgData;
@@ -508,9 +532,12 @@ export function clearSvgCache(): void {
   svgCache.clear();
 }
 
+// ============================================================================
+// Hold Types Configuration
+// ============================================================================
+
 /**
  * Load hold types configuration from holds.json
- * @returns Hold types configuration
  */
 export function loadHoldTypesConfig(): HoldTypesConfig {
   if (holdTypesConfigCache) {
@@ -528,8 +555,6 @@ export function loadHoldTypesConfig(): HoldTypesConfig {
 
 /**
  * Get configuration for a specific hold type
- * @param holdType - Type of hold (e.g., "BIG", "FOOT")
- * @returns Hold type configuration
  */
 export function getHoldTypeConfig(holdType: string): HoldTypeConfig {
   const config = loadHoldTypesConfig();
@@ -544,8 +569,6 @@ export function getHoldTypeConfig(holdType: string): HoldTypeConfig {
 
 /**
  * Get the default orientation for a hold type
- * @param holdType - Type of hold (e.g., "BIG", "FOOT")
- * @returns Default orientation angle in degrees
  */
 export function getHoldDefaultOrientation(holdType: string): number {
   return getHoldTypeConfig(holdType).defaultOrientation;
@@ -553,8 +576,6 @@ export function getHoldDefaultOrientation(holdType: string): number {
 
 /**
  * Get the dimensions for a hold type
- * @param holdType - Type of hold (e.g., "BIG", "FOOT")
- * @returns Hold dimensions in mm
  */
 export function getHoldDimensions(holdType: string): Dimensions {
   return getHoldTypeConfig(holdType).dimensions;
@@ -562,8 +583,6 @@ export function getHoldDimensions(holdType: string): Dimensions {
 
 /**
  * Get the label margin for a hold type
- * @param holdType - Type of hold (e.g., "BIG", "FOOT")
- * @returns Label margin in mm (default: 0)
  */
 export function getHoldLabelMargin(holdType: string): number {
   return getHoldTypeConfig(holdType).labelMargin ?? 0;
