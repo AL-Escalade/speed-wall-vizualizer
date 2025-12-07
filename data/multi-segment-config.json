@@ -1,0 +1,21 @@
+{
+  "wall": {
+    "lanes": 2,
+    "panelsHeight": 10
+  },
+  "routes": [
+    {
+      "lane": "SN",
+      "segments": [
+        { "source": "u11-u13", "fromHold": 1, "toHold": 8 },
+        { "source": "ifsc", "fromHold": 9, "toHold": 31 }
+      ]
+    },
+    {
+      "lane": "DX",
+      "segments": [
+        { "source": "u15", "fromHold": 1, "toHold": 29 }
+      ]
+    }
+  ]
+}

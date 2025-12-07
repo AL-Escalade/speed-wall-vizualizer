@@ -1,0 +1,28 @@
+{
+  "name": "u11-u13",
+  "description": "U11-U13 Speed Route (FFME) - Configuration Entrainement - V2 06/10/2025",
+  "color": "#00AAFF",
+  "holdScales": {
+    "BIG": 0.8,
+    "FOOT": 0.8
+  },
+  "holds": [
+    "SN1 FOOT G3 I3 @P1",
+    "SN1 FOOT D7 F7 @P2",
+    "SN1 BIG G9 G1 @M1",
+    "SN2 BIG C2 D4 @M2",
+    "SN2 BIG E6 F8 @M3",
+    "SN2 BIG B10 A8 @M4",
+    "SN3 FOOT G10 I10 @P3",
+    "SN3 BIG D4 G5 @M5",
+    "SN3 BIG C8 B6 @M6",
+    "SN3 BIG B10 SN4:D1 @M7",
+    "SN4 FOOT C2 C4 @P4",
+    "SN4 BIG G5 I4 @M8",
+    "SN4 BIG G10 I1 @M9",
+    "SN5 BIG D1 SN4:B10 @M10",
+    "SN5 BIG D5 E7 @M11",
+    "SN5 BIG B10 B8 @M12",
+    "SN6 STOP B3 B3 @PAD"
+  ]
+}

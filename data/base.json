@@ -1,0 +1,56 @@
+{
+  "wall": {
+    "lanes": 2,
+    "panelsHeight": 10
+  },
+  "routes": [
+    {
+      "segments": [
+        {
+          "source": "training",
+          "laneOffset": 0
+        }
+      ]
+    },
+    {
+      "segments": [
+        {
+          "source": "training",
+          "laneOffset": 1
+        }
+      ]
+    },
+    {
+      "segments": [
+        {
+          "source": "u11-u13",
+          "laneOffset": 0
+        }
+      ]
+    },
+    {
+      "segments": [
+        {
+          "source": "u11-u13",
+          "laneOffset": 1
+        }
+      ]
+    },
+    {
+      "segments": [
+        {
+          "source": "training",
+          "fromHold": "M8",
+          "excludeHolds": ["M9"],
+          "anchor": {
+            "panel": "SN1",
+            "column": "D",
+            "row": 2
+          },
+          "color": "#FF6600",
+          "laneOffset": 1
+        }
+      ]
+    }
+  ]
+}
