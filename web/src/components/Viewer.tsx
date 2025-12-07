@@ -47,6 +47,8 @@ export function Viewer() {
   const svgRef = useRef<HTMLDivElement>(null);
   const lastPos = useRef({ x: 0, y: 0 });
   const hasInitialFit = useRef(false);
+  const rafPanId = useRef<number | null>(null);
+  const pendingPan = useRef<{ deltaX: number; deltaY: number } | null>(null);
 
   // Generate SVG when config changes
   useEffect(() => {
@@ -167,6 +169,15 @@ export function Viewer() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectionMode, clearSelection]);
 
+  // Cleanup RAF on unmount
+  useEffect(() => {
+    return () => {
+      if (rafPanId.current) {
+        cancelAnimationFrame(rafPanId.current);
+      }
+    };
+  }, []);
+
   // Handle wheel zoom
   const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -182,25 +193,59 @@ export function Viewer() {
     }
   }, []);
 
-  // Handle mouse move for pan
+  // Handle mouse move for pan with RAF throttling
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (isPanning) {
-      const deltaX = e.clientX - lastPos.current.x;
-      const deltaY = e.clientY - lastPos.current.y;
-      lastPos.current = { x: e.clientX, y: e.clientY };
-      pan(deltaX, deltaY);
+    if (!isPanning) return;
+
+    const deltaX = e.clientX - lastPos.current.x;
+    const deltaY = e.clientY - lastPos.current.y;
+    lastPos.current = { x: e.clientX, y: e.clientY };
+
+    // Accumulate deltas for RAF batch
+    if (pendingPan.current) {
+      pendingPan.current.deltaX += deltaX;
+      pendingPan.current.deltaY += deltaY;
+    } else {
+      pendingPan.current = { deltaX, deltaY };
+    }
+
+    // Schedule RAF if not already scheduled
+    if (!rafPanId.current) {
+      rafPanId.current = requestAnimationFrame(() => {
+        if (pendingPan.current) {
+          pan(pendingPan.current.deltaX, pendingPan.current.deltaY);
+          pendingPan.current = null;
+        }
+        rafPanId.current = null;
+      });
     }
   }, [isPanning, pan]);
 
-  // Handle mouse up for pan
+  // Handle mouse up for pan - flush pending pan and cleanup
   const handleMouseUp = useCallback(() => {
+    if (rafPanId.current) {
+      cancelAnimationFrame(rafPanId.current);
+      rafPanId.current = null;
+    }
+    if (pendingPan.current) {
+      pan(pendingPan.current.deltaX, pendingPan.current.deltaY);
+      pendingPan.current = null;
+    }
     setIsPanning(false);
-  }, []);
+  }, [pan]);
 
-  // Handle mouse leave for pan
+  // Handle mouse leave for pan - also cleanup
   const handleMouseLeave = useCallback(() => {
+    if (rafPanId.current) {
+      cancelAnimationFrame(rafPanId.current);
+      rafPanId.current = null;
+    }
+    if (pendingPan.current) {
+      pan(pendingPan.current.deltaX, pendingPan.current.deltaY);
+      pendingPan.current = null;
+    }
     setIsPanning(false);
-  }, []);
+  }, [pan]);
 
   // Handle zoom to fit button click
   const handleZoomToFit = useCallback(() => {
@@ -234,11 +279,12 @@ export function Viewer() {
     clearSelection();
   }, [selectionMode, selectionSectionId, updateSection, clearSelection]);
 
-  // Compute transform style
+  // Compute transform style with GPU acceleration hints
   const transformStyle = useMemo(() => ({
-    transform: `translate(${panX}px, ${panY}px) scale(${zoom})`,
+    transform: `translate3d(${panX}px, ${panY}px, 0) scale(${zoom})`,
     transformOrigin: 'center center',
-  }), [zoom, panX, panY]);
+    willChange: isPanning ? 'transform' : 'auto',
+  }), [zoom, panX, panY, isPanning]);
 
   return (
     <main className="flex-1 bg-base-300 relative overflow-hidden">

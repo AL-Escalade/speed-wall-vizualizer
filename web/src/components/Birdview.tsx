@@ -35,15 +35,33 @@ export function Birdview({
   );
   const minimapRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const rafId = useRef<number | null>(null);
+  const pendingUpdate = useRef<{ clientX: number; clientY: number } | null>(null);
 
   // Global mouseup listener to handle drag release outside component
   useEffect(() => {
     if (!isDragging) return;
 
-    const handleGlobalMouseUp = () => setIsDragging(false);
+    const handleGlobalMouseUp = () => {
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current);
+        rafId.current = null;
+      }
+      pendingUpdate.current = null;
+      setIsDragging(false);
+    };
     window.addEventListener('mouseup', handleGlobalMouseUp);
     return () => window.removeEventListener('mouseup', handleGlobalMouseUp);
   }, [isDragging]);
+
+  // Cleanup RAF on unmount
+  useEffect(() => {
+    return () => {
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current);
+      }
+    };
+  }, []);
 
   // Calculate minimap dimensions based on SVG aspect ratio
   const minimapDimensions = useMemo(() => {
@@ -184,23 +202,45 @@ export function Birdview({
     [updatePanFromMinimap]
   );
 
-  // Handle mouse move for drag
+  // Handle mouse move for drag with RAF throttling
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      if (isDragging) {
-        updatePanFromMinimap(e.clientX, e.clientY);
+      if (!isDragging) return;
+
+      // Store latest position for RAF batch
+      pendingUpdate.current = { clientX: e.clientX, clientY: e.clientY };
+
+      // Schedule RAF if not already scheduled
+      if (!rafId.current) {
+        rafId.current = requestAnimationFrame(() => {
+          if (pendingUpdate.current) {
+            updatePanFromMinimap(pendingUpdate.current.clientX, pendingUpdate.current.clientY);
+            pendingUpdate.current = null;
+          }
+          rafId.current = null;
+        });
       }
     },
     [isDragging, updatePanFromMinimap]
   );
 
-  // Handle mouse up
+  // Handle mouse up with RAF cleanup
   const handleMouseUp = useCallback(() => {
+    if (rafId.current) {
+      cancelAnimationFrame(rafId.current);
+      rafId.current = null;
+    }
+    pendingUpdate.current = null;
     setIsDragging(false);
   }, []);
 
-  // Handle mouse leave
+  // Handle mouse leave with RAF cleanup
   const handleMouseLeave = useCallback(() => {
+    if (rafId.current) {
+      cancelAnimationFrame(rafId.current);
+      rafId.current = null;
+    }
+    pendingUpdate.current = null;
     setIsDragging(false);
   }, []);
 
