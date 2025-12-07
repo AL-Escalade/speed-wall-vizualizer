@@ -1,0 +1,16 @@
+{
+  "wall": {
+    "lanes": 1,
+    "panelsHeight": 6
+  },
+  "routes": [
+    {
+      "segments": [
+        {
+          "source": "u11-u13",
+          "laneOffset": 0
+        }
+      ]
+    }
+  ]
+}

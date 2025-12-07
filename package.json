@@ -5,6 +5,10 @@
   "scripts": {
     "generate": "tsx src/cli.ts",
     "generate:base": "tsx src/cli.ts generate -c data/base.json -o output/base.svg",
+    "generate:ifsc": "tsx src/cli.ts generate -c data/ifsc.json -o output/ifsc.svg",
+    "generate:u11-training": "tsx src/cli.ts generate -c data/u11-u13-training.json -o output/u11-u13-training.svg",
+    "generate:u11-comp": "tsx src/cli.ts generate -c data/u11-u13-comp.json -o output/u11-u13-comp.svg",
+    "generate:u15": "tsx src/cli.ts generate -c data/u15.json -o output/u15.svg",
     "build": "tsc",
     "test": "vitest"
   },
