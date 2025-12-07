@@ -10,7 +10,7 @@ import { readFile } from 'fs/promises';
 import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import type { HoldSvgData, Point, Dimensions, HoldTypeConfig, HoldTypesConfig } from './types.js';
+import type { HoldSvgData, Point, Dimensions, HoldTypeConfig, HoldTypesConfig, LabelZones, LabelZone, ArrowDirection } from './types.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ASSETS_DIR = join(__dirname, '..', 'assets', 'holds');
@@ -381,11 +381,74 @@ function extractAllVisualElements(svgContent: string): string[] {
       if (match.includes('id="prise"') || match.includes("id='prise'")) {
         continue;
       }
+      // Skip label zone text elements (they are handled separately)
+      if (match.includes('inkscape:label="label')) {
+        continue;
+      }
       elements.push(cleanCircleElement(match));
     }
   }
 
   return elements;
+}
+
+/**
+ * Clean a text element for output
+ * Removes inkscape/sodipodi attributes but keeps transform, x, y, text-anchor
+ * @param element - Text element string
+ * @returns Cleaned text element
+ */
+function cleanTextElement(element: string): string {
+  return element
+    // Remove sodipodi: attributes
+    .replace(/\s+sodipodi:[a-z-]+\s*=\s*["'][^"']*["']/gi, '')
+    // Remove inkscape: attributes
+    .replace(/\s+inkscape:[a-z-]+\s*=\s*["'][^"']*["']/gi, '')
+    // Remove xml:space attribute
+    .replace(/\s+xml:space\s*=\s*["'][^"']*["']/gi, '')
+    // Remove id attributes
+    .replace(/\s+id\s*=\s*["'][^"']*["']/gi, '')
+    .trim();
+}
+
+/**
+ * Extract label zones from SVG content
+ * Label zones are <text> elements with inkscape:label like "label-up", "label-down", etc.
+ * The text element is cleaned and stored to be included in the hold's transform group.
+ * @param svgContent - SVG content
+ * @returns Label zones indexed by direction
+ */
+function extractLabelZones(svgContent: string): LabelZones {
+  const zones: LabelZones = {};
+
+  // Map of inkscape:label values to zone keys
+  const labelMap: Record<string, ArrowDirection | 'default'> = {
+    'label-up': 'up',
+    'label-down': 'down',
+    'label-left': 'left',
+    'label-right': 'right',
+    'label': 'default',
+  };
+
+  // Find all text elements
+  const textPattern = /<text[^>]*>[\s\S]*?<\/text>|<text[^>]*\/>/gi;
+  const textElements = svgContent.match(textPattern) || [];
+
+  for (const textElement of textElements) {
+    // Check for inkscape:label attribute
+    const labelMatch = textElement.match(/inkscape:label\s*=\s*["']([^"']+)["']/i);
+    if (!labelMatch) continue;
+
+    const inkscapeLabel = labelMatch[1];
+    const zoneKey = labelMap[inkscapeLabel];
+    if (!zoneKey) continue;
+
+    // Clean the text element and store it
+    const cleanedElement = cleanTextElement(textElement);
+    zones[zoneKey] = { element: cleanedElement };
+  }
+
+  return zones;
 }
 
 /**
@@ -397,6 +460,7 @@ export function parseHoldSvg(svgContent: string): HoldSvgData {
   const viewBox = extractViewBox(svgContent);
   const insertCenter = extractCircleCenter(svgContent, 'insert');
   const { element: pathElement, rotation: svgRotation } = extractPathElement(svgContent, 'prise');
+  const labelZones = extractLabelZones(svgContent);
 
   // If no "prise" element, extract all visual elements (uncolored)
   // Otherwise, just extract circles (inserts, screw holes)
@@ -410,6 +474,7 @@ export function parseHoldSvg(svgContent: string): HoldSvgData {
     insertCenter,
     viewBox,
     svgRotation,
+    labelZones,
   };
 }
 
@@ -493,6 +558,15 @@ export function getHoldDefaultOrientation(holdType: string): number {
  */
 export function getHoldDimensions(holdType: string): Dimensions {
   return getHoldTypeConfig(holdType).dimensions;
+}
+
+/**
+ * Get the label margin for a hold type
+ * @param holdType - Type of hold (e.g., "BIG", "FOOT")
+ * @returns Label margin in mm (default: 0)
+ */
+export function getHoldLabelMargin(holdType: string): number {
+  return getHoldTypeConfig(holdType).labelMargin ?? 0;
 }
 
 /**

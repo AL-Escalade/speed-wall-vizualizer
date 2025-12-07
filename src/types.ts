@@ -125,6 +125,18 @@ export interface Config {
   routes: GeneratedRoute[];
 }
 
+/** Arrow direction for label zone selection */
+export type ArrowDirection = 'up' | 'down' | 'left' | 'right';
+
+/** Label zone definition from SVG */
+export interface LabelZone {
+  /** The cleaned text element to include in the transformed group */
+  element: string;
+}
+
+/** Label zones indexed by arrow direction */
+export type LabelZones = Partial<Record<ArrowDirection | 'default', LabelZone>>;
+
 /** Parsed hold SVG data */
 export interface HoldSvgData {
   /** The path element content for the hold shape (null if no colored shape) */
@@ -137,6 +149,8 @@ export interface HoldSvgData {
   viewBox: Dimensions;
   /** Rotation angle (in degrees) from the SVG's transform, if any */
   svgRotation: number;
+  /** Label zones for different orientations */
+  labelZones: LabelZones;
 }
 
 /** Output format */
@@ -150,6 +164,8 @@ export interface HoldTypeConfig {
   dimensions: Dimensions;
   /** Default orientation angle in degrees (0° = right, 90° = up, counterclockwise) */
   defaultOrientation: number;
+  /** Additional margin for label positioning in mm (default: 0) */
+  labelMargin?: number;
 }
 
 /** All hold type configurations */

@@ -6549,33 +6549,6 @@
        cy="182.98976"
        r="3.3287482"
        transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" /></g>
-<g transform="translate(2750, 6562.5) rotate(-153.43494882292202) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><path fill="#FF0000"
-       d="m 266.17083,217.60316 c -14.29274,-5.56897 -26.4996,-15.47097 -40.02028,-22.66591 -22.0502,-13.04448 -46.25602,-26.96978 -72.92411,-23.82473 -22.97735,1.20812 -39.93663,19.69961 -61.891926,24.08107 -13.310253,2.29897 -29.266725,-8.1265 -28.332992,-22.59691 -0.413116,-17.40404 6.863254,-34.0682 5.202701,-51.59172 C 67.899294,103.93607 65.150333,85.876517 54.931667,71.78721 44.110549,61.596163 26.339601,62.777828 16.82484,50.462381 4.879682,37.852649 3.2362176,14.775247 18.20733,3.7736208 35.249975,-10.778982 62.953839,-2.89872 74.347918,15.081746 c 8.536715,13.071227 19.334465,25.602708 34.745022,30.435565 29.95314,11.177684 62.02737,15.71242 93.92369,14.524423 23.53022,0.139587 47.0094,-2.942273 70.52793,-2.061284 11.56743,4.513951 -4.88329,15.482763 -7.77105,21.781696 -10.47639,14.413663 -19.98677,31.045494 -18.65313,49.536514 0.45929,18.45854 4.39082,37.02813 11.36977,54.10716 5.07221,10.39666 14.44937,19.01052 16.67201,30.54543 1.16862,5.51313 -5.9838,4.01268 -8.99133,3.65191 z"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:1.265"
-       cx="131.60229"
-       cy="107.5688"
-       r="4.5099173"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:0.998922;stroke-opacity:1"
-       cx="66.571785"
-       cy="44.044235"
-       r="3.3287482"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:0.998922;stroke-opacity:1"
-       cx="247.51596"
-       cy="73.97818"
-       r="3.3287482"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:0.998922;stroke-opacity:1"
-       cx="244.75162"
-       cy="182.98976"
-       r="3.3287482"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" /></g>
 <g transform="translate(1375, 6562.5) rotate(180) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><path fill="#FF0000"
        d="m 266.17083,217.60316 c -14.29274,-5.56897 -26.4996,-15.47097 -40.02028,-22.66591 -22.0502,-13.04448 -46.25602,-26.96978 -72.92411,-23.82473 -22.97735,1.20812 -39.93663,19.69961 -61.891926,24.08107 -13.310253,2.29897 -29.266725,-8.1265 -28.332992,-22.59691 -0.413116,-17.40404 6.863254,-34.0682 5.202701,-51.59172 C 67.899294,103.93607 65.150333,85.876517 54.931667,71.78721 44.110549,61.596163 26.339601,62.777828 16.82484,50.462381 4.879682,37.852649 3.2362176,14.775247 18.20733,3.7736208 35.249975,-10.778982 62.953839,-2.89872 74.347918,15.081746 c 8.536715,13.071227 19.334465,25.602708 34.745022,30.435565 29.95314,11.177684 62.02737,15.71242 93.92369,14.524423 23.53022,0.139587 47.0094,-2.942273 70.52793,-2.061284 11.56743,4.513951 -4.88329,15.482763 -7.77105,21.781696 -10.47639,14.413663 -19.98677,31.045494 -18.65313,49.536514 0.45929,18.45854 4.39082,37.02813 11.36977,54.10716 5.07221,10.39666 14.44937,19.01052 16.67201,30.54543 1.16862,5.51313 -5.9838,4.01268 -8.99133,3.65191 z"
        transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
@@ -6699,33 +6672,6 @@
      cy="32.926838"
      r="6.5624237" /></g>
 <g transform="translate(1250, 4312.5) rotate(33.6900675259798) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><path fill="#FF0000"
-       d="m 266.17083,217.60316 c -14.29274,-5.56897 -26.4996,-15.47097 -40.02028,-22.66591 -22.0502,-13.04448 -46.25602,-26.96978 -72.92411,-23.82473 -22.97735,1.20812 -39.93663,19.69961 -61.891926,24.08107 -13.310253,2.29897 -29.266725,-8.1265 -28.332992,-22.59691 -0.413116,-17.40404 6.863254,-34.0682 5.202701,-51.59172 C 67.899294,103.93607 65.150333,85.876517 54.931667,71.78721 44.110549,61.596163 26.339601,62.777828 16.82484,50.462381 4.879682,37.852649 3.2362176,14.775247 18.20733,3.7736208 35.249975,-10.778982 62.953839,-2.89872 74.347918,15.081746 c 8.536715,13.071227 19.334465,25.602708 34.745022,30.435565 29.95314,11.177684 62.02737,15.71242 93.92369,14.524423 23.53022,0.139587 47.0094,-2.942273 70.52793,-2.061284 11.56743,4.513951 -4.88329,15.482763 -7.77105,21.781696 -10.47639,14.413663 -19.98677,31.045494 -18.65313,49.536514 0.45929,18.45854 4.39082,37.02813 11.36977,54.10716 5.07221,10.39666 14.44937,19.01052 16.67201,30.54543 1.16862,5.51313 -5.9838,4.01268 -8.99133,3.65191 z"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:1.265"
-       cx="131.60229"
-       cy="107.5688"
-       r="4.5099173"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:0.998922;stroke-opacity:1"
-       cx="66.571785"
-       cy="44.044235"
-       r="3.3287482"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:0.998922;stroke-opacity:1"
-       cx="247.51596"
-       cy="73.97818"
-       r="3.3287482"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:0.998922;stroke-opacity:1"
-       cx="244.75162"
-       cy="182.98976"
-       r="3.3287482"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" /></g>
-<g transform="translate(2625, 4062.5) rotate(-153.43494882292202) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><path fill="#FF0000"
        d="m 266.17083,217.60316 c -14.29274,-5.56897 -26.4996,-15.47097 -40.02028,-22.66591 -22.0502,-13.04448 -46.25602,-26.96978 -72.92411,-23.82473 -22.97735,1.20812 -39.93663,19.69961 -61.891926,24.08107 -13.310253,2.29897 -29.266725,-8.1265 -28.332992,-22.59691 -0.413116,-17.40404 6.863254,-34.0682 5.202701,-51.59172 C 67.899294,103.93607 65.150333,85.876517 54.931667,71.78721 44.110549,61.596163 26.339601,62.777828 16.82484,50.462381 4.879682,37.852649 3.2362176,14.775247 18.20733,3.7736208 35.249975,-10.778982 62.953839,-2.89872 74.347918,15.081746 c 8.536715,13.071227 19.334465,25.602708 34.745022,30.435565 29.95314,11.177684 62.02737,15.71242 93.92369,14.524423 23.53022,0.139587 47.0094,-2.942273 70.52793,-2.061284 11.56743,4.513951 -4.88329,15.482763 -7.77105,21.781696 -10.47639,14.413663 -19.98677,31.045494 -18.65313,49.536514 0.45929,18.45854 4.39082,37.02813 11.36977,54.10716 5.07221,10.39666 14.44937,19.01052 16.67201,30.54543 1.16862,5.51313 -5.9838,4.01268 -8.99133,3.65191 z"
        transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
 <circle
@@ -7290,33 +7236,6 @@
        cy="182.98976"
        r="3.3287482"
        transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" /></g>
-<g transform="translate(5750, 6562.5) rotate(-153.43494882292202) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><path fill="#FF0000"
-       d="m 266.17083,217.60316 c -14.29274,-5.56897 -26.4996,-15.47097 -40.02028,-22.66591 -22.0502,-13.04448 -46.25602,-26.96978 -72.92411,-23.82473 -22.97735,1.20812 -39.93663,19.69961 -61.891926,24.08107 -13.310253,2.29897 -29.266725,-8.1265 -28.332992,-22.59691 -0.413116,-17.40404 6.863254,-34.0682 5.202701,-51.59172 C 67.899294,103.93607 65.150333,85.876517 54.931667,71.78721 44.110549,61.596163 26.339601,62.777828 16.82484,50.462381 4.879682,37.852649 3.2362176,14.775247 18.20733,3.7736208 35.249975,-10.778982 62.953839,-2.89872 74.347918,15.081746 c 8.536715,13.071227 19.334465,25.602708 34.745022,30.435565 29.95314,11.177684 62.02737,15.71242 93.92369,14.524423 23.53022,0.139587 47.0094,-2.942273 70.52793,-2.061284 11.56743,4.513951 -4.88329,15.482763 -7.77105,21.781696 -10.47639,14.413663 -19.98677,31.045494 -18.65313,49.536514 0.45929,18.45854 4.39082,37.02813 11.36977,54.10716 5.07221,10.39666 14.44937,19.01052 16.67201,30.54543 1.16862,5.51313 -5.9838,4.01268 -8.99133,3.65191 z"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:1.265"
-       cx="131.60229"
-       cy="107.5688"
-       r="4.5099173"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:0.998922;stroke-opacity:1"
-       cx="66.571785"
-       cy="44.044235"
-       r="3.3287482"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:0.998922;stroke-opacity:1"
-       cx="247.51596"
-       cy="73.97818"
-       r="3.3287482"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:0.998922;stroke-opacity:1"
-       cx="244.75162"
-       cy="182.98976"
-       r="3.3287482"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" /></g>
 <g transform="translate(4375, 6562.5) rotate(180) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><path fill="#FF0000"
        d="m 266.17083,217.60316 c -14.29274,-5.56897 -26.4996,-15.47097 -40.02028,-22.66591 -22.0502,-13.04448 -46.25602,-26.96978 -72.92411,-23.82473 -22.97735,1.20812 -39.93663,19.69961 -61.891926,24.08107 -13.310253,2.29897 -29.266725,-8.1265 -28.332992,-22.59691 -0.413116,-17.40404 6.863254,-34.0682 5.202701,-51.59172 C 67.899294,103.93607 65.150333,85.876517 54.931667,71.78721 44.110549,61.596163 26.339601,62.777828 16.82484,50.462381 4.879682,37.852649 3.2362176,14.775247 18.20733,3.7736208 35.249975,-10.778982 62.953839,-2.89872 74.347918,15.081746 c 8.536715,13.071227 19.334465,25.602708 34.745022,30.435565 29.95314,11.177684 62.02737,15.71242 93.92369,14.524423 23.53022,0.139587 47.0094,-2.942273 70.52793,-2.061284 11.56743,4.513951 -4.88329,15.482763 -7.77105,21.781696 -10.47639,14.413663 -19.98677,31.045494 -18.65313,49.536514 0.45929,18.45854 4.39082,37.02813 11.36977,54.10716 5.07221,10.39666 14.44937,19.01052 16.67201,30.54543 1.16862,5.51313 -5.9838,4.01268 -8.99133,3.65191 z"
        transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
@@ -7440,33 +7359,6 @@
      cy="32.926838"
      r="6.5624237" /></g>
 <g transform="translate(4250, 4312.5) rotate(33.6900675259798) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><path fill="#FF0000"
-       d="m 266.17083,217.60316 c -14.29274,-5.56897 -26.4996,-15.47097 -40.02028,-22.66591 -22.0502,-13.04448 -46.25602,-26.96978 -72.92411,-23.82473 -22.97735,1.20812 -39.93663,19.69961 -61.891926,24.08107 -13.310253,2.29897 -29.266725,-8.1265 -28.332992,-22.59691 -0.413116,-17.40404 6.863254,-34.0682 5.202701,-51.59172 C 67.899294,103.93607 65.150333,85.876517 54.931667,71.78721 44.110549,61.596163 26.339601,62.777828 16.82484,50.462381 4.879682,37.852649 3.2362176,14.775247 18.20733,3.7736208 35.249975,-10.778982 62.953839,-2.89872 74.347918,15.081746 c 8.536715,13.071227 19.334465,25.602708 34.745022,30.435565 29.95314,11.177684 62.02737,15.71242 93.92369,14.524423 23.53022,0.139587 47.0094,-2.942273 70.52793,-2.061284 11.56743,4.513951 -4.88329,15.482763 -7.77105,21.781696 -10.47639,14.413663 -19.98677,31.045494 -18.65313,49.536514 0.45929,18.45854 4.39082,37.02813 11.36977,54.10716 5.07221,10.39666 14.44937,19.01052 16.67201,30.54543 1.16862,5.51313 -5.9838,4.01268 -8.99133,3.65191 z"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:1.265"
-       cx="131.60229"
-       cy="107.5688"
-       r="4.5099173"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:0.998922;stroke-opacity:1"
-       cx="66.571785"
-       cy="44.044235"
-       r="3.3287482"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:0.998922;stroke-opacity:1"
-       cx="247.51596"
-       cy="73.97818"
-       r="3.3287482"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:0.998922;stroke-opacity:1"
-       cx="244.75162"
-       cy="182.98976"
-       r="3.3287482"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" /></g>
-<g transform="translate(5625, 4062.5) rotate(-153.43494882292202) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><path fill="#FF0000"
        d="m 266.17083,217.60316 c -14.29274,-5.56897 -26.4996,-15.47097 -40.02028,-22.66591 -22.0502,-13.04448 -46.25602,-26.96978 -72.92411,-23.82473 -22.97735,1.20812 -39.93663,19.69961 -61.891926,24.08107 -13.310253,2.29897 -29.266725,-8.1265 -28.332992,-22.59691 -0.413116,-17.40404 6.863254,-34.0682 5.202701,-51.59172 C 67.899294,103.93607 65.150333,85.876517 54.931667,71.78721 44.110549,61.596163 26.339601,62.777828 16.82484,50.462381 4.879682,37.852649 3.2362176,14.775247 18.20733,3.7736208 35.249975,-10.778982 62.953839,-2.89872 74.347918,15.081746 c 8.536715,13.071227 19.334465,25.602708 34.745022,30.435565 29.95314,11.177684 62.02737,15.71242 93.92369,14.524423 23.53022,0.139587 47.0094,-2.942273 70.52793,-2.061284 11.56743,4.513951 -4.88329,15.482763 -7.77105,21.781696 -10.47639,14.413663 -19.98677,31.045494 -18.65313,49.536514 0.45929,18.45854 4.39082,37.02813 11.36977,54.10716 5.07221,10.39666 14.44937,19.01052 16.67201,30.54543 1.16862,5.51313 -5.9838,4.01268 -8.99133,3.65191 z"
        transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
 <circle
@@ -8431,33 +8323,6 @@
        cy="182.98976"
        r="3.3287482"
        transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" /></g>
-<g transform="translate(4375, 12687.5) rotate(-153.43494882292202) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><path fill="#FF6600"
-       d="m 266.17083,217.60316 c -14.29274,-5.56897 -26.4996,-15.47097 -40.02028,-22.66591 -22.0502,-13.04448 -46.25602,-26.96978 -72.92411,-23.82473 -22.97735,1.20812 -39.93663,19.69961 -61.891926,24.08107 -13.310253,2.29897 -29.266725,-8.1265 -28.332992,-22.59691 -0.413116,-17.40404 6.863254,-34.0682 5.202701,-51.59172 C 67.899294,103.93607 65.150333,85.876517 54.931667,71.78721 44.110549,61.596163 26.339601,62.777828 16.82484,50.462381 4.879682,37.852649 3.2362176,14.775247 18.20733,3.7736208 35.249975,-10.778982 62.953839,-2.89872 74.347918,15.081746 c 8.536715,13.071227 19.334465,25.602708 34.745022,30.435565 29.95314,11.177684 62.02737,15.71242 93.92369,14.524423 23.53022,0.139587 47.0094,-2.942273 70.52793,-2.061284 11.56743,4.513951 -4.88329,15.482763 -7.77105,21.781696 -10.47639,14.413663 -19.98677,31.045494 -18.65313,49.536514 0.45929,18.45854 4.39082,37.02813 11.36977,54.10716 5.07221,10.39666 14.44937,19.01052 16.67201,30.54543 1.16862,5.51313 -5.9838,4.01268 -8.99133,3.65191 z"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:1.265"
-       cx="131.60229"
-       cy="107.5688"
-       r="4.5099173"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:0.998922;stroke-opacity:1"
-       cx="66.571785"
-       cy="44.044235"
-       r="3.3287482"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:0.998922;stroke-opacity:1"
-       cx="247.51596"
-       cy="73.97818"
-       r="3.3287482"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:0.998922;stroke-opacity:1"
-       cx="244.75162"
-       cy="182.98976"
-       r="3.3287482"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" /></g>
 <g transform="translate(3000, 12687.5) rotate(180) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><path fill="#FF6600"
        d="m 266.17083,217.60316 c -14.29274,-5.56897 -26.4996,-15.47097 -40.02028,-22.66591 -22.0502,-13.04448 -46.25602,-26.96978 -72.92411,-23.82473 -22.97735,1.20812 -39.93663,19.69961 -61.891926,24.08107 -13.310253,2.29897 -29.266725,-8.1265 -28.332992,-22.59691 -0.413116,-17.40404 6.863254,-34.0682 5.202701,-51.59172 C 67.899294,103.93607 65.150333,85.876517 54.931667,71.78721 44.110549,61.596163 26.339601,62.777828 16.82484,50.462381 4.879682,37.852649 3.2362176,14.775247 18.20733,3.7736208 35.249975,-10.778982 62.953839,-2.89872 74.347918,15.081746 c 8.536715,13.071227 19.334465,25.602708 34.745022,30.435565 29.95314,11.177684 62.02737,15.71242 93.92369,14.524423 23.53022,0.139587 47.0094,-2.942273 70.52793,-2.061284 11.56743,4.513951 -4.88329,15.482763 -7.77105,21.781696 -10.47639,14.413663 -19.98677,31.045494 -18.65313,49.536514 0.45929,18.45854 4.39082,37.02813 11.36977,54.10716 5.07221,10.39666 14.44937,19.01052 16.67201,30.54543 1.16862,5.51313 -5.9838,4.01268 -8.99133,3.65191 z"
        transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
@@ -8581,33 +8446,6 @@
      cy="32.926838"
      r="6.5624237" /></g>
 <g transform="translate(2875, 10437.5) rotate(33.6900675259798) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><path fill="#FF6600"
-       d="m 266.17083,217.60316 c -14.29274,-5.56897 -26.4996,-15.47097 -40.02028,-22.66591 -22.0502,-13.04448 -46.25602,-26.96978 -72.92411,-23.82473 -22.97735,1.20812 -39.93663,19.69961 -61.891926,24.08107 -13.310253,2.29897 -29.266725,-8.1265 -28.332992,-22.59691 -0.413116,-17.40404 6.863254,-34.0682 5.202701,-51.59172 C 67.899294,103.93607 65.150333,85.876517 54.931667,71.78721 44.110549,61.596163 26.339601,62.777828 16.82484,50.462381 4.879682,37.852649 3.2362176,14.775247 18.20733,3.7736208 35.249975,-10.778982 62.953839,-2.89872 74.347918,15.081746 c 8.536715,13.071227 19.334465,25.602708 34.745022,30.435565 29.95314,11.177684 62.02737,15.71242 93.92369,14.524423 23.53022,0.139587 47.0094,-2.942273 70.52793,-2.061284 11.56743,4.513951 -4.88329,15.482763 -7.77105,21.781696 -10.47639,14.413663 -19.98677,31.045494 -18.65313,49.536514 0.45929,18.45854 4.39082,37.02813 11.36977,54.10716 5.07221,10.39666 14.44937,19.01052 16.67201,30.54543 1.16862,5.51313 -5.9838,4.01268 -8.99133,3.65191 z"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:1.265"
-       cx="131.60229"
-       cy="107.5688"
-       r="4.5099173"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:0.998922;stroke-opacity:1"
-       cx="66.571785"
-       cy="44.044235"
-       r="3.3287482"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:0.998922;stroke-opacity:1"
-       cx="247.51596"
-       cy="73.97818"
-       r="3.3287482"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
-<circle
-       style="display:inline;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:0.998922;stroke-opacity:1"
-       cx="244.75162"
-       cy="182.98976"
-       r="3.3287482"
-       transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" /></g>
-<g transform="translate(4250, 10187.5) rotate(-153.43494882292202) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><path fill="#FF6600"
        d="m 266.17083,217.60316 c -14.29274,-5.56897 -26.4996,-15.47097 -40.02028,-22.66591 -22.0502,-13.04448 -46.25602,-26.96978 -72.92411,-23.82473 -22.97735,1.20812 -39.93663,19.69961 -61.891926,24.08107 -13.310253,2.29897 -29.266725,-8.1265 -28.332992,-22.59691 -0.413116,-17.40404 6.863254,-34.0682 5.202701,-51.59172 C 67.899294,103.93607 65.150333,85.876517 54.931667,71.78721 44.110549,61.596163 26.339601,62.777828 16.82484,50.462381 4.879682,37.852649 3.2362176,14.775247 18.20733,3.7736208 35.249975,-10.778982 62.953839,-2.89872 74.347918,15.081746 c 8.536715,13.071227 19.334465,25.602708 34.745022,30.435565 29.95314,11.177684 62.02737,15.71242 93.92369,14.524423 23.53022,0.139587 47.0094,-2.942273 70.52793,-2.061284 11.56743,4.513951 -4.88329,15.482763 -7.77105,21.781696 -10.47639,14.413663 -19.98677,31.045494 -18.65313,49.536514 0.45929,18.45854 4.39082,37.02813 11.36977,54.10716 5.07221,10.39666 14.44937,19.01052 16.67201,30.54543 1.16862,5.51313 -5.9838,4.01268 -8.99133,3.65191 z"
        transform="matrix(0.47637142,0.62878946,-0.62878946,0.47637142,105.59279,-1.9215976)" />
 <circle
@@ -8773,138 +8611,1010 @@
        r="12" /></g>
 </g>
 <g id="hold-labels">
-<text x="2250" y="14517.787518293331" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P1</text>
-<text x="1625" y="14142.787518293331" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">Q1</text>
-<text x="1625" y="13767.787518293331" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P2</text>
-<text x="2250" y="13957.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">N1</text>
-<text x="2250" y="13582.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M1</text>
-<text x="1000" y="13392.787518293331" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">Q2</text>
-<text x="2375" y="13332.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M2</text>
-<text x="875" y="13142.787518293331" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P3</text>
-<text x="1625" y="12582.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M3</text>
-<text x="750" y="11957.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">N2</text>
-<text x="875" y="11707.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M4</text>
-<text x="1875" y="11267.787518293331" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P4</text>
-<text x="1375" y="10957.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M5</text>
-<text x="1750" y="10457.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M6</text>
-<text x="1375" y="9832.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M7</text>
-<text x="2125" y="8892.787518293331" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P5</text>
-<text x="1000" y="8892.787518293331" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P6</text>
-<text x="1875" y="8832.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M8</text>
-<text x="1375" y="8267.787518293331" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P7</text>
-<text x="625" y="8142.78751829333" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P8</text>
-<text x="2125" y="8082.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M9</text>
-<text x="2000" y="7392.78751829333" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">Q3</text>
-<text x="1000" y="7457.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M10</text>
-<text x="2750" y="6832.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">N3</text>
-<text x="1375" y="6832.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M11</text>
-<text x="750" y="6582.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M12</text>
-<text x="1375" y="5707.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M13</text>
-<text x="875" y="5082.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M14</text>
-<text x="1750" y="4767.78751829333" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P9</text>
-<text x="2125" y="4392.78751829333" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P10</text>
-<text x="1250" y="4582.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M15</text>
-<text x="2625" y="4332.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">N4</text>
-<text x="1125" y="4332.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M16</text>
-<text x="1625" y="3892.7875182933303" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P11</text>
-<text x="500" y="3602.5" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">PAD-U15</text>
-<text x="1625" y="2957.0574360043615" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M19</text>
-<text x="2125" y="2332.0574360043615" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M20</text>
-<text x="1375" y="1957.0574360043615" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M18</text>
-<text x="1625" y="352.5" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">PAD</text>
-<text x="5250" y="14517.787518293331" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P1</text>
-<text x="4625" y="14142.787518293331" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">Q1</text>
-<text x="4625" y="13767.787518293331" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P2</text>
-<text x="5250" y="13957.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">N1</text>
-<text x="5250" y="13582.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M1</text>
-<text x="4000" y="13392.787518293331" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">Q2</text>
-<text x="5375" y="13332.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M2</text>
-<text x="3875" y="13142.787518293331" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P3</text>
-<text x="4625" y="12582.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M3</text>
-<text x="3750" y="11957.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">N2</text>
-<text x="3875" y="11707.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M4</text>
-<text x="4875" y="11267.787518293331" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P4</text>
-<text x="4375" y="10957.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M5</text>
-<text x="4750" y="10457.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M6</text>
-<text x="4375" y="9832.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M7</text>
-<text x="5125" y="8892.787518293331" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P5</text>
-<text x="4000" y="8892.787518293331" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P6</text>
-<text x="4875" y="8832.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M8</text>
-<text x="4375" y="8267.787518293331" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P7</text>
-<text x="3625" y="8142.78751829333" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P8</text>
-<text x="5125" y="8082.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M9</text>
-<text x="5000" y="7392.78751829333" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">Q3</text>
-<text x="4000" y="7457.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M10</text>
-<text x="5750" y="6832.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">N3</text>
-<text x="4375" y="6832.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M11</text>
-<text x="3750" y="6582.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M12</text>
-<text x="4375" y="5707.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M13</text>
-<text x="3875" y="5082.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M14</text>
-<text x="4750" y="4767.78751829333" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P9</text>
-<text x="5125" y="4392.78751829333" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P10</text>
-<text x="4250" y="4582.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M15</text>
-<text x="5625" y="4332.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">N4</text>
-<text x="4125" y="4332.057436004361" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M16</text>
-<text x="4625" y="3892.7875182933303" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P11</text>
-<text x="3500" y="3602.5" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">PAD-U15</text>
-<text x="4625" y="2957.0574360043615" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M19</text>
-<text x="5125" y="2332.0574360043615" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M20</text>
-<text x="4375" y="1957.0574360043615" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M18</text>
-<text x="4625" y="352.5" font-size="40" fill="#FF0000" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">PAD</text>
-<text x="875" y="14634.730014634664" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P1</text>
-<text x="500" y="14134.730014634664" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P2</text>
-<text x="875" y="14036.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M1</text>
-<text x="375" y="13411.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M2</text>
-<text x="625" y="12911.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M3</text>
-<text x="250" y="12411.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M4</text>
-<text x="875" y="10759.730014634664" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P3</text>
-<text x="500" y="11661.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M5</text>
-<text x="375" y="11161.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M6</text>
-<text x="250" y="10911.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M7</text>
-<text x="375" y="10259.730014634664" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P4</text>
-<text x="875" y="10036.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M8</text>
-<text x="875" y="9411.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M9</text>
-<text x="500" y="9036.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M10</text>
-<text x="500" y="8536.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M11</text>
-<text x="250" y="7911.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M12</text>
-<text x="250" y="7102.5" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">PAD</text>
-<text x="3875" y="14634.730014634664" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P1</text>
-<text x="3500" y="14134.730014634664" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P2</text>
-<text x="3875" y="14036.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M1</text>
-<text x="3375" y="13411.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M2</text>
-<text x="3625" y="12911.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M3</text>
-<text x="3250" y="12411.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M4</text>
-<text x="3875" y="10759.730014634664" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P3</text>
-<text x="3500" y="11661.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M5</text>
-<text x="3375" y="11161.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M6</text>
-<text x="3250" y="10911.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M7</text>
-<text x="3375" y="10259.730014634664" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P4</text>
-<text x="3875" y="10036.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M8</text>
-<text x="3875" y="9411.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M9</text>
-<text x="3500" y="9036.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M10</text>
-<text x="3500" y="8536.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M11</text>
-<text x="3250" y="7911.145948803489" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M12</text>
-<text x="3250" y="7102.5" font-size="40" fill="#00AAFF" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">PAD</text>
-<text x="3500" y="14957.057436004361" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M8</text>
-<text x="3000" y="14392.787518293331" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P7</text>
-<text x="2250" y="14267.787518293331" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P8</text>
-<text x="3625" y="13517.787518293331" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">Q3</text>
-<text x="2625" y="13582.057436004361" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M10</text>
-<text x="4375" y="12957.057436004361" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">N3</text>
-<text x="3000" y="12957.057436004361" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M11</text>
-<text x="2375" y="12707.057436004361" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M12</text>
-<text x="3000" y="11832.057436004361" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M13</text>
-<text x="2500" y="11207.057436004361" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M14</text>
-<text x="3375" y="10892.787518293331" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P9</text>
-<text x="3750" y="10517.787518293331" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P10</text>
-<text x="2875" y="10707.057436004361" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M15</text>
-<text x="4250" y="10457.057436004361" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">N4</text>
-<text x="2750" y="10457.057436004361" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M16</text>
-<text x="3250" y="10017.787518293331" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">P11</text>
-<text x="2125" y="9727.5" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">PAD-U15</text>
-<text x="3250" y="9082.057436004361" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M19</text>
-<text x="3750" y="8457.057436004361" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M20</text>
-<text x="3000" y="8082.057436004361" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">M18</text>
-<text x="3250" y="6477.5" font-size="40" fill="#FF6600" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">PAD</text>
+<g transform="translate(2250, 14437.5) rotate(180) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="-39.489708"
+     y="10.482526"
+     transform="scale(-1)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-39.489708"
+       y="10.482526">P1</tspan></text></g>
+<g transform="translate(1625, 14062.5) rotate(90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="-31.931458"
+     y="73.558395"
+     transform="rotate(-90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-31.931458"
+       y="73.558395">Q1</tspan></text></g>
+<g transform="translate(1625, 13687.5) rotate(180) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="-39.489708"
+     y="10.482526"
+     transform="scale(-1)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-39.489708"
+       y="10.482526">P2</tspan></text></g>
+<g transform="translate(2250, 13687.5) rotate(143.13010235415598) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">N1</tspan></text></g>
+<g transform="translate(2250, 13312.5) rotate(135) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-191.61284"
+       y="75.307213"
+       transform="rotate(-120.21488)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-191.61284"
+         y="75.307213">M1</tspan></text></g>
+<g transform="translate(1000, 13312.5) rotate(180) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="-39.489708"
+     y="10.482526"
+     transform="scale(-1)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-39.489708"
+       y="10.482526">Q2</tspan></text></g>
+<g transform="translate(2375, 13062.5) rotate(135) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-191.61284"
+       y="75.307213"
+       transform="rotate(-120.21488)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-191.61284"
+         y="75.307213">M2</tspan></text></g>
+<g transform="translate(875, 13062.5) rotate(180) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="-39.489708"
+     y="10.482526"
+     transform="scale(-1)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-39.489708"
+       y="10.482526">P3</tspan></text></g>
+<g transform="translate(1625, 12312.5) rotate(-116.56505117707798) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="200.33459"
+       y="38.739342"
+       transform="rotate(60.360315)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="200.33459"
+         y="38.739342">M3</tspan></text></g>
+<g transform="translate(750, 11687.5) rotate(0) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">N2</tspan></text></g>
+<g transform="translate(875, 11437.5) rotate(0) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M4</tspan></text></g>
+<g transform="translate(1875, 11187.5) rotate(-90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="31.045805"
+     y="10.699672"
+     transform="rotate(90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="31.045805"
+       y="10.699672">P4</tspan></text></g>
+<g transform="translate(1375, 10687.5) rotate(45) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M5</tspan></text></g>
+<g transform="translate(1750, 10187.5) rotate(-116.56505117707798) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="200.33459"
+       y="38.739342"
+       transform="rotate(60.360315)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="200.33459"
+         y="38.739342">M6</tspan></text></g>
+<g transform="translate(1375, 9562.5) rotate(161.56505117707798) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M7</tspan></text></g>
+<g transform="translate(2125, 8812.5) rotate(90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="-31.931458"
+     y="73.558395"
+     transform="rotate(-90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-31.931458"
+       y="73.558395">P5</tspan></text></g>
+<g transform="translate(1000, 8812.5) rotate(-90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="31.045805"
+     y="10.699672"
+     transform="rotate(90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="31.045805"
+       y="10.699672">P6</tspan></text></g>
+<g transform="translate(1875, 8562.5) rotate(180) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M8</tspan></text></g>
+<g transform="translate(1375, 8187.5) rotate(-90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="31.045805"
+     y="10.699672"
+     transform="rotate(90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="31.045805"
+       y="10.699672">P7</tspan></text></g>
+<g transform="translate(625, 8062.5) rotate(-90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="31.045805"
+     y="10.699672"
+     transform="rotate(90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="31.045805"
+       y="10.699672">P8</tspan></text></g>
+<g transform="translate(2125, 7812.5) rotate(-90) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="200.33459"
+       y="38.739342"
+       transform="rotate(60.360315)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="200.33459"
+         y="38.739342">M9</tspan></text></g>
+<g transform="translate(2000, 7312.5) rotate(90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="-31.931458"
+     y="73.558395"
+     transform="rotate(-90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-31.931458"
+       y="73.558395">Q3</tspan></text></g>
+<g transform="translate(1000, 7187.5) rotate(90) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-191.61284"
+       y="75.307213"
+       transform="rotate(-120.21488)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-191.61284"
+         y="75.307213">M10</tspan></text></g>
+<g transform="translate(1375, 6562.5) rotate(180) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M11</tspan></text></g>
+<g transform="translate(750, 6312.5) rotate(0) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M12</tspan></text></g>
+<g transform="translate(1375, 5437.5) rotate(95.71059313749964) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-191.61284"
+       y="75.307213"
+       transform="rotate(-120.21488)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-191.61284"
+         y="75.307213">M13</tspan></text></g>
+<g transform="translate(875, 4812.5) rotate(63.434948822921996) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-191.61284"
+       y="75.307213"
+       transform="rotate(-120.21488)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-191.61284"
+         y="75.307213">M14</tspan></text></g>
+<g transform="translate(1750, 4687.5) rotate(0) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="34.44677"
+     y="79.624069"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="34.44677"
+       y="79.624069">P9</tspan></text></g>
+<g transform="translate(2125, 4312.5) rotate(180) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="-39.489708"
+     y="10.482526"
+     transform="scale(-1)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-39.489708"
+       y="10.482526">P10</tspan></text></g>
+<g transform="translate(1250, 4312.5) rotate(33.6900675259798) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M15</tspan></text></g>
+<g transform="translate(1125, 4062.5) rotate(-153.43494882292202) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M16</tspan></text></g>
+<g transform="translate(1625, 3812.5) rotate(90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="-31.931458"
+     y="73.558395"
+     transform="rotate(-90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-31.931458"
+       y="73.558395">P11</tspan></text></g>
+<g transform="translate(500, 3562.5) rotate(0) scale(0.994965474698028) translate(-119.3675, -259.22345)"><text dominant-baseline="hanging"
+       style="font-weight:500;font-size:40.2024px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+       x="-1.3514959"
+       y="262.59595"><tspan
+         style="stroke-width:1.265"
+         x="-1.3514959"
+         y="262.59595">PAD-U15</tspan></text></g>
+<g transform="translate(1625, 2687.5) rotate(-135) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M19</tspan></text></g>
+<g transform="translate(2125, 2062.5) rotate(180) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M20</tspan></text></g>
+<g transform="translate(1375, 1687.5) rotate(48.012787504183365) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-191.61284"
+       y="75.307213"
+       transform="rotate(-120.21488)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-191.61284"
+         y="75.307213">M18</tspan></text></g>
+<g transform="translate(1625, 312.5) rotate(0) scale(0.994965474698028) translate(-119.3675, -259.22345)"><text dominant-baseline="hanging"
+       style="font-weight:500;font-size:40.2024px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+       x="-1.3514959"
+       y="262.59595"><tspan
+         style="stroke-width:1.265"
+         x="-1.3514959"
+         y="262.59595">PAD</tspan></text></g>
+<g transform="translate(5250, 14437.5) rotate(180) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="-39.489708"
+     y="10.482526"
+     transform="scale(-1)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-39.489708"
+       y="10.482526">P1</tspan></text></g>
+<g transform="translate(4625, 14062.5) rotate(90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="-31.931458"
+     y="73.558395"
+     transform="rotate(-90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-31.931458"
+       y="73.558395">Q1</tspan></text></g>
+<g transform="translate(4625, 13687.5) rotate(180) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="-39.489708"
+     y="10.482526"
+     transform="scale(-1)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-39.489708"
+       y="10.482526">P2</tspan></text></g>
+<g transform="translate(5250, 13687.5) rotate(143.13010235415598) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">N1</tspan></text></g>
+<g transform="translate(5250, 13312.5) rotate(135) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-191.61284"
+       y="75.307213"
+       transform="rotate(-120.21488)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-191.61284"
+         y="75.307213">M1</tspan></text></g>
+<g transform="translate(4000, 13312.5) rotate(180) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="-39.489708"
+     y="10.482526"
+     transform="scale(-1)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-39.489708"
+       y="10.482526">Q2</tspan></text></g>
+<g transform="translate(5375, 13062.5) rotate(135) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-191.61284"
+       y="75.307213"
+       transform="rotate(-120.21488)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-191.61284"
+         y="75.307213">M2</tspan></text></g>
+<g transform="translate(3875, 13062.5) rotate(180) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="-39.489708"
+     y="10.482526"
+     transform="scale(-1)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-39.489708"
+       y="10.482526">P3</tspan></text></g>
+<g transform="translate(4625, 12312.5) rotate(-116.56505117707798) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="200.33459"
+       y="38.739342"
+       transform="rotate(60.360315)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="200.33459"
+         y="38.739342">M3</tspan></text></g>
+<g transform="translate(3750, 11687.5) rotate(0) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">N2</tspan></text></g>
+<g transform="translate(3875, 11437.5) rotate(0) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M4</tspan></text></g>
+<g transform="translate(4875, 11187.5) rotate(-90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="31.045805"
+     y="10.699672"
+     transform="rotate(90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="31.045805"
+       y="10.699672">P4</tspan></text></g>
+<g transform="translate(4375, 10687.5) rotate(45) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M5</tspan></text></g>
+<g transform="translate(4750, 10187.5) rotate(-116.56505117707798) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="200.33459"
+       y="38.739342"
+       transform="rotate(60.360315)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="200.33459"
+         y="38.739342">M6</tspan></text></g>
+<g transform="translate(4375, 9562.5) rotate(161.56505117707798) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M7</tspan></text></g>
+<g transform="translate(5125, 8812.5) rotate(90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="-31.931458"
+     y="73.558395"
+     transform="rotate(-90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-31.931458"
+       y="73.558395">P5</tspan></text></g>
+<g transform="translate(4000, 8812.5) rotate(-90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="31.045805"
+     y="10.699672"
+     transform="rotate(90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="31.045805"
+       y="10.699672">P6</tspan></text></g>
+<g transform="translate(4875, 8562.5) rotate(180) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M8</tspan></text></g>
+<g transform="translate(4375, 8187.5) rotate(-90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="31.045805"
+     y="10.699672"
+     transform="rotate(90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="31.045805"
+       y="10.699672">P7</tspan></text></g>
+<g transform="translate(3625, 8062.5) rotate(-90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="31.045805"
+     y="10.699672"
+     transform="rotate(90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="31.045805"
+       y="10.699672">P8</tspan></text></g>
+<g transform="translate(5125, 7812.5) rotate(-90) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="200.33459"
+       y="38.739342"
+       transform="rotate(60.360315)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="200.33459"
+         y="38.739342">M9</tspan></text></g>
+<g transform="translate(5000, 7312.5) rotate(90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="-31.931458"
+     y="73.558395"
+     transform="rotate(-90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-31.931458"
+       y="73.558395">Q3</tspan></text></g>
+<g transform="translate(4000, 7187.5) rotate(90) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-191.61284"
+       y="75.307213"
+       transform="rotate(-120.21488)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-191.61284"
+         y="75.307213">M10</tspan></text></g>
+<g transform="translate(4375, 6562.5) rotate(180) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M11</tspan></text></g>
+<g transform="translate(3750, 6312.5) rotate(0) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M12</tspan></text></g>
+<g transform="translate(4375, 5437.5) rotate(95.71059313749964) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-191.61284"
+       y="75.307213"
+       transform="rotate(-120.21488)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-191.61284"
+         y="75.307213">M13</tspan></text></g>
+<g transform="translate(3875, 4812.5) rotate(63.434948822921996) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-191.61284"
+       y="75.307213"
+       transform="rotate(-120.21488)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-191.61284"
+         y="75.307213">M14</tspan></text></g>
+<g transform="translate(4750, 4687.5) rotate(0) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="34.44677"
+     y="79.624069"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="34.44677"
+       y="79.624069">P9</tspan></text></g>
+<g transform="translate(5125, 4312.5) rotate(180) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="-39.489708"
+     y="10.482526"
+     transform="scale(-1)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-39.489708"
+       y="10.482526">P10</tspan></text></g>
+<g transform="translate(4250, 4312.5) rotate(33.6900675259798) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M15</tspan></text></g>
+<g transform="translate(4125, 4062.5) rotate(-153.43494882292202) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M16</tspan></text></g>
+<g transform="translate(4625, 3812.5) rotate(90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+     x="-31.931458"
+     y="73.558395"
+     transform="rotate(-90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-31.931458"
+       y="73.558395">P11</tspan></text></g>
+<g transform="translate(3500, 3562.5) rotate(0) scale(0.994965474698028) translate(-119.3675, -259.22345)"><text dominant-baseline="hanging"
+       style="font-weight:500;font-size:40.2024px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+       x="-1.3514959"
+       y="262.59595"><tspan
+         style="stroke-width:1.265"
+         x="-1.3514959"
+         y="262.59595">PAD-U15</tspan></text></g>
+<g transform="translate(4625, 2687.5) rotate(-135) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M19</tspan></text></g>
+<g transform="translate(5125, 2062.5) rotate(180) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M20</tspan></text></g>
+<g transform="translate(4375, 1687.5) rotate(48.012787504183365) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;fill-opacity:1;stroke-width:1.265"
+       x="-191.61284"
+       y="75.307213"
+       transform="rotate(-120.21488)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-191.61284"
+         y="75.307213">M18</tspan></text></g>
+<g transform="translate(4625, 312.5) rotate(0) scale(0.994965474698028) translate(-119.3675, -259.22345)"><text dominant-baseline="hanging"
+       style="font-weight:500;font-size:40.2024px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF0000;stroke-width:1.265"
+       x="-1.3514959"
+       y="262.59595"><tspan
+         style="stroke-width:1.265"
+         x="-1.3514959"
+         y="262.59595">PAD</tspan></text></g>
+<g transform="translate(875, 14562.5) rotate(180) scale(0.9055103506462708) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:44.17398428571428px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;stroke-width:1.265"
+     x="-39.489708"
+     y="10.482526"
+     transform="scale(-1)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-39.489708"
+       y="10.482526">P1</tspan></text></g>
+<g transform="translate(500, 14062.5) rotate(180) scale(0.9055103506462708) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:44.17398428571428px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;stroke-width:1.265"
+     x="-39.489708"
+     y="10.482526"
+     transform="scale(-1)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-39.489708"
+       y="10.482526">P2</tspan></text></g>
+<g transform="translate(875, 13812.5) rotate(0) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M1</tspan></text></g>
+<g transform="translate(375, 13187.5) rotate(-153.43494882292202) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M2</tspan></text></g>
+<g transform="translate(625, 12687.5) rotate(-153.43494882292202) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M3</tspan></text></g>
+<g transform="translate(250, 12187.5) rotate(26.565051177077976) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M4</tspan></text></g>
+<g transform="translate(875, 10687.5) rotate(180) scale(0.9055103506462708) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:44.17398428571428px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;stroke-width:1.265"
+     x="-39.489708"
+     y="10.482526"
+     transform="scale(-1)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-39.489708"
+       y="10.482526">P3</tspan></text></g>
+<g transform="translate(500, 11437.5) rotate(-108.43494882292202) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="200.33459"
+       y="38.739342"
+       transform="rotate(60.360315)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="200.33459"
+         y="38.739342">M5</tspan></text></g>
+<g transform="translate(375, 10937.5) rotate(26.565051177077976) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M6</tspan></text></g>
+<g transform="translate(250, 10687.5) rotate(-146.30993247402023) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M7</tspan></text></g>
+<g transform="translate(375, 10187.5) rotate(90) scale(0.9055103506462708) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:44.17398428571428px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;stroke-width:1.265"
+     x="-31.931458"
+     y="73.558395"
+     transform="rotate(-90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-31.931458"
+       y="73.558395">P4</tspan></text></g>
+<g transform="translate(875, 9812.5) rotate(-63.434948822922024) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="200.33459"
+       y="38.739342"
+       transform="rotate(60.360315)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="200.33459"
+         y="38.739342">M8</tspan></text></g>
+<g transform="translate(875, 9187.5) rotate(-12.528807709151522) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M9</tspan></text></g>
+<g transform="translate(500, 8812.5) rotate(33.6900675259798) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M10</tspan></text></g>
+<g transform="translate(500, 8312.5) rotate(-153.43494882292202) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M11</tspan></text></g>
+<g transform="translate(250, 7687.5) rotate(0) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M12</tspan></text></g>
+<g transform="translate(250, 7062.5) rotate(0) scale(0.994965474698028) translate(-119.3675, -259.22345)"><text dominant-baseline="hanging"
+       style="font-weight:500;font-size:40.2024px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;stroke-width:1.265"
+       x="-1.3514959"
+       y="262.59595"><tspan
+         style="stroke-width:1.265"
+         x="-1.3514959"
+         y="262.59595">PAD</tspan></text></g>
+<g transform="translate(3875, 14562.5) rotate(180) scale(0.9055103506462708) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:44.17398428571428px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;stroke-width:1.265"
+     x="-39.489708"
+     y="10.482526"
+     transform="scale(-1)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-39.489708"
+       y="10.482526">P1</tspan></text></g>
+<g transform="translate(3500, 14062.5) rotate(180) scale(0.9055103506462708) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:44.17398428571428px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;stroke-width:1.265"
+     x="-39.489708"
+     y="10.482526"
+     transform="scale(-1)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-39.489708"
+       y="10.482526">P2</tspan></text></g>
+<g transform="translate(3875, 13812.5) rotate(0) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M1</tspan></text></g>
+<g transform="translate(3375, 13187.5) rotate(-153.43494882292202) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M2</tspan></text></g>
+<g transform="translate(3625, 12687.5) rotate(-153.43494882292202) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M3</tspan></text></g>
+<g transform="translate(3250, 12187.5) rotate(26.565051177077976) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M4</tspan></text></g>
+<g transform="translate(3875, 10687.5) rotate(180) scale(0.9055103506462708) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:44.17398428571428px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;stroke-width:1.265"
+     x="-39.489708"
+     y="10.482526"
+     transform="scale(-1)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-39.489708"
+       y="10.482526">P3</tspan></text></g>
+<g transform="translate(3500, 11437.5) rotate(-108.43494882292202) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="200.33459"
+       y="38.739342"
+       transform="rotate(60.360315)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="200.33459"
+         y="38.739342">M5</tspan></text></g>
+<g transform="translate(3375, 10937.5) rotate(26.565051177077976) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M6</tspan></text></g>
+<g transform="translate(3250, 10687.5) rotate(-146.30993247402023) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M7</tspan></text></g>
+<g transform="translate(3375, 10187.5) rotate(90) scale(0.9055103506462708) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:44.17398428571428px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;stroke-width:1.265"
+     x="-31.931458"
+     y="73.558395"
+     transform="rotate(-90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-31.931458"
+       y="73.558395">P4</tspan></text></g>
+<g transform="translate(3875, 9812.5) rotate(-63.434948822922024) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="200.33459"
+       y="38.739342"
+       transform="rotate(60.360315)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="200.33459"
+         y="38.739342">M8</tspan></text></g>
+<g transform="translate(3875, 9187.5) rotate(-12.528807709151522) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M9</tspan></text></g>
+<g transform="translate(3500, 8812.5) rotate(33.6900675259798) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M10</tspan></text></g>
+<g transform="translate(3500, 8312.5) rotate(-153.43494882292202) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M11</tspan></text></g>
+<g transform="translate(3250, 7687.5) rotate(0) scale(1.3958682829860458) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:28.655998913043483px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:28.655998913043483px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M12</tspan></text></g>
+<g transform="translate(3250, 7062.5) rotate(0) scale(0.994965474698028) translate(-119.3675, -259.22345)"><text dominant-baseline="hanging"
+       style="font-weight:500;font-size:40.2024px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00AAFF;stroke-width:1.265"
+       x="-1.3514959"
+       y="262.59595"><tspan
+         style="stroke-width:1.265"
+         x="-1.3514959"
+         y="262.59595">PAD</tspan></text></g>
+<g transform="translate(3500, 14687.5) rotate(180) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M8</tspan></text></g>
+<g transform="translate(3000, 14312.5) rotate(-90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;stroke-width:1.265"
+     x="31.045805"
+     y="10.699672"
+     transform="rotate(90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="31.045805"
+       y="10.699672">P7</tspan></text></g>
+<g transform="translate(2250, 14187.5) rotate(-90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;stroke-width:1.265"
+     x="31.045805"
+     y="10.699672"
+     transform="rotate(90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="31.045805"
+       y="10.699672">P8</tspan></text></g>
+<g transform="translate(3625, 13437.5) rotate(90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;stroke-width:1.265"
+     x="-31.931458"
+     y="73.558395"
+     transform="rotate(-90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-31.931458"
+       y="73.558395">Q3</tspan></text></g>
+<g transform="translate(2625, 13312.5) rotate(90) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;fill-opacity:1;stroke-width:1.265"
+       x="-191.61284"
+       y="75.307213"
+       transform="rotate(-120.21488)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-191.61284"
+         y="75.307213">M10</tspan></text></g>
+<g transform="translate(3000, 12687.5) rotate(180) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M11</tspan></text></g>
+<g transform="translate(2375, 12437.5) rotate(0) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M12</tspan></text></g>
+<g transform="translate(3000, 11562.5) rotate(95.71059313749964) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;fill-opacity:1;stroke-width:1.265"
+       x="-191.61284"
+       y="75.307213"
+       transform="rotate(-120.21488)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-191.61284"
+         y="75.307213">M13</tspan></text></g>
+<g transform="translate(2500, 10937.5) rotate(63.434948822921996) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;fill-opacity:1;stroke-width:1.265"
+       x="-191.61284"
+       y="75.307213"
+       transform="rotate(-120.21488)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-191.61284"
+         y="75.307213">M14</tspan></text></g>
+<g transform="translate(3375, 10812.5) rotate(0) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;stroke-width:1.265"
+     x="34.44677"
+     y="79.624069"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="34.44677"
+       y="79.624069">P9</tspan></text></g>
+<g transform="translate(3750, 10437.5) rotate(180) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;stroke-width:1.265"
+     x="-39.489708"
+     y="10.482526"
+     transform="scale(-1)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-39.489708"
+       y="10.482526">P10</tspan></text></g>
+<g transform="translate(2875, 10437.5) rotate(33.6900675259798) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;fill-opacity:1;stroke-width:1.265"
+       x="-41.167103"
+       y="267.0723"
+       transform="rotate(-41.425638)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-41.167103"
+         y="267.0723">M15</tspan></text></g>
+<g transform="translate(2750, 10187.5) rotate(-153.43494882292202) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M16</tspan></text></g>
+<g transform="translate(3250, 9937.5) rotate(90) scale(1.1318879383078384) translate(-42.072021, -32.926838)"><text dominant-baseline="hanging"
+     style="font-weight:500;font-size:35.339187428571435px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;stroke-width:1.265"
+     x="-31.931458"
+     y="73.558395"
+     transform="rotate(-90)"><tspan
+       style="text-align:center;text-anchor:middle;stroke-width:1.265"
+       x="-31.931458"
+       y="73.558395">P11</tspan></text></g>
+<g transform="translate(2125, 9687.5) rotate(0) scale(0.994965474698028) translate(-119.3675, -259.22345)"><text dominant-baseline="hanging"
+       style="font-weight:500;font-size:40.2024px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;stroke-width:1.265"
+       x="-1.3514959"
+       y="262.59595"><tspan
+         style="stroke-width:1.265"
+         x="-1.3514959"
+         y="262.59595">PAD-U15</tspan></text></g>
+<g transform="translate(3250, 8812.5) rotate(-135) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M19</tspan></text></g>
+<g transform="translate(3750, 8187.5) rotate(180) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;fill-opacity:1;stroke-width:1.265"
+       x="2.5243032"
+       y="-102.25544"
+       transform="rotate(144.76201)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="2.5243027"
+         y="-102.25544">M20</tspan></text></g>
+<g transform="translate(3000, 7812.5) rotate(48.012787504183365) scale(1.7448353537325574) translate(-100.6462320977038, -132.07123726755938)"><text dominant-baseline="hanging"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:22.924799130434785px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;fill-opacity:1;stroke-width:1.265"
+       x="-191.61284"
+       y="75.307213"
+       transform="rotate(-120.21488)"><tspan
+         style="font-size:22.924799130434785px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-191.61284"
+         y="75.307213">M18</tspan></text></g>
+<g transform="translate(3250, 6437.5) rotate(0) scale(0.994965474698028) translate(-119.3675, -259.22345)"><text dominant-baseline="hanging"
+       style="font-weight:500;font-size:40.2024px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#FF6600;stroke-width:1.265"
+       x="-1.3514959"
+       y="262.59595"><tspan
+         style="stroke-width:1.265"
+         x="-1.3514959"
+         y="262.59595">PAD</tspan></text></g>
 </g>
 </svg>

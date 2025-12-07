@@ -2,12 +2,32 @@
  * SVG Generator for speed climbing wall visualization
  */
 
-import type { Config, Hold, HoldSvgData, Dimensions, ReferenceRoute } from './types.js';
-import { GRID, PANEL, PANELS_PER_LANE, COLUMNS, ROWS, PANEL_NUMBERS, PANEL_SIDES, getInsertPosition, getWallDimensions, formatPanelId } from './plate-grid.js';
+import type { Config, Dimensions, ArrowDirection } from './types.js';
+import { GRID, PANEL, PANELS_PER_LANE, COLUMNS, ROWS, PANEL_NUMBERS, getInsertPosition, getWallDimensions } from './plate-grid.js';
 import { calculateHoldRotation } from './rotation.js';
-import { loadHoldSvg, getHoldDimensions } from './hold-svg-parser.js';
+import { loadHoldSvg, getHoldDimensions, getHoldDefaultOrientation } from './hold-svg-parser.js';
 import { getReferenceRoute } from './reference-routes/index.js';
 import type { ComposedHold } from './route-composer.js';
+
+/**
+ * Determine the visual arrow direction after rotation
+ * @param holdType - Type of hold (to get default orientation)
+ * @param rotation - Rotation angle in wall coordinates (from calculateHoldRotation)
+ * @returns Arrow direction (up, down, left, right)
+ */
+function getArrowDirection(holdType: string, rotation: number): ArrowDirection {
+  const defaultOrientation = getHoldDefaultOrientation(holdType);
+
+  // Final arrow angle = defaultOrientation + rotation (normalized to 0-360)
+  // rotation is the angle calculated to point from position to orientation target
+  const finalAngle = ((defaultOrientation + rotation) % 360 + 360) % 360;
+
+  // Convert angle to direction (0=right, 90=up, 180=left, 270=down)
+  if (finalAngle >= 315 || finalAngle < 45) return 'right';
+  if (finalAngle >= 45 && finalAngle < 135) return 'up';
+  if (finalAngle >= 135 && finalAngle < 225) return 'left';
+  return 'down';
+}
 
 /** SVG generation options */
 export interface SvgOptions {
@@ -250,14 +270,66 @@ async function generateHold(
 
   const holdSvg = `<g transform="${transform}">${elements.join('\n')}</g>`;
 
-  // Generate label below the hold (use label if defined, otherwise composedHoldNumber)
+  // Generate label (use label if defined, otherwise composedHoldNumber)
   const labelText = hold.label ?? String(hold.composedHoldNumber);
-  // Calculate distance from insert center to bottom of hold in scaled coordinates
-  // In SVG coordinates: Y increases downward, so bottom = viewBox.height
-  // Distance from insert to bottom = viewBox.height - insertCenter.y
-  const distanceToBottom = (svgData.viewBox.height - svgData.insertCenter.y) * scale;
-  const labelOffsetY = Math.max(distanceToBottom, 0) + HOLD_NUMBER_FONT_SIZE;
-  const labelSvg = `<text x="${svgX}" y="${svgY + labelOffsetY}" font-size="${HOLD_NUMBER_FONT_SIZE}" fill="${holdColor}" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">${labelText}</text>`;
+
+  // Determine arrow direction and find corresponding label zone
+  const arrowDirection = getArrowDirection(hold.type, rotation);
+  const labelZone = svgData.labelZones[arrowDirection] ?? svgData.labelZones['default'];
+
+  let labelSvg = '';
+
+  if (labelZone) {
+    // Take the label element from the SVG and modify it
+    let labelElement = labelZone.element;
+
+    // Compensate for the group scale to get consistent font size
+    const adjustedFontSize = HOLD_NUMBER_FONT_SIZE / scale;
+
+    // Replace the text content (inside <tspan> or directly in <text>)
+    // First try to replace inside <tspan>
+    if (labelElement.includes('<tspan')) {
+      labelElement = labelElement.replace(/>([^<]*)<\/tspan>/g, `>${labelText}</tspan>`);
+    } else {
+      // Replace text directly inside <text>
+      labelElement = labelElement.replace(/>([^<]*)<\/text>/, `>${labelText}</text>`);
+    }
+
+    // Replace fill color (in style attribute or as attribute)
+    labelElement = labelElement.replace(/fill\s*:\s*[^;}"']+/gi, `fill:${holdColor}`);
+    labelElement = labelElement.replace(/\bfill\s*=\s*["'][^"']*["']/gi, `fill="${holdColor}"`);
+    // If no fill found, add it to the opening tag
+    if (!labelElement.includes('fill')) {
+      labelElement = labelElement.replace(/<text/, `<text fill="${holdColor}"`);
+    }
+
+    // Replace font-size (in style attribute or as attribute)
+    // Use adjusted size to compensate for group scale
+    labelElement = labelElement.replace(/font-size\s*:\s*[^;}"'px]+(?:px)?/gi, `font-size:${adjustedFontSize}px`);
+    labelElement = labelElement.replace(/\bfont-size\s*=\s*["'][^"']*["']/gi, `font-size="${adjustedFontSize}px"`);
+
+    // Also update tspan font-size if present
+    if (labelElement.includes('<tspan')) {
+      labelElement = labelElement.replace(
+        /(<tspan[^>]*style\s*=\s*["'][^"']*)font-size\s*:\s*[^;}"'px]+(?:px)?/gi,
+        `$1font-size:${adjustedFontSize}px`
+      );
+    }
+
+    // Add dominant-baseline="hanging" for top alignment
+    if (!labelElement.includes('dominant-baseline')) {
+      labelElement = labelElement.replace(/<text/, '<text dominant-baseline="hanging"');
+    }
+
+    // Include the label in the same transform group as the hold
+    labelSvg = `<g transform="${transform}">${labelElement}</g>`;
+  } else {
+    // Fallback: place label below the hold with a simple offset
+    const fallbackOffset = Math.max(svgData.viewBox.width, svgData.viewBox.height) * scale * 0.6;
+    const labelX = svgX;
+    const labelY = svgY + fallbackOffset;
+    labelSvg = `<text x="${labelX}" y="${labelY}" font-size="${HOLD_NUMBER_FONT_SIZE}" fill="${holdColor}" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">${labelText}</text>`;
+  }
 
   return { holdSvg, labelSvg };
 }
