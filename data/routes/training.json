@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/route.schema.json",
   "name": "training",
   "description": "Training route - IFSC + U15 combined (deduplicated by position)",
   "color": "#FF0000",

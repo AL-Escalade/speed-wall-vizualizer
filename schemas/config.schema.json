@@ -1,0 +1,133 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/AL-Escalade/speed-wall-vizualizer/schemas/config.schema.json",
+  "title": "Speed Wall Configuration",
+  "description": "Configuration for generating a speed climbing wall SVG",
+  "type": "object",
+  "required": ["wall", "routes"],
+  "properties": {
+    "wall": {
+      "type": "object",
+      "description": "Wall dimensions",
+      "required": ["lanes", "panelsHeight"],
+      "properties": {
+        "lanes": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 2,
+          "description": "Number of climbing lanes"
+        },
+        "panelsHeight": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 10,
+          "description": "Number of panels in height (1-10)"
+        }
+      }
+    },
+    "routes": {
+      "type": "array",
+      "description": "List of routes to display on the wall",
+      "items": {
+        "$ref": "#/definitions/generatedRoute"
+      }
+    }
+  },
+  "definitions": {
+    "column": {
+      "type": "string",
+      "enum": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L"],
+      "description": "Column letter (A-L, excluding J)"
+    },
+    "row": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "Row number within a panel (1-10, 1 = bottom)"
+    },
+    "anchorPosition": {
+      "type": "object",
+      "description": "Anchor position for placing a route segment",
+      "required": ["panel", "column", "row"],
+      "properties": {
+        "panel": {
+          "type": "string",
+          "pattern": "^(SN|DX)[1-9]|10$",
+          "description": "Panel identifier (e.g., SN1, DX5)"
+        },
+        "column": {
+          "$ref": "#/definitions/column"
+        },
+        "row": {
+          "$ref": "#/definitions/row"
+        }
+      }
+    },
+    "routeSegment": {
+      "type": "object",
+      "description": "A segment of a route taken from a reference route",
+      "required": ["source"],
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "Source reference route name (e.g., ifsc, u11-u13, training)"
+        },
+        "fromHold": {
+          "oneOf": [
+            { "type": "integer", "minimum": 1 },
+            { "type": "string" }
+          ],
+          "description": "First hold: number (1-based) or label. Default: 1"
+        },
+        "toHold": {
+          "oneOf": [
+            { "type": "integer", "minimum": 1 },
+            { "type": "string" }
+          ],
+          "description": "Last hold: number (1-based) or label. Default: last hold"
+        },
+        "excludeHolds": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "integer", "minimum": 1 },
+              { "type": "string" }
+            ]
+          },
+          "description": "Holds to exclude: numbers (1-based) or labels (e.g., M1, P2)"
+        },
+        "anchor": {
+          "$ref": "#/definitions/anchorPosition",
+          "description": "Where to place the first hold. If specified, all holds are offset accordingly"
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$",
+          "description": "Override color for this segment (default: use route color)"
+        },
+        "laneOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Horizontal offset in lanes (0 = leftmost lane)"
+        }
+      }
+    },
+    "generatedRoute": {
+      "type": "object",
+      "description": "A generated route composed of segments",
+      "required": ["segments"],
+      "properties": {
+        "segments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/routeSegment"
+          },
+          "minItems": 1,
+          "description": "Segments composing the route"
+        }
+      }
+    }
+  }
+}

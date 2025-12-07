@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/route.schema.json",
   "name": "u15",
   "description": "U15 Speed Route (FFME) - V2 06/10/2025",
   "holdTypes": {

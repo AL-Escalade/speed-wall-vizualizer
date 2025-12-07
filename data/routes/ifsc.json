@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/route.schema.json",
   "name": "ifsc",
   "description": "IFSC Official Speed Route",
   "holdTypes": {

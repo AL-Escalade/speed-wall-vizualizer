@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/AL-Escalade/speed-wall-vizualizer/schemas/route.schema.json",
+  "title": "Reference Route",
+  "description": "Definition of a reference route for speed climbing",
+  "type": "object",
+  "required": ["name", "color", "holds"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Unique identifier for the route"
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of the route"
+    },
+    "holdTypes": {
+      "type": "object",
+      "description": "Override dimensions for hold types (optional)",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["width", "height"],
+        "properties": {
+          "width": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Width in mm"
+          },
+          "height": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Height in mm"
+          }
+        }
+      }
+    },
+    "holdScales": {
+      "type": "object",
+      "description": "Scale factors per hold type (e.g., { \"BIG\": 0.8 })",
+      "additionalProperties": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 2
+      }
+    },
+    "color": {
+      "type": "string",
+      "pattern": "^#[0-9A-Fa-f]{6}$",
+      "description": "Default color for holds (hex format, e.g., #FF0000)"
+    },
+    "holds": {
+      "type": "array",
+      "description": "List of holds in compact format",
+      "items": {
+        "type": "string",
+        "pattern": "^(SN|DX)(10|[1-9]) (BIG|FOOT|STOP|PAD) [A-IK-L](10|[1-9]) ((SN|DX)(10|[1-9]):)?[A-IK-L](10|[1-9])( [0-9.]+)?( @[A-Za-z0-9-]+)?$",
+        "description": "Hold definition: PANEL TYPE POSITION ORIENTATION [SCALE] [@LABEL]"
+      }
+    }
+  }
+}

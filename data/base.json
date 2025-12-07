@@ -1,4 +1,5 @@
 {
+  "$schema": "../schemas/config.schema.json",
   "wall": {
     "lanes": 2,
     "panelsHeight": 10
