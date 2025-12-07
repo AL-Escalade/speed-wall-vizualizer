@@ -252,7 +252,11 @@ async function generateHold(
 
   // Generate label below the hold (use label if defined, otherwise composedHoldNumber)
   const labelText = hold.label ?? String(hold.composedHoldNumber);
-  const labelOffsetY = holdDimensions.height / 2 + HOLD_NUMBER_FONT_SIZE;
+  // Calculate distance from insert center to bottom of hold in scaled coordinates
+  // In SVG coordinates: Y increases downward, so bottom = viewBox.height
+  // Distance from insert to bottom = viewBox.height - insertCenter.y
+  const distanceToBottom = (svgData.viewBox.height - svgData.insertCenter.y) * scale;
+  const labelOffsetY = Math.max(distanceToBottom, 0) + HOLD_NUMBER_FONT_SIZE;
   const labelSvg = `<text x="${svgX}" y="${svgY + labelOffsetY}" font-size="${HOLD_NUMBER_FONT_SIZE}" fill="${holdColor}" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">${labelText}</text>`;
 
   return { holdSvg, labelSvg };
