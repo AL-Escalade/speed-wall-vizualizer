@@ -9,6 +9,7 @@
     "generate:u11-training": "tsx src/cli.ts generate -c data/u11-u13-training.json -o output/u11-u13-training.svg",
     "generate:u11-comp": "tsx src/cli.ts generate -c data/u11-u13-comp.json -o output/u11-u13-comp.svg",
     "generate:u15": "tsx src/cli.ts generate -c data/u15.json -o output/u15.svg",
+    "generate:project": "tsx src/cli.ts generate -c data/project.json -o output/project.svg",
     "build": "tsc",
     "test": "vitest"
   },
