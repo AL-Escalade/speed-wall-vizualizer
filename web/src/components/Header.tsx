@@ -3,7 +3,8 @@
  */
 
 import { useRef, useCallback, useEffect, useState } from 'react';
-import { Download, Upload, FileImage } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Download, Upload, FileImage, Printer } from 'lucide-react';
 import { useConfigStore } from '@/store';
 import { validateConfiguration } from '@/utils/configValidation';
 import { ImportErrorModal } from './ImportErrorModal';
@@ -14,11 +15,17 @@ interface ImportError {
 }
 
 export function Header() {
+  const navigate = useNavigate();
   const getCurrentConfig = useConfigStore((s) => s.getCurrentConfig);
   const importConfiguration = useConfigStore((s) => s.importConfiguration);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isMountedRef = useRef(true);
   const [importError, setImportError] = useState<ImportError | null>(null);
+
+  // Navigate to print page
+  const handlePrint = useCallback(() => {
+    navigate('/print');
+  }, [navigate]);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -146,11 +153,11 @@ export function Header() {
         <div className="flex-none flex gap-4">
           <button className="btn btn-sm btn-outline gap-2" onClick={handleExportJson}>
             <Download size={16} />
-            Télécharger la configuration
+            Exporter
           </button>
           <button className="btn btn-sm btn-outline gap-2" onClick={handleImportClick}>
             <Upload size={16} />
-            Importer la configuration
+            Importer
           </button>
           <input
             ref={fileInputRef}
@@ -159,9 +166,13 @@ export function Header() {
             className="hidden"
             onChange={handleFileChange}
           />
-          <button className="btn btn-sm btn-primary gap-2" onClick={handleExportSvg}>
+          <button className="btn btn-sm btn-outline gap-2" onClick={handleExportSvg}>
             <FileImage size={16} />
-            Exporter SVG
+            Télécharger le SVG
+          </button>
+          <button className="btn btn-sm btn-primary gap-2" onClick={handlePrint}>
+            <Printer size={16} />
+            Imprimer
           </button>
         </div>
       </header>

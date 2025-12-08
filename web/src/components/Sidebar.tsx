@@ -5,7 +5,7 @@
 import { useState, memo, useCallback } from 'react';
 import { Plus, Trash2, Pencil, Check, X } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
-import { useConfigStore, useRoutesStore, useSelectionStore } from '@/store';
+import { useConfigStore, useRoutesStore } from '@/store';
 import type { Section } from '@/store';
 import {
   SectionHeader,
@@ -217,22 +217,9 @@ const SectionItem = memo(function SectionItem({
       getRouteColor: s.getRouteColor,
     }))
   );
-  const { mode, sectionId, startSelectFrom, startSelectTo, clearSelection } = useSelectionStore(
-    useShallow((s) => ({
-      mode: s.mode,
-      sectionId: s.sectionId,
-      startSelectFrom: s.startSelectFrom,
-      startSelectTo: s.startSelectTo,
-      clearSelection: s.clearSelection,
-    }))
-  );
-
   const routeNames = getRouteNames();
   const holdLabels = getHoldLabels(section.source);
   const defaultAnchor = getFirstHoldPosition(section.source) ?? DEFAULT_ANCHOR;
-
-  const isSelectingFrom = mode === 'from' && sectionId === section.id;
-  const isSelectingTo = mode === 'to' && sectionId === section.id;
 
   // Handlers
   const handleToggleClick = useCallback(() => {
@@ -275,14 +262,6 @@ const SectionItem = memo(function SectionItem({
   const handleToChange = useCallback((value: string) => {
     updateSection(section.id, { toHold: value });
   }, [section.id, updateSection]);
-
-  const handleToggleSelectFrom = useCallback(() => {
-    isSelectingFrom ? clearSelection() : startSelectFrom(section.id);
-  }, [isSelectingFrom, clearSelection, startSelectFrom, section.id]);
-
-  const handleToggleSelectTo = useCallback(() => {
-    isSelectingTo ? clearSelection() : startSelectTo(section.id);
-  }, [isSelectingTo, clearSelection, startSelectTo, section.id]);
 
   const handleColorChange = useCallback((color: string) => {
     updateSection(section.id, { color });
@@ -327,12 +306,8 @@ const SectionItem = memo(function SectionItem({
             fromHold={section.fromHold}
             toHold={section.toHold}
             holdLabels={holdLabels}
-            isSelectingFrom={isSelectingFrom}
-            isSelectingTo={isSelectingTo}
             onFromChange={handleFromChange}
             onToChange={handleToChange}
-            onToggleSelectFrom={handleToggleSelectFrom}
-            onToggleSelectTo={handleToggleSelectTo}
           />
 
           <ColorPicker
