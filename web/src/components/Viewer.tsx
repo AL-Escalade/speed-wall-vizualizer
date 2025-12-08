@@ -5,7 +5,7 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { generateSvg, composeAllRoutes, type Config } from '@voie-vitesse/core';
 import { useShallow } from 'zustand/react/shallow';
-import { useConfigStore, useRoutesStore, useViewerStore, useSelectionStore } from '@/store';
+import { useConfigStore, useRoutesStore, useViewerStore } from '@/store';
 import { sectionToSegment, normalizeSvgForWeb } from '@/utils/sectionMapper';
 import { Birdview } from './Birdview';
 import { ZoomIn, ZoomOut, Home } from 'lucide-react';
@@ -14,7 +14,6 @@ export function Viewer() {
   const config = useConfigStore((s) =>
     s.configurations.find((c) => c.id === s.activeConfigId) ?? null
   );
-  const updateSection = useConfigStore((s) => s.updateSection);
   const routes = useRoutesStore((s) => s.routes);
   const { zoom, panX, panY, zoomIn, zoomOut, pan, zoomAtPoint, resetToFit, setContainerDimensions: setStoreDimensions } = useViewerStore(
     useShallow((s) => ({
@@ -29,15 +28,9 @@ export function Viewer() {
       setContainerDimensions: s.setContainerDimensions,
     }))
   );
-  const { mode: selectionMode, sectionId: selectionSectionId, clearSelection } = useSelectionStore(
-    useShallow((s) => ({
-      mode: s.mode,
-      sectionId: s.sectionId,
-      clearSelection: s.clearSelection,
-    }))
-  );
 
   const [svgContent, setSvgContent] = useState<string | null>(null);
+  const [svgDataUrl, setSvgDataUrl] = useState<string | null>(null);
   const [svgDimensions, setSvgDimensions] = useState({ width: 0, height: 0 });
   const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
   const [isGenerating, setIsGenerating] = useState(false);
@@ -50,6 +43,8 @@ export function Viewer() {
   const hasInitialFit = useRef(false);
   const rafPanId = useRef<number | null>(null);
   const pendingPan = useRef<{ deltaX: number; deltaY: number } | null>(null);
+  const rafZoomId = useRef<number | null>(null);
+  const pendingZoom = useRef<{ delta: number; pointX: number; pointY: number } | null>(null);
 
   // Generate SVG when config changes
   useEffect(() => {
@@ -106,14 +101,28 @@ export function Viewer() {
     };
   }, [config, routes]);
 
+  // Convert SVG to data URL for optimized rendering
+  useEffect(() => {
+    if (!svgContent) {
+      setSvgDataUrl(null);
+      return;
+    }
+
+    const encoded = encodeURIComponent(svgContent)
+      .replace(/'/g, '%27')
+      .replace(/"/g, '%22');
+    setSvgDataUrl(`data:image/svg+xml,${encoded}`);
+  }, [svgContent]);
+
   // Track dimensions when SVG is generated - only fit to view on first load
   useEffect(() => {
-    if (svgContent && containerRef.current && svgRef.current) {
+    if (svgContent && containerRef.current) {
       const container = containerRef.current;
-      const svg = svgRef.current.querySelector('svg');
-      if (svg) {
-        const viewBox = svg.getAttribute('viewBox')?.split(' ');
-        if (viewBox && viewBox.length === 4) {
+      // Parse viewBox from SVG string
+      const viewBoxMatch = svgContent.match(/viewBox=["']([^"']+)["']/);
+      if (viewBoxMatch) {
+        const viewBox = viewBoxMatch[1].split(/\s+/);
+        if (viewBox.length === 4) {
           const contentWidth = parseFloat(viewBox[2]);
           const contentHeight = parseFloat(viewBox[3]);
           setSvgDimensions({ width: contentWidth, height: contentHeight });
@@ -158,28 +167,19 @@ export function Viewer() {
     };
   }, [setStoreDimensions]);
 
-  // Handle keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && selectionMode) {
-        clearSelection();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectionMode, clearSelection]);
-
   // Cleanup RAF on unmount
   useEffect(() => {
     return () => {
       if (rafPanId.current) {
         cancelAnimationFrame(rafPanId.current);
       }
+      if (rafZoomId.current) {
+        cancelAnimationFrame(rafZoomId.current);
+      }
     };
   }, []);
 
-  // Handle wheel zoom toward pointer
+  // Handle wheel zoom toward pointer with RAF throttling
   const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
     e.preventDefault();
     const delta = e.deltaY > 0 ? -0.1 : 0.1;
@@ -194,7 +194,26 @@ export function Viewer() {
     const pointX = e.clientX - rect.left - centerX;
     const pointY = e.clientY - rect.top - centerY;
 
-    zoomAtPoint(delta, pointX, pointY);
+    // Accumulate zoom deltas for RAF batch
+    if (pendingZoom.current) {
+      pendingZoom.current.delta += delta;
+      // Update point to latest mouse position
+      pendingZoom.current.pointX = pointX;
+      pendingZoom.current.pointY = pointY;
+    } else {
+      pendingZoom.current = { delta, pointX, pointY };
+    }
+
+    // Schedule RAF if not already scheduled
+    if (!rafZoomId.current) {
+      rafZoomId.current = requestAnimationFrame(() => {
+        if (pendingZoom.current) {
+          zoomAtPoint(pendingZoom.current.delta, pendingZoom.current.pointX, pendingZoom.current.pointY);
+          pendingZoom.current = null;
+        }
+        rafZoomId.current = null;
+      });
+    }
   }, [zoomAtPoint]);
 
   // Handle mouse down for pan
@@ -260,56 +279,18 @@ export function Viewer() {
     }
   }, [svgDimensions.width, containerDimensions.width, resetToFit]);
 
-  // Handle click on SVG for hold selection
-  const handleSvgClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!selectionMode || !selectionSectionId) return;
-
-    // Find the clicked hold element
-    const target = e.target as Element;
-    const holdGroup = target.closest('g.hold');
-    if (!holdGroup) return;
-
-    // Get hold data from attributes
-    const holdNumber = holdGroup.getAttribute('data-hold');
-    if (!holdNumber) return;
-
-    const holdNum = parseInt(holdNumber, 10);
-
-    // Update the section
-    if (selectionMode === 'from') {
-      updateSection(selectionSectionId, { fromHold: holdNum });
-    } else if (selectionMode === 'to') {
-      updateSection(selectionSectionId, { toHold: holdNum });
-    }
-
-    clearSelection();
-  }, [selectionMode, selectionSectionId, updateSection, clearSelection]);
-
   // Compute transform style with GPU acceleration hints
   const transformStyle = useMemo(() => ({
     transform: `translate3d(${panX}px, ${panY}px, 0) scale(${zoom})`,
     transformOrigin: 'center center',
     willChange: isPanning ? 'transform' : 'auto',
+    contain: 'strict',
   }), [zoom, panX, panY, isPanning]);
 
   return (
     <main className="flex-1 bg-base-300 relative overflow-hidden">
-      {/* Selection mode indicator */}
-      {selectionMode && (
-        <div className="absolute top-0 left-0 right-0 z-20 bg-primary text-primary-content py-2 px-4 flex items-center justify-between">
-          <span>
-            {selectionMode === 'from'
-              ? 'Cliquez sur une prise pour définir le début'
-              : 'Cliquez sur une prise pour définir la fin'}
-          </span>
-          <button className="btn btn-sm btn-ghost" onClick={clearSelection}>
-            Annuler
-          </button>
-        </div>
-      )}
-
       {/* Zoom controls */}
-      <div className={`absolute right-4 z-10 flex flex-col gap-2 ${selectionMode ? 'top-16' : 'top-4'}`}>
+      <div className="absolute right-4 top-4 z-10 flex flex-col gap-2">
         <button
           className="btn btn-sm btn-square btn-neutral"
           title="Zoom +"
@@ -340,6 +321,7 @@ export function Viewer() {
       <div
         ref={containerRef}
         className={`absolute inset-0 overflow-hidden ${isPanning ? 'cursor-grabbing' : 'cursor-grab'}`}
+        style={{ contain: 'strict' }}
         onWheel={handleWheel}
         onMouseDown={handleMouseDown}
       >
@@ -375,14 +357,19 @@ export function Viewer() {
           </div>
         )}
 
-        {svgContent && !error && (
+        {svgDataUrl && !error && (
           <div
             ref={svgRef}
-            className={`absolute inset-0 flex items-center justify-center ${selectionMode ? 'selection-mode' : ''}`}
+            className="absolute inset-0 flex items-center justify-center"
             style={transformStyle}
-            dangerouslySetInnerHTML={{ __html: svgContent }}
-            onClick={handleSvgClick}
-          />
+          >
+            <img
+              src={svgDataUrl}
+              alt="Climbing wall"
+              style={{ maxWidth: '100%', maxHeight: '100%' }}
+              draggable={false}
+            />
+          </div>
         )}
       </div>
 
