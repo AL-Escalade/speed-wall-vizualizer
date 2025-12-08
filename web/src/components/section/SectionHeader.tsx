@@ -50,14 +50,14 @@ export const SectionHeader = memo(function SectionHeader({
 
   return (
     <div
-      className="flex items-center gap-2 p-2 cursor-pointer hover:bg-base-300 rounded-t-2xl"
+      className="flex items-center gap-2 p-3 cursor-pointer hover:bg-base-300 rounded-t-2xl"
       onClick={onToggle}
     >
-      <button className="btn btn-xs btn-ghost btn-square">
-        {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+      <button className="btn btn-sm btn-ghost btn-square">
+        {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
       </button>
       <div
-        className="w-4 h-4 rounded-full border border-base-300 flex-shrink-0"
+        className="w-5 h-5 rounded-full border border-base-300 flex-shrink-0"
         style={{ backgroundColor: section.color }}
       />
       {isEditing ? (
@@ -66,38 +66,38 @@ export const SectionHeader = memo(function SectionHeader({
             type="text"
             value={editName}
             onChange={(e) => setEditName(e.target.value)}
-            className="input input-bordered input-xs flex-1"
+            className="input input-bordered input-sm flex-1"
             autoFocus
             onKeyDown={(e) => {
               if (e.key === 'Enter') handleSaveEdit();
               if (e.key === 'Escape') handleCancelEdit();
             }}
           />
-          <button className="btn btn-xs btn-ghost btn-square text-success" onClick={handleSaveEdit}>
-            <Check size={12} />
+          <button className="btn btn-sm btn-ghost btn-square text-success" onClick={handleSaveEdit}>
+            <Check size={16} />
           </button>
-          <button className="btn btn-xs btn-ghost btn-square text-error" onClick={handleCancelEdit}>
-            <X size={12} />
+          <button className="btn btn-sm btn-ghost btn-square text-error" onClick={handleCancelEdit}>
+            <X size={16} />
           </button>
         </div>
       ) : (
         <>
           <span className="font-medium text-sm flex-1">{section.name}</span>
           <button
-            className="btn btn-xs btn-ghost btn-square"
+            className="btn btn-sm btn-ghost btn-square"
             onClick={handleStartEdit}
             title="Renommer"
           >
-            <Pencil size={12} />
+            <Pencil size={14} />
           </button>
         </>
       )}
       <button
-        className="btn btn-xs btn-ghost btn-square"
+        className="btn btn-sm btn-ghost btn-square"
         onClick={handleRemoveClick}
         title="Supprimer"
       >
-        <Trash2 size={14} />
+        <Trash2 size={16} />
       </button>
     </div>
   );

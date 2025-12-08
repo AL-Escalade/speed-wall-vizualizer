@@ -34,17 +34,17 @@ export const AnchorConfigurator = memo(function AnchorConfigurator({
   return (
     <>
       <div className="form-control">
-        <label className="label py-0.5">
-          <span className="label-text text-xs">Position de la première prise</span>
+        <label className="label py-1">
+          <span className="label-text text-sm">Position de la première prise</span>
         </label>
       </div>
       <div className="grid grid-cols-3 gap-2">
         <div className="form-control">
-          <label className="label py-0.5">
-            <span className="label-text text-xs">Côté</span>
+          <label className="label py-1">
+            <span className="label-text text-sm">Côté</span>
           </label>
           <select
-            className="select select-bordered select-xs w-full"
+            className="select select-bordered select-sm w-full"
             value={currentAnchor.side}
             onChange={(e) => updateField('side', e.target.value as PanelSide)}
           >
@@ -53,11 +53,11 @@ export const AnchorConfigurator = memo(function AnchorConfigurator({
           </select>
         </div>
         <div className="form-control">
-          <label className="label py-0.5">
-            <span className="label-text text-xs">Colonne</span>
+          <label className="label py-1">
+            <span className="label-text text-sm">Colonne</span>
           </label>
           <select
-            className="select select-bordered select-xs w-full"
+            className="select select-bordered select-sm w-full"
             value={currentAnchor.column}
             onChange={(e) => updateField('column', e.target.value)}
           >
@@ -69,11 +69,11 @@ export const AnchorConfigurator = memo(function AnchorConfigurator({
           </select>
         </div>
         <div className="form-control">
-          <label className="label py-0.5">
-            <span className="label-text text-xs">Ligne</span>
+          <label className="label py-1">
+            <span className="label-text text-sm">Ligne</span>
           </label>
           <select
-            className="select select-bordered select-xs w-full"
+            className="select select-bordered select-sm w-full"
             value={currentAnchor.row}
             onChange={(e) => updateField('row', parseInt(e.target.value))}
           >
@@ -86,7 +86,7 @@ export const AnchorConfigurator = memo(function AnchorConfigurator({
         </div>
       </div>
       <button
-        className="btn btn-xs btn-ghost mt-1"
+        className="btn btn-sm btn-ghost mt-2"
         onClick={onReset}
         title="Réinitialiser à la position d'origine"
       >

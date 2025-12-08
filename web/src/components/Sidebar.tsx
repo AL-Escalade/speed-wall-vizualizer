@@ -3,9 +3,9 @@
  */
 
 import { useState, memo, useCallback } from 'react';
-import { Plus, Trash2, Pencil, Check, X } from 'lucide-react';
+import { Plus, Trash2, Pencil, Check, X, ChevronDown } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
-import { useConfigStore, useRoutesStore } from '@/store';
+import { useConfigStore, useRoutesStore, DEFAULT_DISPLAY_OPTIONS } from '@/store';
 import type { Section } from '@/store';
 import {
   SectionHeader,
@@ -27,7 +27,7 @@ import {
 
 /** Configuration selector component */
 function ConfigSelector() {
-  const { configurations, activeConfigId, setActiveConfiguration, createConfiguration, deleteConfiguration, renameConfiguration, setShowArrow } =
+  const { configurations, activeConfigId, setActiveConfiguration, createConfiguration, deleteConfiguration, renameConfiguration } =
     useConfigStore(
       useShallow((s) => ({
         configurations: s.configurations,
@@ -36,7 +36,6 @@ function ConfigSelector() {
         createConfiguration: s.createConfiguration,
         deleteConfiguration: s.deleteConfiguration,
         renameConfiguration: s.renameConfiguration,
-        setShowArrow: s.setShowArrow,
       }))
     );
   const [isEditing, setIsEditing] = useState(false);
@@ -126,19 +125,6 @@ function ConfigSelector() {
           >
             <Trash2 size={16} />
           </button>
-        </div>
-      )}
-      {activeConfig && (
-        <div className="form-control mt-3">
-          <label className="label cursor-pointer justify-start gap-3">
-            <input
-              type="checkbox"
-              className="checkbox checkbox-sm"
-              checked={activeConfig.showArrow ?? false}
-              onChange={(e) => setShowArrow(e.target.checked)}
-            />
-            <span className="label-text text-sm">Afficher les flèches d'orientation</span>
-          </label>
         </div>
       )}
     </div>
@@ -403,12 +389,105 @@ function SectionList() {
   );
 }
 
+/** Display options component */
+function DisplayOptions() {
+  const config = useConfigStore((s) =>
+    s.configurations.find((c) => c.id === s.activeConfigId) ?? null
+  );
+  const updateDisplayOptions = useConfigStore((s) => s.updateDisplayOptions);
+  const setShowArrow = useConfigStore((s) => s.setShowArrow);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  if (!config) return null;
+
+  const displayOptions = config.displayOptions ?? {};
+
+  return (
+    <div className="border-t border-base-300">
+      <button
+        type="button"
+        className="w-full p-4 flex items-center justify-between hover:bg-base-200 transition-colors"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <h3 className="font-semibold">Options</h3>
+        <ChevronDown
+          size={16}
+          className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+        />
+      </button>
+      {isExpanded && (
+        <div className="px-4 pb-4 space-y-3">
+          <div className="form-control">
+            <label className="label cursor-pointer justify-start gap-3 py-1">
+              <input
+                type="checkbox"
+                className="checkbox checkbox-sm"
+                checked={config.showArrow ?? false}
+                onChange={(e) => setShowArrow(e.target.checked)}
+              />
+              <span className="label-text text-sm">Afficher les flèches d'orientation</span>
+            </label>
+          </div>
+          <div className="form-control">
+            <label className="label py-1">
+              <span className="label-text text-sm">Couleur de la grille</span>
+            </label>
+            <input
+              type="color"
+              className="w-full h-10 rounded-lg cursor-pointer border border-base-300"
+              value={displayOptions.gridColor ?? DEFAULT_DISPLAY_OPTIONS.gridColor}
+              onChange={(e) => updateDisplayOptions({ gridColor: e.target.value })}
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label py-1">
+              <span className="label-text text-sm">Taille des coordonnées</span>
+            </label>
+            <input
+              type="range"
+              min="20"
+              max="80"
+              step="5"
+              className="range range-sm"
+              value={displayOptions.labelFontSize ?? DEFAULT_DISPLAY_OPTIONS.labelFontSize}
+              onChange={(e) => updateDisplayOptions({ labelFontSize: parseInt(e.target.value) })}
+            />
+            <div className="text-xs text-base-content/50 text-right mt-1">
+              {displayOptions.labelFontSize ?? DEFAULT_DISPLAY_OPTIONS.labelFontSize}px
+            </div>
+          </div>
+
+          <div className="form-control">
+            <label className="label py-1">
+              <span className="label-text text-sm">Taille des noms de prises</span>
+            </label>
+            <input
+              type="range"
+              min="20"
+              max="80"
+              step="5"
+              className="range range-sm"
+              value={displayOptions.holdLabelFontSize ?? DEFAULT_DISPLAY_OPTIONS.holdLabelFontSize}
+              onChange={(e) => updateDisplayOptions({ holdLabelFontSize: parseInt(e.target.value) })}
+            />
+            <div className="text-xs text-base-content/50 text-right mt-1">
+              {displayOptions.holdLabelFontSize ?? DEFAULT_DISPLAY_OPTIONS.holdLabelFontSize}px
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function Sidebar() {
   return (
     <aside className="w-80 bg-base-100 border-r border-base-300 flex flex-col overflow-hidden">
       <ConfigSelector />
       <WallConfig />
       <SectionList />
+      <DisplayOptions />
     </aside>
   );
 }

@@ -5,7 +5,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { WallConfig } from '@voie-vitesse/core';
-import type { Section, SavedConfiguration } from './types';
+import type { Section, SavedConfiguration, DisplayOptions } from './types';
 
 // Import route data to get default colors
 import ifscData from '../../../data/routes/ifsc.json';
@@ -106,6 +106,8 @@ interface ConfigState {
   getCurrentConfig: () => SavedConfiguration | null;
   /** Set arrow display for current configuration */
   setShowArrow: (showArrow: boolean) => void;
+  /** Update display options for current configuration */
+  updateDisplayOptions: (options: Partial<DisplayOptions>) => void;
 }
 
 export const useConfigStore = create<ConfigState>()(
@@ -261,6 +263,20 @@ export const useConfigStore = create<ConfigState>()(
           configurations: state.configurations.map((c) =>
             c.id === state.activeConfigId
               ? { ...c, showArrow, updatedAt: Date.now() }
+              : c
+          ),
+        }));
+      },
+
+      updateDisplayOptions: (options: Partial<DisplayOptions>) => {
+        set((state) => ({
+          configurations: state.configurations.map((c) =>
+            c.id === state.activeConfigId
+              ? {
+                  ...c,
+                  displayOptions: { ...c.displayOptions, ...options },
+                  updatedAt: Date.now(),
+                }
               : c
           ),
         }));

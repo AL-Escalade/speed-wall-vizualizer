@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { generateSvg, composeAllRoutes, type Config } from '@voie-vitesse/core';
-import { useConfigStore, useRoutesStore } from '@/store';
+import { useConfigStore, useRoutesStore, DEFAULT_DISPLAY_OPTIONS } from '@/store';
 import { sectionToSegment, normalizeSvgForWeb } from '@/utils/sectionMapper';
 import { generateAndDownloadPdf } from '@/utils/pdfGenerator';
 import { usePrintLayout, type PrintConfig as PrintConfigType, type Lane } from '@/hooks/usePrintLayout';
@@ -99,11 +99,17 @@ export function PrintPage() {
 
         const composedHolds = composeAllRoutes(svgConfig.routes, routes);
 
+        // Merge display options with defaults
+        const displayOptions = { ...DEFAULT_DISPLAY_OPTIONS, ...config.displayOptions };
+
         const svg = await generateSvg(svgConfig, composedHolds, {
           showGrid: true,
           showPanelLabels: true,
           showCoordinateLabels: true,
           showArrow: config.showArrow ?? false,
+          gridColor: displayOptions.gridColor,
+          labelFontSize: displayOptions.labelFontSize,
+          holdLabelFontSize: displayOptions.holdLabelFontSize,
         });
 
         if (!isCancelled) {

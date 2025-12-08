@@ -11,14 +11,16 @@ export interface SvgOptions {
     showPanelLabels?: boolean;
     /** Show column/row labels */
     showCoordinateLabels?: boolean;
-    /** Grid line color */
+    /** Grid color (inserts and coordinate labels) */
     gridColor?: string;
     /** Grid line width */
     gridLineWidth?: number;
     /** Insert marker radius */
     insertRadius?: number;
-    /** Font size for labels */
+    /** Font size for coordinate labels (A-L, 1-10) */
     labelFontSize?: number;
+    /** Font size for hold number labels */
+    holdLabelFontSize?: number;
     /** Show arrow indicators for hold orientation */
     showArrow?: boolean;
 }

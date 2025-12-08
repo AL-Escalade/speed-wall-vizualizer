@@ -70,10 +70,11 @@ const DEFAULT_OPTIONS = {
     showGrid: true,
     showPanelLabels: true,
     showCoordinateLabels: true,
-    gridColor: '#666666',
+    gridColor: '#999999',
     gridLineWidth: 0.5,
     insertRadius: 4,
-    labelFontSize: 28,
+    labelFontSize: 40,
+    holdLabelFontSize: 40,
     showArrow: false,
 };
 /**
@@ -143,31 +144,23 @@ function generateGrid(wallDimensions, config, options) {
                 }
             }
         }
-        // Panel number labels on left margin of wall
-        for (const panelNum of PANEL_NUMBERS.slice(0, panelsHeight)) {
-            const panelBaseY = (panelNum - 1) * PANEL.HEIGHT;
-            const panelCenterY = wallDimensions.height - (panelBaseY + PANEL.HEIGHT / 2);
-            lines.push(`<text x="${-50}" y="${panelCenterY}" font-size="${options.labelFontSize * 1.2}" fill="#AAAAAA" text-anchor="middle" dominant-baseline="middle" font-weight="bold">P${panelNum}</text>`);
-        }
     }
     // Draw panel boundary lines (horizontal lines between panels)
     for (let p = 0; p <= panelsHeight; p++) {
         const y = wallDimensions.height - p * PANEL.HEIGHT;
-        lines.push(`<line x1="0" y1="${y}" x2="${wallDimensions.width}" y2="${y}" stroke="#999999" stroke-width="1" stroke-dasharray="5,5" />`);
+        lines.push(`<line x1="0" y1="${y}" x2="${wallDimensions.width}" y2="${y}" stroke="#666666" stroke-width="2" />`);
     }
     // Draw lane boundary lines (vertical lines between lanes)
     for (let l = 0; l <= lanes; l++) {
         const x = l * PANELS_PER_LANE * PANEL.WIDTH;
-        lines.push(`<line x1="${x}" y1="0" x2="${x}" y2="${wallDimensions.height}" stroke="#999999" stroke-width="1" stroke-dasharray="5,5" />`);
+        lines.push(`<line x1="${x}" y1="0" x2="${x}" y2="${wallDimensions.height}" stroke="#666666" stroke-width="2" />`);
     }
     return lines.join('\n');
 }
-/** Font size for hold numbers */
-const HOLD_NUMBER_FONT_SIZE = 40;
 /**
  * Generate SVG for a single hold
  */
-async function generateHold(hold, wallDimensions) {
+async function generateHold(hold, wallDimensions, holdLabelFontSize) {
     // Get hold dimensions from central configuration
     const baseDimensions = getHoldDimensions(hold.type);
     // Apply hold scale factor
@@ -236,7 +229,7 @@ async function generateHold(hold, wallDimensions) {
         // Take the label element from the SVG and modify it
         let labelElement = labelZone.element;
         // Compensate for the group scale to get consistent font size
-        const adjustedFontSize = HOLD_NUMBER_FONT_SIZE / scale;
+        const adjustedFontSize = holdLabelFontSize / scale;
         // Replace the text content (inside <tspan> or directly in <text>)
         // First try to replace inside <tspan>
         if (labelElement.includes('<tspan')) {
@@ -273,7 +266,7 @@ async function generateHold(hold, wallDimensions) {
         const fallbackOffset = Math.max(svgData.viewBox.width, svgData.viewBox.height) * scale * 0.6;
         const labelX = svgX;
         const labelY = svgY + fallbackOffset;
-        labelSvg = `<text x="${labelX}" y="${labelY}" font-size="${HOLD_NUMBER_FONT_SIZE}" fill="${holdColor}" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">${labelText}</text>`;
+        labelSvg = `<text x="${labelX}" y="${labelY}" font-size="${holdLabelFontSize}" fill="${holdColor}" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">${labelText}</text>`;
     }
     // Generate arrow SVG pointing to target insert (if hold type supports arrows)
     let arrowSvg = null;
@@ -322,7 +315,7 @@ export async function generateSvg(config, holds, options = {}) {
     // Generate hold data first to collect all SVG elements
     const holdResults = [];
     for (const hold of holds) {
-        const result = await generateHold(hold, wallDimensions);
+        const result = await generateHold(hold, wallDimensions, opts.holdLabelFontSize);
         holdResults.push(result);
     }
     // Arrow indicators (rendered below holds)

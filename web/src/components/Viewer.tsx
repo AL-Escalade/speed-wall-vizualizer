@@ -5,7 +5,7 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { generateSvg, composeAllRoutes, type Config } from '@voie-vitesse/core';
 import { useShallow } from 'zustand/react/shallow';
-import { useConfigStore, useRoutesStore, useViewerStore } from '@/store';
+import { useConfigStore, useRoutesStore, useViewerStore, DEFAULT_DISPLAY_OPTIONS } from '@/store';
 import { sectionToSegment, normalizeSvgForWeb } from '@/utils/sectionMapper';
 import { Birdview } from './Birdview';
 import { ZoomIn, ZoomOut, Home } from 'lucide-react';
@@ -71,12 +71,18 @@ export function Viewer() {
         // Compose all routes
         const composedHolds = composeAllRoutes(svgConfig.routes, routes);
 
+        // Merge display options with defaults
+        const displayOptions = { ...DEFAULT_DISPLAY_OPTIONS, ...config.displayOptions };
+
         // Generate SVG
         const svg = await generateSvg(svgConfig, composedHolds, {
           showGrid: true,
           showPanelLabels: true,
           showCoordinateLabels: true,
           showArrow: config.showArrow ?? false,
+          gridColor: displayOptions.gridColor,
+          labelFontSize: displayOptions.labelFontSize,
+          holdLabelFontSize: displayOptions.holdLabelFontSize,
         });
 
         if (!isCancelled) {

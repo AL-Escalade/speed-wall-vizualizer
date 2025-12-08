@@ -34,6 +34,23 @@ export interface Section {
   anchor?: AnchorPosition;
 }
 
+/** Display options for SVG rendering */
+export interface DisplayOptions {
+  /** Grid color (inserts and coordinate labels) */
+  gridColor: string;
+  /** Font size for coordinate labels (A-L, 1-10) */
+  labelFontSize: number;
+  /** Font size for hold number labels */
+  holdLabelFontSize: number;
+}
+
+/** Default display options */
+export const DEFAULT_DISPLAY_OPTIONS: DisplayOptions = {
+  gridColor: '#999999',
+  labelFontSize: 40,
+  holdLabelFontSize: 40,
+};
+
 /** A saved configuration */
 export interface SavedConfiguration {
   id: string;
@@ -42,6 +59,8 @@ export interface SavedConfiguration {
   sections: Section[];
   /** Show arrow indicators for hold orientation */
   showArrow?: boolean;
+  /** Display options for rendering */
+  displayOptions?: Partial<DisplayOptions>;
   createdAt: number;
   updatedAt: number;
 }
