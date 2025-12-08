@@ -48,11 +48,11 @@
 - **Validation** : Les triangles apparaissent/disparaissent selon l'option
 
 ### 9. Tests et validation finale
-- [ ] Vérifier le rendu avec différentes orientations de prises
-- [ ] Vérifier le rendu avec différents types de prises (BIG, FOOT, STOP)
-- [ ] Vérifier que les triangles sont bien sous les prises (ordre de rendu)
-- [ ] Vérifier que la couleur des triangles correspond à la couleur des prises
-- [ ] Vérifier que le type STOP (pad) n'a pas de flèche
+- [x] Vérifier le rendu avec différentes orientations de prises
+- [x] Vérifier le rendu avec différents types de prises (BIG, FOOT, STOP)
+- [x] Vérifier que les triangles sont bien sous les prises (ordre de rendu)
+- [x] Vérifier que la couleur des triangles correspond à la couleur des prises
+- [x] Vérifier que le type STOP (pad) n'a pas de flèche
 - **Validation** : Tests manuels sur l'interface web
 
 ## Dependencies
