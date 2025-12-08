@@ -22,7 +22,7 @@ export const SectionHeader = memo(function SectionHeader({
   onRemove,
 }: SectionHeaderProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editName, setEditName] = useState(section.name);
+  const [editName, setEditName] = useState('');
 
   const handleStartEdit = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();

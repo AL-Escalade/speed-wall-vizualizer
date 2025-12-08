@@ -377,6 +377,15 @@ export function Viewer() {
             />
           </div>
         )}
+
+        {/* Hidden SVG for export - rendered inline for DOM access */}
+        {svgContent && (
+          <div
+            className="hidden"
+            data-export-target="wall-svg"
+            dangerouslySetInnerHTML={{ __html: svgContent }}
+          />
+        )}
       </div>
 
       {/* Birdview minimap */}
