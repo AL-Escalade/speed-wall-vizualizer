@@ -12,9 +12,11 @@ import { sectionToSegment, normalizeSvgForWeb } from '@/utils/sectionMapper';
 import { generateAndDownloadPdf } from '@/utils/pdfGenerator';
 import { usePrintLayout, type PrintConfig as PrintConfigType, type Lane } from '@/hooks/usePrintLayout';
 import { PrintConfig, PageGrid, PageDetail } from '@/components/print';
+import { useIsMobile } from '@/hooks/useMediaQuery';
 
 export function PrintPage() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const config = useConfigStore((s) =>
     s.configurations.find((c) => c.id === s.activeConfigId) ?? null
   );
@@ -203,28 +205,30 @@ export function PrintPage() {
   return (
     <div className="h-screen flex flex-col bg-base-300">
       {/* Header */}
-      <header className="navbar bg-base-200 border-b border-base-300">
-        <div className="flex-1 flex items-center gap-4">
+      <header className="navbar bg-base-200 border-b border-base-300 px-2 md:px-4 min-h-12 md:min-h-16">
+        <div className="flex-1 flex items-center gap-2 md:gap-4">
           <button
-            className="btn btn-sm btn-ghost gap-2"
+            className="btn btn-sm btn-ghost gap-1 md:gap-2 px-2 md:px-3"
             onClick={handleBack}
           >
             <ArrowLeft size={16} />
-            Retour
+            <span className="hidden sm:inline">Retour</span>
           </button>
-          <span className="text-xl font-bold">Impression multi-pages</span>
+          <span className="text-base md:text-xl font-bold truncate">
+            {isMobile ? 'Impression' : 'Impression multi-pages'}
+          </span>
         </div>
-        {config && (
+        {config && !isMobile && (
           <div className="flex-none">
             <span className="text-base-content/70">{config.name}</span>
           </div>
         )}
       </header>
 
-      {/* Main content */}
-      <div className="flex-1 flex min-h-0 p-4 gap-4">
-        {/* Left panel - Configuration */}
-        <div className="w-72 flex-shrink-0">
+      {/* Main content - stacked on mobile, side-by-side on desktop */}
+      <div className={`flex-1 ${isMobile ? 'overflow-y-auto' : 'flex min-h-0'} p-2 md:p-4 gap-4`}>
+        {/* Configuration panel */}
+        <div className={isMobile ? 'mb-4' : 'w-72 flex-shrink-0'}>
           <PrintConfig
             config={printConfig}
             onChange={setPrintConfig}
@@ -235,17 +239,17 @@ export function PrintPage() {
           />
         </div>
 
-        {/* Right panel - Preview */}
-        <div className="flex-1 flex flex-col min-w-0 gap-4">
+        {/* Preview panel */}
+        <div className={`${isMobile ? '' : 'flex-1 flex flex-col min-w-0'} gap-4`}>
           {/* Loading / Error states */}
           {isGenerating && (
-            <div className="flex-1 flex items-center justify-center">
+            <div className={`${isMobile ? 'py-8' : 'flex-1'} flex items-center justify-center`}>
               <span className="loading loading-spinner loading-lg"></span>
             </div>
           )}
 
           {error && (
-            <div className="flex-1 flex items-center justify-center">
+            <div className={`${isMobile ? 'py-8' : 'flex-1'} flex items-center justify-center`}>
               <div className="alert alert-error max-w-md">
                 <span>{error}</span>
               </div>
@@ -253,7 +257,7 @@ export function PrintPage() {
           )}
 
           {!config && (
-            <div className="flex-1 flex items-center justify-center">
+            <div className={`${isMobile ? 'py-8' : 'flex-1'} flex items-center justify-center`}>
               <div className="text-base-content/40 text-lg text-center">
                 <p>Aucune configuration sélectionnée</p>
               </div>
@@ -261,7 +265,7 @@ export function PrintPage() {
           )}
 
           {config && config.sections.length === 0 && !isGenerating && (
-            <div className="flex-1 flex items-center justify-center">
+            <div className={`${isMobile ? 'py-8' : 'flex-1'} flex items-center justify-center`}>
               <div className="text-base-content/40 text-lg text-center">
                 <p>La configuration ne contient aucune section</p>
               </div>
@@ -270,9 +274,9 @@ export function PrintPage() {
 
           {/* Preview content */}
           {svgContent && !error && !isGenerating && (
-            <>
+            <div className={`${isMobile ? 'space-y-4' : 'flex-1 flex flex-col gap-4'}`}>
               {/* Page grid */}
-              <div className="bg-base-200 rounded-lg p-4">
+              <div className="bg-base-200 rounded-lg p-3 md:p-4">
                 <PageGrid
                   layout={layout}
                   selectedPageIndex={selectedPageIndex}
@@ -281,14 +285,16 @@ export function PrintPage() {
                 />
               </div>
 
-              {/* Page detail */}
-              <PageDetail
-                layout={layout}
-                selectedPageIndex={selectedPageIndex}
-                svgContent={svgContent}
-                configName={config?.name ?? ''}
-              />
-            </>
+              {/* Page detail - fixed height on mobile */}
+              <div className={isMobile ? 'h-80' : 'flex-1'}>
+                <PageDetail
+                  layout={layout}
+                  selectedPageIndex={selectedPageIndex}
+                  svgContent={svgContent}
+                  configName={config?.name ?? ''}
+                />
+              </div>
+            </div>
           )}
         </div>
       </div>

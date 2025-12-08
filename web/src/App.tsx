@@ -1,16 +1,16 @@
 import { useEffect, useState, useRef } from 'react';
 import { BrowserRouter, Routes, Route, useParams, useNavigate } from 'react-router-dom';
 import { ErrorBoundary, Header, Sidebar, Viewer } from '@/components';
+import { MobileNav } from '@/components/MobileNav';
 import { PrintPage } from '@/pages';
 import { useConfigStore } from '@/store';
 import { decodeConfig, hydrateShareableConfig } from '@/utils/urlConfig';
 import { ROUTES } from '@/utils/routes';
 import { useUrlSync } from '@/hooks/useUrlSync';
+import { useIsMobile } from '@/hooks/useMediaQuery';
+import { useMobileTab } from '@/hooks/useMobileTab';
 
-function MainView() {
-  // Keep URL in sync with current configuration
-  useUrlSync();
-
+function DesktopLayout() {
   return (
     <div className="h-screen flex flex-col">
       <Header />
@@ -20,6 +20,34 @@ function MainView() {
       </div>
     </div>
   );
+}
+
+function MobileLayout() {
+  const activeTab = useMobileTab((s) => s.activeTab);
+
+  return (
+    <div className="h-screen flex flex-col">
+      <Header />
+      <div className="flex-1 flex flex-col min-h-0 pb-14">
+        {activeTab === 'config' ? (
+          <div className="h-full overflow-y-auto">
+            <Sidebar />
+          </div>
+        ) : (
+          <Viewer />
+        )}
+      </div>
+      <MobileNav />
+    </div>
+  );
+}
+
+function MainView() {
+  // Keep URL in sync with current configuration
+  useUrlSync();
+  const isMobile = useIsMobile();
+
+  return isMobile ? <MobileLayout /> : <DesktopLayout />;
 }
 
 /**

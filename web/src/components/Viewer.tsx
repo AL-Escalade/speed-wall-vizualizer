@@ -1,5 +1,6 @@
 /**
  * SVG Viewer component with zoom and pan capabilities
+ * Supports both mouse (desktop) and touch (mobile) gestures
  */
 
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
@@ -7,6 +8,8 @@ import { generateSvg, composeAllRoutes, type Config } from '@voie-vitesse/core';
 import { useShallow } from 'zustand/react/shallow';
 import { useConfigStore, useRoutesStore, useViewerStore, DEFAULT_DISPLAY_OPTIONS } from '@/store';
 import { sectionToSegment, normalizeSvgForWeb } from '@/utils/sectionMapper';
+import { useTouchGestures } from '@/hooks/useTouchGestures';
+import { useIsMobile } from '@/hooks/useMediaQuery';
 import { Birdview } from './Birdview';
 import { ZoomIn, ZoomOut, Home } from 'lucide-react';
 
@@ -29,6 +32,7 @@ export function Viewer() {
     }))
   );
 
+  const isMobile = useIsMobile();
   const [svgContent, setSvgContent] = useState<string | null>(null);
   const [svgDataUrl, setSvgDataUrl] = useState<string | null>(null);
   const [svgDimensions, setSvgDimensions] = useState({ width: 0, height: 0 });
@@ -45,6 +49,33 @@ export function Viewer() {
   const pendingPan = useRef<{ deltaX: number; deltaY: number } | null>(null);
   const rafZoomId = useRef<number | null>(null);
   const pendingZoom = useRef<{ delta: number; pointX: number; pointY: number } | null>(null);
+
+  // Touch gesture handlers
+  const handlePinchZoom = useCallback((delta: number, centerX: number, centerY: number) => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const rect = container.getBoundingClientRect();
+    const relativeX = centerX - rect.left - rect.width / 2;
+    const relativeY = centerY - rect.top - rect.height / 2;
+
+    zoomAtPoint(delta, relativeX, relativeY);
+  }, [zoomAtPoint]);
+
+  const handleTouchPan = useCallback((deltaX: number, deltaY: number) => {
+    pan(deltaX, deltaY);
+  }, [pan]);
+
+  const handleDoubleTap = useCallback(() => {
+    resetToFit();
+  }, [resetToFit]);
+
+  // Integrate touch gestures
+  useTouchGestures(containerRef, {
+    onPinchZoom: handlePinchZoom,
+    onPan: handleTouchPan,
+    onDoubleTap: handleDoubleTap,
+  });
 
   // Generate SVG when config changes
   useEffect(() => {
@@ -186,40 +217,43 @@ export function Viewer() {
   }, []);
 
   // Handle wheel zoom toward pointer with RAF throttling
-  const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const delta = e.deltaY > 0 ? -0.1 : 0.1;
-
-    // Calculate mouse position relative to container center
+  useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const rect = container.getBoundingClientRect();
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const pointX = e.clientX - rect.left - centerX;
-    const pointY = e.clientY - rect.top - centerY;
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
 
-    // Accumulate zoom deltas for RAF batch
-    if (pendingZoom.current) {
-      pendingZoom.current.delta += delta;
-      // Update point to latest mouse position
-      pendingZoom.current.pointX = pointX;
-      pendingZoom.current.pointY = pointY;
-    } else {
-      pendingZoom.current = { delta, pointX, pointY };
-    }
+      const rect = container.getBoundingClientRect();
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const pointX = e.clientX - rect.left - centerX;
+      const pointY = e.clientY - rect.top - centerY;
 
-    // Schedule RAF if not already scheduled
-    if (!rafZoomId.current) {
-      rafZoomId.current = requestAnimationFrame(() => {
-        if (pendingZoom.current) {
-          zoomAtPoint(pendingZoom.current.delta, pendingZoom.current.pointX, pendingZoom.current.pointY);
-          pendingZoom.current = null;
-        }
-        rafZoomId.current = null;
-      });
-    }
+      // Accumulate zoom deltas for RAF batch
+      if (pendingZoom.current) {
+        pendingZoom.current.delta += delta;
+        pendingZoom.current.pointX = pointX;
+        pendingZoom.current.pointY = pointY;
+      } else {
+        pendingZoom.current = { delta, pointX, pointY };
+      }
+
+      // Schedule RAF if not already scheduled
+      if (!rafZoomId.current) {
+        rafZoomId.current = requestAnimationFrame(() => {
+          if (pendingZoom.current) {
+            zoomAtPoint(pendingZoom.current.delta, pendingZoom.current.pointX, pendingZoom.current.pointY);
+            pendingZoom.current = null;
+          }
+          rafZoomId.current = null;
+        });
+      }
+    };
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    return () => container.removeEventListener('wheel', handleWheel);
   }, [zoomAtPoint]);
 
   // Handle mouse down for pan
@@ -293,10 +327,13 @@ export function Viewer() {
     contain: 'strict',
   }), [zoom, panX, panY, isPanning]);
 
+  // Hide birdview on very small screens (< 400px)
+  const showBirdview = containerDimensions.width >= 400;
+
   return (
     <main className="flex-1 bg-base-300 relative overflow-hidden">
       {/* Zoom controls */}
-      <div className="absolute right-4 top-4 z-10 flex flex-col gap-2">
+      <div className="absolute right-2 md:right-4 top-2 md:top-4 z-10 flex flex-col gap-2">
         <button
           className="btn btn-sm btn-square btn-neutral"
           title="Zoom +"
@@ -326,9 +363,8 @@ export function Viewer() {
       {/* SVG Container */}
       <div
         ref={containerRef}
-        className={`absolute inset-0 overflow-hidden ${isPanning ? 'cursor-grabbing' : 'cursor-grab'}`}
+        className={`absolute inset-0 overflow-hidden ${isPanning ? 'cursor-grabbing' : 'cursor-grab'} touch-none`}
         style={{ contain: 'strict' }}
-        onWheel={handleWheel}
         onMouseDown={handleMouseDown}
       >
         {isGenerating && (
@@ -347,18 +383,22 @@ export function Viewer() {
 
         {!config && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-base-content/40 text-lg text-center">
+            <div className="text-base-content/40 text-lg text-center px-4">
               <p>Créez une configuration pour commencer</p>
-              <p className="text-sm mt-2">Cliquez sur + dans la sidebar</p>
+              <p className="text-sm mt-2">
+                {isMobile ? 'Allez dans l\'onglet Configuration' : 'Cliquez sur + dans la sidebar'}
+              </p>
             </div>
           </div>
         )}
 
         {config && config.sections.length === 0 && !isGenerating && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-base-content/40 text-lg text-center">
+            <div className="text-base-content/40 text-lg text-center px-4">
               <p>Ajoutez des sections pour visualiser le mur</p>
-              <p className="text-sm mt-2">Cliquez sur "Ajouter" dans la sidebar</p>
+              <p className="text-sm mt-2">
+                {isMobile ? 'Allez dans l\'onglet Configuration' : 'Cliquez sur "Ajouter" dans la sidebar'}
+              </p>
             </div>
           </div>
         )}
@@ -388,14 +428,16 @@ export function Viewer() {
         )}
       </div>
 
-      {/* Birdview minimap */}
-      <Birdview
-        svgContent={svgContent}
-        svgWidth={svgDimensions.width}
-        svgHeight={svgDimensions.height}
-        containerWidth={containerDimensions.width}
-        containerHeight={containerDimensions.height}
-      />
+      {/* Birdview minimap - hidden on very small screens */}
+      {showBirdview && (
+        <Birdview
+          svgContent={svgContent}
+          svgWidth={svgDimensions.width}
+          svgHeight={svgDimensions.height}
+          containerWidth={containerDimensions.width}
+          containerHeight={containerDimensions.height}
+        />
+      )}
     </main>
   );
 }

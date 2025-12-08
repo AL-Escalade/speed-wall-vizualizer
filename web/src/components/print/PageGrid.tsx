@@ -78,7 +78,7 @@ const PageThumbnail = memo(function PageThumbnail({
 
   // Calculate thumbnail dimensions (maintain aspect ratio)
   // Use printableSize ratio to match the SVG viewBox aspect ratio
-  const thumbnailHeight = 80;
+  const thumbnailHeight = 64;
   const aspectRatio = printableSize.width / printableSize.height;
   const thumbnailWidth = thumbnailHeight * aspectRatio;
 
@@ -202,9 +202,9 @@ export function PageGrid({
   // If lane-by-lane mode with lanes data
   if (lanes && lanes.length > 0) {
     return (
-      <div className="space-y-4">
-        <h2 className="font-semibold">Aperçu des pages</h2>
-        <div className="space-y-4 max-h-64 overflow-y-auto">
+      <div className="space-y-3 md:space-y-4">
+        <h2 className="font-semibold text-sm md:text-base">Aperçu des pages</h2>
+        <div className="space-y-4 max-h-48 md:max-h-64 overflow-y-auto">
           {lanes.map(({ lane, pages: lanePages }) => {
             const lanePagesInWidth = calculatePagesInWidth(lanePages);
             return (
@@ -227,9 +227,9 @@ export function PageGrid({
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="font-semibold">Aperçu des pages</h2>
-      <div className="flex gap-4 max-h-64 overflow-x-auto">
+    <div className="space-y-3 md:space-y-4">
+      <h2 className="font-semibold text-sm md:text-base">Aperçu des pages</h2>
+      <div className="flex gap-2 md:gap-4 max-h-48 md:max-h-64 overflow-x-auto">
         {pagesByCol.map((colPages, colIndex) => (
           <div key={colIndex} className="flex flex-col gap-2 shrink-0">
             {colPages.map((p) => (

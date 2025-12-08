@@ -39,8 +39,8 @@ export function PrintConfig({
   };
 
   return (
-    <div className="bg-base-200 p-4 rounded-lg space-y-4">
-      <h2 className="font-semibold text-lg">Configuration</h2>
+    <div className="bg-base-200 p-3 md:p-4 rounded-lg space-y-3 md:space-y-4">
+      <h2 className="font-semibold text-base md:text-lg">Configuration</h2>
 
       {/* Print mode */}
       <div className="form-control">

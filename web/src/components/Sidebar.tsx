@@ -483,7 +483,7 @@ function DisplayOptions() {
 
 export function Sidebar() {
   return (
-    <aside className="w-80 bg-base-100 border-r border-base-300 flex flex-col overflow-hidden">
+    <aside className="w-full md:w-80 bg-base-100 md:border-r border-base-300 flex flex-col overflow-hidden h-full">
       <ConfigSelector />
       <WallConfig />
       <SectionList />

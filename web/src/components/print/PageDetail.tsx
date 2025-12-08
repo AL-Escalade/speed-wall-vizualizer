@@ -79,8 +79,8 @@ export function PageDetail({
 
   if (!layout || selectedPageIndex === null || !selectedPage) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-base-200 rounded-lg">
-        <p className="text-base-content/50">
+      <div className="h-full flex items-center justify-center bg-base-200 rounded-lg p-4">
+        <p className="text-base-content/50 text-sm md:text-base text-center">
           Sélectionnez une page pour voir l'aperçu
         </p>
       </div>
@@ -90,10 +90,10 @@ export function PageDetail({
   const { page } = layout;
 
   return (
-    <div className="flex-1 flex flex-col bg-base-200 rounded-lg p-4 overflow-hidden">
+    <div className="h-full flex flex-col bg-base-200 rounded-lg p-3 md:p-4 overflow-hidden">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="font-semibold">Page {selectedPageIndex + 1}</h2>
-        <span className="text-sm text-base-content/70">
+        <h2 className="font-semibold text-sm md:text-base">Page {selectedPageIndex + 1}</h2>
+        <span className="text-xs md:text-sm text-base-content/70">
           {page.width} × {page.height} mm
         </span>
       </div>
@@ -155,8 +155,8 @@ export function PageDetail({
         </div>
       </div>
 
-      {/* Page coordinates info */}
-      <div className="mt-2 text-xs text-base-content/50 text-center">
+      {/* Page coordinates info - hidden on mobile for space */}
+      <div className="hidden md:block mt-2 text-xs text-base-content/50 text-center">
         Contenu : {Math.round(selectedPage.contentX)} - {Math.round(selectedPage.contentX + selectedPage.contentWidth)} mm (x)
         {' | '}
         {Math.round(selectedPage.contentY)} - {Math.round(selectedPage.contentY + selectedPage.contentHeight)} mm (y)
