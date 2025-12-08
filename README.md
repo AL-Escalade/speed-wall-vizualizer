@@ -1,13 +1,46 @@
 # Speed Wall Visualizer
 
-Outil de visualisation pour murs de vitesse d'escalade. Permet de générer des SVG représentant le placement des prises sur un mur selon différentes voies de référence (IFSC, catégories jeunes, etc.).
+Outil de visualisation et de configuration pour murs de vitesse d'escalade. Permet de générer des SVG représentant le placement des prises sur un mur selon différentes voies de référence (IFSC, catégories jeunes, etc.).
+
+**[Accéder à l'application](https://configurateur-voies-vitesse.al-escalade.fr/)**
+
+## Fonctionnalités
+
+### Application web
+
+- **Configurateur visuel** : Interface intuitive pour créer et modifier des configurations de mur
+- **Gestion des configurations** : Créer, renommer, supprimer des configurations multiples
+- **Sections personnalisables** :
+  - Choix de la voie source (IFSC, U15, U11-U13, etc.)
+  - Sélection du couloir (0 à n)
+  - Plage de prises personnalisable (de/à)
+  - Couleur personnalisée par section
+  - Point d'ancrage ajustable
+- **Options d'affichage** : Couleur de grille, taille des labels, flèches d'orientation
+
+### Export et partage
+
+- **Export JSON** : Sauvegarde/restauration des configurations
+- **Export SVG** : Téléchargement du rendu vectoriel
+- **Export PDF multi-pages** : Impression grand format avec chevauchement configurable
+  - Mode mur complet ou couloir par couloir
+  - Orientation portrait/paysage
+  - Aperçu des pages avant export
+- **Partage par URL** : Génération de liens partageables
+
+### Support mobile
+
+- **Interface responsive** : Navigation par onglets sur mobile
+- **Gestes tactiles** :
+  - Glisser à un doigt pour naviguer
+  - Pinch pour zoomer
+  - Double-tap pour réinitialiser la vue
 
 ## Exemples de rendus
 
 ### Configuration 2 voies complètes + section de fin
 
 Les 2 voies complètes U15 sont sur le mur, ainsi que 2 voies complètes U11/U13. Entre les 2 couloirs, la section de fin de la voie U15 et plus est ajoutée.
-Il y a quelques collisions avec les prises bleues dans cette configuration, qui obligent à enlever des prises ou les remplacer.
 
 ![Configuration base](docs/images/base.svg)
 
@@ -27,16 +60,30 @@ Il y a quelques collisions avec les prises bleues dans cette configuration, qui 
 
 ![Voie U11-U13 compétition](docs/images/u11-u13-comp.svg)
 
-## Installation
+## Voies de référence disponibles
+
+- `ifsc` : Voie officielle IFSC
+- `u15` : Catégorie U15
+- `u11-u13` : Catégorie U11-U13 (entraînement)
+- `u11-u13-comp` : Catégorie U11-U13 (compétition)
+- `training` : Combinaison voie U15 et IFSC
+
+## Développement
+
+### Installation
 
 ```bash
 npm install
 npm run build
 ```
 
-## Utilisation
+### Lancer l'application web en développement
 
-### Générer un SVG
+```bash
+npm run dev
+```
+
+### Générer un SVG via CLI
 
 ```bash
 npm run generate -- -c data/base.json -o output/wall.svg
@@ -46,13 +93,13 @@ Options :
 - `-c, --config <path>` : Fichier de configuration JSON
 - `-o, --output <path>` : Fichier SVG de sortie
 
-### Configuration
+### Configuration JSON
 
 Le fichier de configuration définit :
 - Les dimensions du mur (nombre de couloirs, hauteur en panneaux)
 - Les voies à afficher avec leurs segments
 
-Exemple (`data/base.json`) :
+Exemple :
 ```json
 {
   "wall": {
@@ -69,26 +116,20 @@ Exemple (`data/base.json`) :
 }
 ```
 
-### Voies de référence disponibles
-
-- `ifsc` : Voie officielle IFSC
-- `u11-u13` : Catégorie U11-U13
-- `training` : Voie d'entraînement personnalisée
-
 ## Structure du projet
 
 ```
-├── src/                    # Code source TypeScript
-│   ├── cli.ts              # Point d'entrée CLI
-│   ├── svg-generator.ts    # Génération SVG
-│   ├── plate-grid.ts       # Calculs de grille
-│   ├── rotation.ts         # Calculs de rotation des prises
-│   ├── hold-svg-parser.ts  # Parsing des SVG de prises
-│   └── route-composer.ts   # Composition des voies
+├── packages/
+│   ├── core/               # Logique métier (génération SVG, composition)
+│   └── cli/                # Interface ligne de commande
+├── web/                    # Application web React
+│   ├── src/
+│   │   ├── components/     # Composants React
+│   │   ├── hooks/          # Hooks personnalisés
+│   │   ├── store/          # State management (Zustand)
+│   │   └── utils/          # Utilitaires
 ├── assets/holds/           # SVG des différents types de prises
-├── data/
-│   └── routes/             # Définitions des voies de référence
-└── output/                 # SVG générés (non versionné)
+└── data/routes/            # Définitions des voies de référence
 ```
 
 ## Format des prises

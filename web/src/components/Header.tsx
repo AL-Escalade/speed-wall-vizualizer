@@ -5,7 +5,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Download, Upload, FileImage, Printer, Share2, Check, MoreVertical } from 'lucide-react';
+import { Download, Upload, FileImage, Printer, Share2, Check, MoreVertical, Github } from 'lucide-react';
 import { useJsonExport } from '@/hooks/useJsonExport';
 import { useJsonImport } from '@/hooks/useJsonImport';
 import { useSvgExport } from '@/hooks/useSvgExport';
@@ -13,6 +13,8 @@ import { useShare } from '@/hooks/useShare';
 import { useIsMobile } from '@/hooks/useMediaQuery';
 import { ROUTES } from '@/utils/routes';
 import { ImportErrorModal } from './ImportErrorModal';
+
+const GITHUB_URL = 'https://github.com/AL-Escalade/speed-wall-vizualizer';
 
 function DesktopActions({
   shareSuccess,
@@ -55,6 +57,15 @@ function DesktopActions({
         <Printer size={16} />
         <span className="hidden xl:inline">Imprimer</span>
       </button>
+      <a
+        href={GITHUB_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="btn btn-sm btn-ghost btn-square"
+        title="Code source sur GitHub"
+      >
+        <Github size={18} />
+      </a>
     </div>
   );
 }
@@ -136,6 +147,18 @@ function MobileActions({
               <Printer size={16} />
               Imprimer
             </button>
+          </li>
+          <li className="border-t border-base-300 mt-1 pt-1">
+            <a
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex gap-2"
+              onClick={() => setIsOpen(false)}
+            >
+              <Github size={16} />
+              Code source
+            </a>
           </li>
         </ul>
       )}
