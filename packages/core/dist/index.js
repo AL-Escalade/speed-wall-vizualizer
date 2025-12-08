@@ -6,7 +6,7 @@ export { generateSvg } from './svg-generator.js';
 // Route Composition
 export { composeAllRoutes, composeRoute, extractHolds, parseHold, getRouteHolds } from './route-composer.js';
 // Hold SVG Parsing
-export { parseHoldSvg, loadHoldSvg, clearSvgCache, loadHoldTypesConfig, getHoldTypeConfig, getHoldDefaultOrientation, getHoldDimensions, getHoldLabelMargin, clearHoldTypesConfigCache, } from './hold-svg-parser.js';
+export { parseHoldSvg, loadHoldSvg, clearSvgCache, loadHoldTypesConfig, getHoldTypeConfig, getHoldDefaultOrientation, getHoldDimensions, getHoldLabelMargin, getHoldShowArrow, clearHoldTypesConfigCache, } from './hold-svg-parser.js';
 // Grid utilities
 export { GRID, PANEL, ROWS, COLUMNS, PANEL_NUMBERS, PANELS_PER_LANE, getWallDimensions, getInsertPosition, parsePanelId } from './plate-grid.js';
 // Rotation utilities

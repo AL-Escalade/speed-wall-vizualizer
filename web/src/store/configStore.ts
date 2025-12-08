@@ -8,7 +8,7 @@ import type { WallConfig } from '@voie-vitesse/core';
 import type { Section, SavedConfiguration } from './types';
 
 // Import route data to get default colors
-import ifscData from '../data/ifsc.json';
+import ifscData from '../../../data/routes/ifsc.json';
 
 /** Generate unique ID */
 const generateId = () => crypto.randomUUID();
@@ -104,6 +104,8 @@ interface ConfigState {
   importConfiguration: (config: SavedConfiguration) => void;
   /** Get current configuration */
   getCurrentConfig: () => SavedConfiguration | null;
+  /** Set arrow display for current configuration */
+  setShowArrow: (showArrow: boolean) => void;
 }
 
 export const useConfigStore = create<ConfigState>()(
@@ -252,6 +254,16 @@ export const useConfigStore = create<ConfigState>()(
           state.configurations.find((c) => c.id === state.activeConfigId) ??
           null
         );
+      },
+
+      setShowArrow: (showArrow: boolean) => {
+        set((state) => ({
+          configurations: state.configurations.map((c) =>
+            c.id === state.activeConfigId
+              ? { ...c, showArrow, updatedAt: Date.now() }
+              : c
+          ),
+        }));
       },
     }),
     {

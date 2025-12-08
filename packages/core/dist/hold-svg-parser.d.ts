@@ -39,6 +39,12 @@ export declare function getHoldDimensions(holdType: string): Dimensions;
  */
 export declare function getHoldLabelMargin(holdType: string): number;
 /**
+ * Check if a hold type should show an arrow indicator
+ * @param holdType - The hold type name (e.g., "BIG", "FOOT", "STOP")
+ * @returns true if the hold type should show an arrow (default: true)
+ */
+export declare function getHoldShowArrow(holdType: string): boolean;
+/**
  * Clear the hold types configuration cache
  */
 export declare function clearHoldTypesConfigCache(): void;

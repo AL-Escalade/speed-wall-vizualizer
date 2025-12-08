@@ -5,7 +5,7 @@
 import type { Config, Dimensions, ArrowDirection } from './types.js';
 import { GRID, PANEL, PANELS_PER_LANE, COLUMNS, ROWS, PANEL_NUMBERS, getInsertPosition, getWallDimensions } from './plate-grid.js';
 import { calculateHoldRotation } from './rotation.js';
-import { loadHoldSvg, getHoldDimensions, getHoldDefaultOrientation } from './hold-svg-parser.js';
+import { loadHoldSvg, getHoldDimensions, getHoldDefaultOrientation, getHoldShowArrow } from './hold-svg-parser.js';
 import type { ComposedHold } from './route-composer.js';
 
 /**
@@ -28,6 +28,62 @@ function getArrowDirection(holdType: string, rotation: number): ArrowDirection {
   return 'down';
 }
 
+/** Arrow indicator configuration constants */
+const ARROW_BASE_WIDTH = 30;    // Fixed base width in mm
+const ARROW_TARGET_CIRCLE_RADIUS = 15; // Circle radius around target insert in mm
+const ARROW_STROKE_WIDTH = 2;   // Stroke width for the target circle in mm
+
+/**
+ * Generate SVG elements for an arrow pointing from hold to target insert
+ * Returns a triangle (base at hold, tip at target) and a circle around the target
+ *
+ * @param holdPos - Hold position in SVG coordinates
+ * @param targetPos - Target insert position in SVG coordinates
+ * @param color - The color for the arrow and circle
+ * @returns SVG elements string (polygon + circle)
+ */
+function generateArrowToTarget(
+  holdPos: { x: number; y: number },
+  targetPos: { x: number; y: number },
+  color: string
+): string {
+  // Calculate direction vector
+  const dx = targetPos.x - holdPos.x;
+  const dy = targetPos.y - holdPos.y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  // Don't draw arrow if positions are too close
+  if (distance < 1) {
+    return '';
+  }
+
+  // Normalize direction
+  const dirX = dx / distance;
+  const dirY = dy / distance;
+
+  // Perpendicular vector for triangle base
+  const perpX = -dirY;
+  const perpY = dirX;
+
+  const halfBase = ARROW_BASE_WIDTH / 2;
+
+  // Triangle vertices: base at hold position, tip at target
+  const tipX = targetPos.x;
+  const tipY = targetPos.y;
+  const baseLeftX = holdPos.x + perpX * halfBase;
+  const baseLeftY = holdPos.y + perpY * halfBase;
+  const baseRightX = holdPos.x - perpX * halfBase;
+  const baseRightY = holdPos.y - perpY * halfBase;
+
+  const trianglePoints = `${baseLeftX},${baseLeftY} ${tipX},${tipY} ${baseRightX},${baseRightY}`;
+  const triangle = `<polygon points="${trianglePoints}" fill="${color}" />`;
+
+  // Circle around target insert
+  const circle = `<circle cx="${targetPos.x}" cy="${targetPos.y}" r="${ARROW_TARGET_CIRCLE_RADIUS}" fill="none" stroke="${color}" stroke-width="${ARROW_STROKE_WIDTH}" />`;
+
+  return `${triangle}\n${circle}`;
+}
+
 /** SVG generation options */
 export interface SvgOptions {
   /** Show insert grid */
@@ -44,6 +100,8 @@ export interface SvgOptions {
   insertRadius?: number;
   /** Font size for labels */
   labelFontSize?: number;
+  /** Show arrow indicators for hold orientation */
+  showArrow?: boolean;
 }
 
 const DEFAULT_OPTIONS: Required<SvgOptions> = {
@@ -54,6 +112,7 @@ const DEFAULT_OPTIONS: Required<SvgOptions> = {
   gridLineWidth: 0.5,
   insertRadius: 4,
   labelFontSize: 28,
+  showArrow: false,
 };
 
 /**
@@ -192,7 +251,7 @@ const HOLD_NUMBER_FONT_SIZE = 40;
 async function generateHold(
   hold: ComposedHold,
   wallDimensions: Dimensions
-): Promise<{ holdSvg: string; labelSvg: string }> {
+): Promise<{ holdSvg: string; labelSvg: string; arrowSvg: string | null }> {
   // Get hold dimensions from central configuration
   const baseDimensions = getHoldDimensions(hold.type);
   // Apply hold scale factor
@@ -331,7 +390,31 @@ async function generateHold(
     labelSvg = `<text x="${labelX}" y="${labelY}" font-size="${HOLD_NUMBER_FONT_SIZE}" fill="${holdColor}" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">${labelText}</text>`;
   }
 
-  return { holdSvg, labelSvg };
+  // Generate arrow SVG pointing to target insert (if hold type supports arrows)
+  let arrowSvg: string | null = null;
+  if (getHoldShowArrow(hold.type)) {
+    // Get target insert position (orientation point)
+    const targetPos = getInsertPosition(orientationPanel, hold.orientation, hold.laneOffset);
+
+    // Apply the same anchor offset to target position
+    // This ensures the arrow keeps the same length and direction when the route is moved
+    if (hold.anchorOffset) {
+      targetPos.x += hold.anchorOffset.x;
+      targetPos.y += hold.anchorOffset.y;
+    }
+
+    // Convert to SVG coordinates
+    const holdSvgPos = { x: svgX, y: svgY };
+    const targetSvgPos = { x: targetPos.x, y: wallDimensions.height - targetPos.y };
+
+    // Generate arrow from hold to target with circle around target
+    const arrowElements = generateArrowToTarget(holdSvgPos, targetSvgPos, holdColor);
+    if (arrowElements) {
+      arrowSvg = arrowElements;
+    }
+  }
+
+  return { holdSvg, labelSvg, arrowSvg };
 }
 
 /**
@@ -366,11 +449,28 @@ export async function generateSvg(
     parts.push(`</g>`);
   }
 
+  // Generate hold data first to collect all SVG elements
+  const holdResults: { holdSvg: string; labelSvg: string; arrowSvg: string | null }[] = [];
+  for (const hold of holds) {
+    const result = await generateHold(hold, wallDimensions);
+    holdResults.push(result);
+  }
+
+  // Arrow indicators (rendered below holds)
+  if (opts.showArrow) {
+    parts.push(`<g id="arrows">`);
+    for (const { arrowSvg } of holdResults) {
+      if (arrowSvg) {
+        parts.push(arrowSvg);
+      }
+    }
+    parts.push(`</g>`);
+  }
+
   // Holds
   parts.push(`<g id="holds">`);
   const labels: string[] = [];
-  for (const hold of holds) {
-    const { holdSvg, labelSvg } = await generateHold(hold, wallDimensions);
+  for (const { holdSvg, labelSvg } of holdResults) {
     parts.push(holdSvg);
     labels.push(labelSvg);
   }

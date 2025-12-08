@@ -40,6 +40,8 @@ export interface SavedConfiguration {
   name: string;
   wall: WallConfig;
   sections: Section[];
+  /** Show arrow indicators for hold orientation */
+  showArrow?: boolean;
   createdAt: number;
   updatedAt: number;
 }

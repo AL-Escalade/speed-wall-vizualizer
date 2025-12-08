@@ -19,6 +19,8 @@ export interface SvgOptions {
     insertRadius?: number;
     /** Font size for labels */
     labelFontSize?: number;
+    /** Show arrow indicators for hold orientation */
+    showArrow?: boolean;
 }
 /**
  * Generate full SVG document

@@ -479,6 +479,14 @@ export function getHoldLabelMargin(holdType) {
     return getHoldTypeConfig(holdType).labelMargin ?? 0;
 }
 /**
+ * Check if a hold type should show an arrow indicator
+ * @param holdType - The hold type name (e.g., "BIG", "FOOT", "STOP")
+ * @returns true if the hold type should show an arrow (default: true)
+ */
+export function getHoldShowArrow(holdType) {
+    return getHoldTypeConfig(holdType).showArrow ?? true;
+}
+/**
  * Clear the hold types configuration cache
  */
 export function clearHoldTypesConfigCache() {

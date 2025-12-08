@@ -269,7 +269,7 @@ export function Birdview({
   return (
     <div
       ref={minimapRef}
-      className={`absolute bottom-4 right-4 bg-base-100 rounded-lg shadow-lg border border-base-300 overflow-hidden ${isDragging ? 'cursor-grabbing' : 'cursor-crosshair'}`}
+      className={`absolute bottom-4 right-4 bg-base-100 rounded-lg shadow-lg border border-base-300 overflow-hidden ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
       style={{
         width: minimapDimensions.width,
         height: minimapDimensions.height,

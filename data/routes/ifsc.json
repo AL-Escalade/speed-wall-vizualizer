@@ -28,17 +28,17 @@
     "SN6 BIG H2 E2 @M10",
     "SN6 BIG L7 L9 @M11",
     "SN6 BIG F9 F6 @M12",
-    "SN7 BIG L4 A5 @M13",
+    "SN7 BIG L4 DX7:A5 @M13",
     "SN7 BIG G9 E8 @M14",
     "DX7 FOOT B10 A10 @P9",
-    "SN8 BIG K1 SN7:H10 @M15",
-    "SN8 BIG I3 K5 @M16",
+    "SN8 BIG L1 SN7:H10 @M15",
+    "SN8 BIG I3 L5 @M16",
     "DX8 FOOT E1 F1 @P10",
     "DX8 FOOT A5 A6 @P11",
     "SN8 BIG C8 E9 @M17",
-    "SN9 BIG L10 A1 @M18",
-    "DX9 BIG A2 C4 @M19",
-    "DX9 BIG E7 E9 @M20",
+    "DX9 BIG A2 C4 @M18",
+    "DX9 BIG E7 E9 @M19",
+    "SN9 BIG L10 DX10:A1 @M20",
     "DX10 STOP A9 A9 @PAD"
   ]
 }

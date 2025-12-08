@@ -21,6 +21,7 @@
       "width": 250,
       "height": 250
     },
-    "defaultOrientation": 0
+    "defaultOrientation": 0,
+    "showArrow": false
   }
 }

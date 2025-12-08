@@ -16,6 +16,7 @@
     "dev:web": "npm run dev -w @voie-vitesse/web",
     "generate": "npm run generate -w @voie-vitesse/cli --",
     "generate:base": "npm run generate -w @voie-vitesse/cli -- -c ../../data/base.json -o ../../output/base.svg",
+    "generate:assets": "npx tsx scripts/generate-bundled-assets.ts",
     "test": "vitest"
   },
   "devDependencies": {

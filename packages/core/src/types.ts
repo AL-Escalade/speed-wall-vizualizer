@@ -166,6 +166,8 @@ export interface HoldTypeConfig {
   defaultOrientation: number;
   /** Additional margin for label positioning in mm (default: 0) */
   labelMargin?: number;
+  /** Whether to show arrow indicator for this hold type (default: true) */
+  showArrow?: boolean;
 }
 
 /** All hold type configurations */

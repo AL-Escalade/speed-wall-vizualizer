@@ -50,6 +50,7 @@ export {
   getHoldDefaultOrientation,
   getHoldDimensions,
   getHoldLabelMargin,
+  getHoldShowArrow,
   clearHoldTypesConfigCache,
 } from './hold-svg-parser.js';
 

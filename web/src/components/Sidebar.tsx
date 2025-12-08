@@ -27,7 +27,7 @@ import {
 
 /** Configuration selector component */
 function ConfigSelector() {
-  const { configurations, activeConfigId, setActiveConfiguration, createConfiguration, deleteConfiguration, renameConfiguration } =
+  const { configurations, activeConfigId, setActiveConfiguration, createConfiguration, deleteConfiguration, renameConfiguration, setShowArrow } =
     useConfigStore(
       useShallow((s) => ({
         configurations: s.configurations,
@@ -36,6 +36,7 @@ function ConfigSelector() {
         createConfiguration: s.createConfiguration,
         deleteConfiguration: s.deleteConfiguration,
         renameConfiguration: s.renameConfiguration,
+        setShowArrow: s.setShowArrow,
       }))
     );
   const [isEditing, setIsEditing] = useState(false);
@@ -125,6 +126,19 @@ function ConfigSelector() {
           >
             <Trash2 size={16} />
           </button>
+        </div>
+      )}
+      {activeConfig && (
+        <div className="form-control mt-3">
+          <label className="label cursor-pointer justify-start gap-3">
+            <input
+              type="checkbox"
+              className="checkbox checkbox-sm"
+              checked={activeConfig.showArrow ?? false}
+              onChange={(e) => setShowArrow(e.target.checked)}
+            />
+            <span className="label-text text-sm">Afficher les flèches d'orientation</span>
+          </label>
         </div>
       )}
     </div>

@@ -6,11 +6,11 @@
 import { create } from 'zustand';
 import type { ReferenceRoute, ReferenceRoutes } from '@voie-vitesse/core';
 
-// Import route data
-import ifscData from '../data/ifsc.json';
-import trainingData from '../data/training.json';
-import u11u13Data from '../data/u11-u13.json';
-import u15Data from '../data/u15.json';
+// Import route data from single source of truth
+import ifscData from '../../../data/routes/ifsc.json';
+import trainingData from '../../../data/routes/training.json';
+import u11u13Data from '../../../data/routes/u11-u13.json';
+import u15Data from '../../../data/routes/u15.json';
 
 /** Build reference routes from imported data */
 function buildRoutes(): ReferenceRoutes {
@@ -112,7 +112,7 @@ export const useRoutesStore = create<RoutesState>()((_set, get) => ({
     const route = get().routes[name.toLowerCase()];
     if (!route) return [];
     return route.holds.map((hold) => {
-      const match = hold.match(/@(\w+)$/);
+      const match = hold.match(/@([\w-]+)$/);
       return match ? match[1] : '';
     }).filter(Boolean);
   },

@@ -16,7 +16,7 @@ export function Viewer() {
   );
   const updateSection = useConfigStore((s) => s.updateSection);
   const routes = useRoutesStore((s) => s.routes);
-  const { zoom, panX, panY, zoomIn, zoomOut, pan, zoomBy, resetToFit } = useViewerStore(
+  const { zoom, panX, panY, zoomIn, zoomOut, pan, zoomAtPoint, resetToFit, setContainerDimensions: setStoreDimensions } = useViewerStore(
     useShallow((s) => ({
       zoom: s.zoom,
       panX: s.panX,
@@ -24,8 +24,9 @@ export function Viewer() {
       zoomIn: s.zoomIn,
       zoomOut: s.zoomOut,
       pan: s.pan,
-      zoomBy: s.zoomBy,
+      zoomAtPoint: s.zoomAtPoint,
       resetToFit: s.resetToFit,
+      setContainerDimensions: s.setContainerDimensions,
     }))
   );
   const { mode: selectionMode, sectionId: selectionSectionId, clearSelection } = useSelectionStore(
@@ -80,6 +81,7 @@ export function Viewer() {
           showGrid: true,
           showPanelLabels: true,
           showCoordinateLabels: true,
+          showArrow: config.showArrow ?? false,
         });
 
         if (!isCancelled) {
@@ -140,10 +142,9 @@ export function Viewer() {
       }
       rafId = requestAnimationFrame(() => {
         for (const entry of entries) {
-          setContainerDimensions({
-            width: entry.contentRect.width,
-            height: entry.contentRect.height,
-          });
+          const { width, height } = entry.contentRect;
+          setContainerDimensions({ width, height });
+          setStoreDimensions(width, height); // Update store for pan constraints
         }
       });
     });
@@ -155,7 +156,7 @@ export function Viewer() {
       }
       resizeObserver.disconnect();
     };
-  }, []);
+  }, [setStoreDimensions]);
 
   // Handle keyboard shortcuts
   useEffect(() => {
@@ -178,12 +179,23 @@ export function Viewer() {
     };
   }, []);
 
-  // Handle wheel zoom
+  // Handle wheel zoom toward pointer
   const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
     e.preventDefault();
     const delta = e.deltaY > 0 ? -0.1 : 0.1;
-    zoomBy(delta);
-  }, [zoomBy]);
+
+    // Calculate mouse position relative to container center
+    const container = containerRef.current;
+    if (!container) return;
+
+    const rect = container.getBoundingClientRect();
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const pointX = e.clientX - rect.left - centerX;
+    const pointY = e.clientY - rect.top - centerY;
+
+    zoomAtPoint(delta, pointX, pointY);
+  }, [zoomAtPoint]);
 
   // Handle mouse down for pan
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
@@ -193,59 +205,53 @@ export function Viewer() {
     }
   }, []);
 
-  // Handle mouse move for pan with RAF throttling
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+  // Global mouse event listeners to handle pan even outside container
+  useEffect(() => {
     if (!isPanning) return;
 
-    const deltaX = e.clientX - lastPos.current.x;
-    const deltaY = e.clientY - lastPos.current.y;
-    lastPos.current = { x: e.clientX, y: e.clientY };
-
-    // Accumulate deltas for RAF batch
-    if (pendingPan.current) {
-      pendingPan.current.deltaX += deltaX;
-      pendingPan.current.deltaY += deltaY;
-    } else {
-      pendingPan.current = { deltaX, deltaY };
-    }
-
-    // Schedule RAF if not already scheduled
-    if (!rafPanId.current) {
-      rafPanId.current = requestAnimationFrame(() => {
-        if (pendingPan.current) {
-          pan(pendingPan.current.deltaX, pendingPan.current.deltaY);
-          pendingPan.current = null;
-        }
+    const handleGlobalMouseUp = () => {
+      if (rafPanId.current) {
+        cancelAnimationFrame(rafPanId.current);
         rafPanId.current = null;
-      });
-    }
+      }
+      if (pendingPan.current) {
+        pan(pendingPan.current.deltaX, pendingPan.current.deltaY);
+        pendingPan.current = null;
+      }
+      setIsPanning(false);
+    };
+
+    // Also handle mouse move globally while panning
+    const handleGlobalMouseMove = (e: MouseEvent) => {
+      const deltaX = e.clientX - lastPos.current.x;
+      const deltaY = e.clientY - lastPos.current.y;
+      lastPos.current = { x: e.clientX, y: e.clientY };
+
+      if (pendingPan.current) {
+        pendingPan.current.deltaX += deltaX;
+        pendingPan.current.deltaY += deltaY;
+      } else {
+        pendingPan.current = { deltaX, deltaY };
+      }
+
+      if (!rafPanId.current) {
+        rafPanId.current = requestAnimationFrame(() => {
+          if (pendingPan.current) {
+            pan(pendingPan.current.deltaX, pendingPan.current.deltaY);
+            pendingPan.current = null;
+          }
+          rafPanId.current = null;
+        });
+      }
+    };
+
+    window.addEventListener('mouseup', handleGlobalMouseUp);
+    window.addEventListener('mousemove', handleGlobalMouseMove);
+    return () => {
+      window.removeEventListener('mouseup', handleGlobalMouseUp);
+      window.removeEventListener('mousemove', handleGlobalMouseMove);
+    };
   }, [isPanning, pan]);
-
-  // Handle mouse up for pan - flush pending pan and cleanup
-  const handleMouseUp = useCallback(() => {
-    if (rafPanId.current) {
-      cancelAnimationFrame(rafPanId.current);
-      rafPanId.current = null;
-    }
-    if (pendingPan.current) {
-      pan(pendingPan.current.deltaX, pendingPan.current.deltaY);
-      pendingPan.current = null;
-    }
-    setIsPanning(false);
-  }, [pan]);
-
-  // Handle mouse leave for pan - also cleanup
-  const handleMouseLeave = useCallback(() => {
-    if (rafPanId.current) {
-      cancelAnimationFrame(rafPanId.current);
-      rafPanId.current = null;
-    }
-    if (pendingPan.current) {
-      pan(pendingPan.current.deltaX, pendingPan.current.deltaY);
-      pendingPan.current = null;
-    }
-    setIsPanning(false);
-  }, [pan]);
 
   // Handle zoom to fit button click
   const handleZoomToFit = useCallback(() => {
@@ -336,9 +342,6 @@ export function Viewer() {
         className={`absolute inset-0 overflow-hidden ${isPanning ? 'cursor-grabbing' : 'cursor-grab'}`}
         onWheel={handleWheel}
         onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseLeave}
       >
         {isGenerating && (
           <div className="absolute inset-0 flex items-center justify-center bg-base-300/50 z-20">
