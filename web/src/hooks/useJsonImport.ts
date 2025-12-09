@@ -54,6 +54,7 @@ export function useJsonImport(): UseJsonImportResult {
         try {
           rawData = JSON.parse(event.target?.result as string);
         } catch (err) {
+          console.error('JSON parse error:', err);
           setError({
             message: "Le fichier n'est pas un fichier JSON valide.",
             details: err instanceof Error ? err.message : String(err),
@@ -74,6 +75,7 @@ export function useJsonImport(): UseJsonImportResult {
         try {
           importConfiguration(result.data);
         } catch (err) {
+          console.error('Import configuration error:', err);
           setError({
             message: "Une erreur est survenue lors de l'import de la configuration.",
             details: err instanceof Error ? err.message : String(err),
@@ -83,6 +85,7 @@ export function useJsonImport(): UseJsonImportResult {
 
       reader.onerror = () => {
         if (!isMountedRef.current) return;
+        console.error('File read error:', reader.error);
         setError({
           message: 'Impossible de lire le fichier.',
           details: reader.error?.message ?? 'Erreur inconnue',
