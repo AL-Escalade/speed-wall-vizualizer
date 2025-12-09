@@ -38,6 +38,12 @@ Outil de visualisation et de configuration pour murs de vitesse d'escalade. Perm
 
 ## Exemples de rendus
 
+### Flèches d'orientation
+
+Visualisation des flèches indiquant l'orientation des prises.
+
+![Flèches d'orientation](docs/images/arrows-demo.svg)
+
 ### Configuration 2 voies complètes + section de fin
 
 Les 2 voies complètes U15 sont sur le mur, ainsi que 2 voies complètes U11/U13. Entre les 2 couloirs, la section de fin de la voie U15 et plus est ajoutée.
