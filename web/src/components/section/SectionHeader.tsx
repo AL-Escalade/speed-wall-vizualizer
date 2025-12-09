@@ -12,6 +12,8 @@ interface SectionHeaderProps {
   onToggle: () => void;
   onRename: (name: string) => void;
   onRemove: () => void;
+  /** Optional display color for immediate visual feedback during color picker drag */
+  displayColor?: string;
 }
 
 export const SectionHeader = memo(function SectionHeader({
@@ -20,6 +22,7 @@ export const SectionHeader = memo(function SectionHeader({
   onToggle,
   onRename,
   onRemove,
+  displayColor,
 }: SectionHeaderProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState('');
@@ -58,7 +61,7 @@ export const SectionHeader = memo(function SectionHeader({
       </button>
       <div
         className="w-5 h-5 rounded-full border border-base-300 flex-shrink-0"
-        style={{ backgroundColor: section.color }}
+        style={{ backgroundColor: displayColor ?? section.color }}
       />
       {isEditing ? (
         <div className="flex gap-1 flex-1" onClick={(e) => e.stopPropagation()}>

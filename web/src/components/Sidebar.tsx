@@ -2,7 +2,7 @@
  * Sidebar component with wall configuration and section management
  */
 
-import { useState, memo, useCallback } from 'react';
+import { useState, memo, useCallback, useRef, useEffect } from 'react';
 import { Plus, Trash2, Pencil, Check, X, ChevronDown } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useConfigStore, useRoutesStore, DEFAULT_DISPLAY_OPTIONS } from '@/store';
@@ -207,6 +207,24 @@ const SectionItem = memo(function SectionItem({
   const holdLabels = getHoldLabels(section.source);
   const defaultAnchor = getFirstHoldPosition(section.source) ?? DEFAULT_ANCHOR;
 
+  // Local color state for immediate visual feedback during color picker drag
+  const [localColor, setLocalColor] = useState(section.color);
+  const colorDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Sync local color with section color when section changes externally
+  useEffect(() => {
+    setLocalColor(section.color);
+  }, [section.color]);
+
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (colorDebounceRef.current) {
+        clearTimeout(colorDebounceRef.current);
+      }
+    };
+  }, []);
+
   // Handlers
   const handleToggleClick = useCallback(() => {
     onToggle(section.id);
@@ -227,6 +245,11 @@ const SectionItem = memo(function SectionItem({
     const anchor = isCompetitionRoute(newSource)
       ? COMPETITION_ANCHOR
       : getFirstHoldPosition(newSource) ?? DEFAULT_ANCHOR;
+
+    // Also update local color immediately
+    if (routeColor) {
+      setLocalColor(routeColor);
+    }
 
     updateSection(section.id, {
       source: newSource,
@@ -249,8 +272,20 @@ const SectionItem = memo(function SectionItem({
     updateSection(section.id, { toHold: value });
   }, [section.id, updateSection]);
 
+  // Debounced color change: update local state immediately, store after delay
   const handleColorChange = useCallback((color: string) => {
-    updateSection(section.id, { color });
+    // Update local state immediately for visual feedback
+    setLocalColor(color);
+
+    // Clear pending store update
+    if (colorDebounceRef.current) {
+      clearTimeout(colorDebounceRef.current);
+    }
+
+    // Debounce store update to avoid excessive SVG regeneration
+    colorDebounceRef.current = setTimeout(() => {
+      updateSection(section.id, { color });
+    }, 150);
   }, [section.id, updateSection]);
 
   const handleAnchorUpdate = useCallback((anchor: AnchorPosition) => {
@@ -272,6 +307,7 @@ const SectionItem = memo(function SectionItem({
         onToggle={handleToggleClick}
         onRename={handleRename}
         onRemove={handleRemove}
+        displayColor={localColor}
       />
 
       {isExpanded && (
@@ -297,7 +333,7 @@ const SectionItem = memo(function SectionItem({
           />
 
           <ColorPicker
-            value={section.color}
+            value={localColor}
             onChange={handleColorChange}
           />
 
@@ -398,9 +434,36 @@ function DisplayOptions() {
   const setShowArrow = useConfigStore((s) => s.setShowArrow);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  if (!config) return null;
+  // Local state for grid color with debounce
+  const displayOptions = config?.displayOptions ?? {};
+  const [localGridColor, setLocalGridColor] = useState(displayOptions.gridColor ?? DEFAULT_DISPLAY_OPTIONS.gridColor);
+  const gridColorDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const displayOptions = config.displayOptions ?? {};
+  // Sync local grid color when config changes externally
+  useEffect(() => {
+    setLocalGridColor(displayOptions.gridColor ?? DEFAULT_DISPLAY_OPTIONS.gridColor);
+  }, [displayOptions.gridColor]);
+
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (gridColorDebounceRef.current) {
+        clearTimeout(gridColorDebounceRef.current);
+      }
+    };
+  }, []);
+
+  const handleGridColorChange = useCallback((color: string) => {
+    setLocalGridColor(color);
+    if (gridColorDebounceRef.current) {
+      clearTimeout(gridColorDebounceRef.current);
+    }
+    gridColorDebounceRef.current = setTimeout(() => {
+      updateDisplayOptions({ gridColor: color });
+    }, 150);
+  }, [updateDisplayOptions]);
+
+  if (!config) return null;
 
   return (
     <div className="border-t border-base-300">
@@ -435,8 +498,8 @@ function DisplayOptions() {
             <input
               type="color"
               className="w-full h-10 rounded-lg cursor-pointer border border-base-300"
-              value={displayOptions.gridColor ?? DEFAULT_DISPLAY_OPTIONS.gridColor}
-              onChange={(e) => updateDisplayOptions({ gridColor: e.target.value })}
+              value={localGridColor}
+              onChange={(e) => handleGridColorChange(e.target.value)}
             />
           </div>
 

@@ -77,7 +77,10 @@ export function Viewer() {
     onDoubleTap: handleDoubleTap,
   });
 
-  // Generate SVG when config changes
+  // Debounce timer ref for SVG generation
+  const generateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Generate SVG when config changes (debounced)
   useEffect(() => {
     if (!config || config.sections.length === 0) {
       setSvgContent(null);
@@ -131,10 +134,21 @@ export function Viewer() {
       }
     };
 
-    generateWallSvg();
+    // Clear any pending generation
+    if (generateTimeoutRef.current) {
+      clearTimeout(generateTimeoutRef.current);
+    }
+
+    // Debounce SVG generation to avoid excessive regeneration during rapid changes
+    generateTimeoutRef.current = setTimeout(() => {
+      generateWallSvg();
+    }, 150);
 
     return () => {
       isCancelled = true;
+      if (generateTimeoutRef.current) {
+        clearTimeout(generateTimeoutRef.current);
+      }
     };
   }, [config, routes]);
 
