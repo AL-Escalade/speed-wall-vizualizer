@@ -5,7 +5,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Download, Upload, FileImage, Printer, Share2, Check, MoreVertical, Github } from 'lucide-react';
+import { Download, Upload, FileImage, Printer, Share2, Check, MoreVertical, Github, ChevronDown } from 'lucide-react';
 import { useJsonExport } from '@/hooks/useJsonExport';
 import { useJsonImport } from '@/hooks/useJsonImport';
 import { useSvgExport } from '@/hooks/useSvgExport';
@@ -16,12 +16,71 @@ import { ImportErrorModal } from './ImportErrorModal';
 
 const GITHUB_URL = 'https://github.com/AL-Escalade/speed-wall-vizualizer';
 
+/** Dropdown for image export formats (SVG, PNG) */
+function ImageExportDropdown({
+  exportSvg,
+  exportPng,
+}: {
+  exportSvg: () => void;
+  exportPng: () => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen]);
+
+  const handleAction = (action: () => void) => {
+    action();
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="dropdown dropdown-end" ref={dropdownRef}>
+      <button
+        className="btn btn-sm btn-outline gap-1"
+        onClick={() => setIsOpen(!isOpen)}
+        title="Télécharger l'image"
+      >
+        <FileImage size={16} />
+        <span className="hidden xl:inline">Image</span>
+        <ChevronDown size={14} />
+      </button>
+      {isOpen && (
+        <ul className="dropdown-content z-[100] menu p-2 shadow-lg bg-base-100 rounded-box w-40 border border-base-300">
+          <li>
+            <button onClick={() => handleAction(exportSvg)} className="flex gap-2">
+              SVG (vectoriel)
+            </button>
+          </li>
+          <li>
+            <button onClick={() => handleAction(exportPng)} className="flex gap-2">
+              PNG (image)
+            </button>
+          </li>
+        </ul>
+      )}
+    </div>
+  );
+}
+
 function DesktopActions({
   shareSuccess,
   share,
   exportJson,
   triggerImport,
   exportSvg,
+  exportPng,
   onPrint,
 }: {
   shareSuccess: boolean;
@@ -29,6 +88,7 @@ function DesktopActions({
   exportJson: () => void;
   triggerImport: () => void;
   exportSvg: () => void;
+  exportPng: () => void;
   onPrint: () => void;
 }) {
   return (
@@ -49,10 +109,7 @@ function DesktopActions({
         <Upload size={16} />
         <span className="hidden xl:inline">Importer</span>
       </button>
-      <button className="btn btn-sm btn-outline gap-2" onClick={exportSvg} title="Télécharger le SVG">
-        <FileImage size={16} />
-        <span className="hidden xl:inline">SVG</span>
-      </button>
+      <ImageExportDropdown exportSvg={exportSvg} exportPng={exportPng} />
       <button className="btn btn-sm btn-primary gap-2" onClick={onPrint} title="Imprimer">
         <Printer size={16} />
         <span className="hidden xl:inline">Imprimer</span>
@@ -76,6 +133,7 @@ function MobileActions({
   exportJson,
   triggerImport,
   exportSvg,
+  exportPng,
   onPrint,
 }: {
   shareSuccess: boolean;
@@ -83,6 +141,7 @@ function MobileActions({
   exportJson: () => void;
   triggerImport: () => void;
   exportSvg: () => void;
+  exportPng: () => void;
   onPrint: () => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -143,6 +202,12 @@ function MobileActions({
             </button>
           </li>
           <li>
+            <button onClick={() => handleAction(exportPng)} className="flex gap-2">
+              <FileImage size={16} />
+              Télécharger PNG
+            </button>
+          </li>
+          <li>
             <button onClick={() => handleAction(onPrint)} className="flex gap-2">
               <Printer size={16} />
               Imprimer
@@ -170,7 +235,7 @@ export function Header() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { exportJson } = useJsonExport();
-  const { exportSvg } = useSvgExport();
+  const { exportSvg, exportPng } = useSvgExport();
   const { triggerImport, handleFileChange, inputRef, error, clearError } = useJsonImport();
   const { share, isSuccess: shareSuccess } = useShare();
 
@@ -196,6 +261,7 @@ export function Header() {
             exportJson={exportJson}
             triggerImport={triggerImport}
             exportSvg={exportSvg}
+            exportPng={exportPng}
             onPrint={handlePrint}
           />
         ) : (
@@ -205,6 +271,7 @@ export function Header() {
             exportJson={exportJson}
             triggerImport={triggerImport}
             exportSvg={exportSvg}
+            exportPng={exportPng}
             onPrint={handlePrint}
           />
         )}
