@@ -28,13 +28,13 @@ function MobileLayout() {
   return (
     <div className="h-screen flex flex-col">
       <Header />
-      <div className="flex-1 flex flex-col min-h-0 pb-14">
+      <div className="flex-1 relative min-h-0 pb-14 overflow-hidden">
         {/* Sidebar visible only on config tab */}
-        <div className={`h-full overflow-y-auto ${activeTab === 'config' ? '' : 'hidden'}`}>
+        <div className={`absolute inset-0 overflow-y-auto ${activeTab === 'config' ? '' : 'hidden'}`}>
           <Sidebar />
         </div>
-        {/* Viewer always rendered for SVG export, hidden on config tab */}
-        <div className={`flex-1 min-h-0 ${activeTab === 'viewer' ? '' : 'hidden'}`}>
+        {/* Viewer always rendered for SVG export, positioned offscreen on config tab */}
+        <div className={`absolute inset-0 flex ${activeTab === 'viewer' ? '' : 'pointer-events-none -translate-x-full'}`}>
           <Viewer />
         </div>
       </div>
