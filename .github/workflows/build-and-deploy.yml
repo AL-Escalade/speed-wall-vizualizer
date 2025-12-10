@@ -49,10 +49,10 @@ jobs:
 
       - name: Add coverage PR comment
         uses: marocchino/sticky-pull-request-comment@v2
-        if: github.event_name == 'pull_request' && steps.code_coverage_report.outputs.report != ''
+        if: github.event_name == 'pull_request' && steps.code_coverage_report.outputs.file != ''
         with:
           recreate: true
-          message: ${{ steps.code_coverage_report.outputs.report }}
+          path: ${{ steps.code_coverage_report.outputs.file }}
 
       - name: Set coverage artifact name
         id: coverage_artifact
