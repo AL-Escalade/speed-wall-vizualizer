@@ -37,7 +37,7 @@ jobs:
         id: code_coverage_report
         if: github.event_name == 'pull_request'
         with:
-          filename: 'coverage/coverage-summary.json'
+          filename: 'coverage/cobertura-coverage.xml'
           fail_on_negative_difference: true
           artifact_download_workflow_names: 'Build and deploy'
 
@@ -52,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: code-coverage-report
-          path: coverage/coverage-summary.json
+          path: coverage/cobertura-coverage.xml
           retention-days: 30
 
       - name: Build web application
