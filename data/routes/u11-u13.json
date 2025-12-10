@@ -2,6 +2,7 @@
   "$schema": "../../schemas/route.schema.json",
   "name": "u11-u13",
   "description": "U11-U13 Speed Route (FFME) - Configuration Entrainement - V2 06/10/2025",
+  "columns": "ABCDEFGHIKL",
   "color": "#00AAFF",
   "holdScales": {
     "BIG": 0.8,

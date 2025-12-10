@@ -2,8 +2,9 @@
  * SVG Generator for speed climbing wall visualization
  */
 
-import type { Config, Dimensions, ArrowDirection } from './types.js';
-import { GRID, PANEL, PANELS_PER_LANE, COLUMNS, ROWS, PANEL_NUMBERS, getInsertPosition, getWallDimensions } from './plate-grid.js';
+import type { Config, Dimensions, ArrowDirection, ColumnSystem } from './types.js';
+import { DEFAULT_COLUMN_SYSTEM } from './types.js';
+import { GRID, PANEL, PANELS_PER_LANE, COLUMNS, ROWS, PANEL_NUMBERS, getInsertPosition, getWallDimensions, getColumnsForSystem } from './plate-grid.js';
 import { calculateHoldRotation } from './rotation.js';
 import { loadHoldSvg, getHoldDimensions, getHoldDefaultOrientation, getHoldShowArrow } from './hold-svg-parser.js';
 import type { ComposedHold } from './route-composer.js';
@@ -104,6 +105,8 @@ export interface SvgOptions {
   holdLabelFontSize?: number;
   /** Show arrow indicators for hold orientation */
   showArrow?: boolean;
+  /** Column coordinate system for display labels (default: ABC) */
+  coordinateDisplaySystem?: ColumnSystem;
 }
 
 const DEFAULT_OPTIONS: Required<SvgOptions> = {
@@ -116,6 +119,7 @@ const DEFAULT_OPTIONS: Required<SvgOptions> = {
   labelFontSize: 40,
   holdLabelFontSize: 40,
   showArrow: false,
+  coordinateDisplaySystem: DEFAULT_COLUMN_SYSTEM,
 };
 
 /**
@@ -129,6 +133,9 @@ function generateGrid(
   const lines: string[] = [];
   const { lanes, panelsHeight } = config.wall;
 
+  // Get column labels for the display coordinate system
+  const displayColumns = getColumnsForSystem(options.coordinateDisplaySystem);
+
   // Generate grid for each physical panel (each lane has PANELS_PER_LANE horizontal panels)
   for (let laneIndex = 0; laneIndex < lanes; laneIndex++) {
     const laneBaseX = laneIndex * PANELS_PER_LANE * PANEL.WIDTH;
@@ -141,7 +148,7 @@ function generateGrid(
         const panelBaseY = (panelNum - 1) * PANEL.HEIGHT;
 
         // Draw inserts for this physical panel
-        for (let colIdx = 0; colIdx < COLUMNS.length; colIdx++) {
+        for (let colIdx = 0; colIdx < displayColumns.length; colIdx++) {
           for (const row of ROWS) {
             const x = panelBaseX + GRID.PANEL_MARGIN_HORIZONTAL + colIdx * GRID.COLUMN_SPACING;
             const y = panelBaseY + GRID.PANEL_MARGIN_VERTICAL + (row - 1) * GRID.ROW_SPACING;
@@ -156,7 +163,7 @@ function generateGrid(
         if (options.showPanelLabels) {
           const panelLane = hPanel === 0 ? 'SN' : 'DX';
           const panelId = `${panelLane}${panelNum}`;
-          const centerX = panelBaseX + GRID.PANEL_MARGIN_HORIZONTAL + (COLUMNS.length - 1) * GRID.COLUMN_SPACING / 2;
+          const centerX = panelBaseX + GRID.PANEL_MARGIN_HORIZONTAL + (displayColumns.length - 1) * GRID.COLUMN_SPACING / 2;
           const centerY = panelBaseY + PANEL.HEIGHT / 2;
           lines.push(
             `<text x="${centerX}" y="${wallDimensions.height - centerY}" font-size="${options.labelFontSize * 3}" fill="#AAAAAA" text-anchor="middle" dominant-baseline="middle" opacity="0.4">${panelId}</text>`
@@ -179,19 +186,19 @@ function generateGrid(
           const panelBaseY = (panelNum - 1) * PANEL.HEIGHT;
 
           // Column labels (in top and bottom margins of each panel)
-          for (let colIdx = 0; colIdx < COLUMNS.length; colIdx++) {
+          for (let colIdx = 0; colIdx < displayColumns.length; colIdx++) {
             const x = panelBaseX + GRID.PANEL_MARGIN_HORIZONTAL + colIdx * GRID.COLUMN_SPACING;
 
             // Bottom margin labels (between bottom edge and row 1)
             const bottomY = wallDimensions.height - panelBaseY - GRID.PANEL_MARGIN_VERTICAL / 2;
             lines.push(
-              `<text x="${x}" y="${bottomY}" font-size="${options.labelFontSize}" fill="#AAAAAA" text-anchor="middle" dominant-baseline="middle" font-weight="bold">${COLUMNS[colIdx]}</text>`
+              `<text x="${x}" y="${bottomY}" font-size="${options.labelFontSize}" fill="#AAAAAA" text-anchor="middle" dominant-baseline="middle" font-weight="bold">${displayColumns[colIdx]}</text>`
             );
 
             // Top margin labels (between row 10 and top edge)
             const topY = wallDimensions.height - panelBaseY - PANEL.HEIGHT + GRID.PANEL_MARGIN_VERTICAL / 2;
             lines.push(
-              `<text x="${x}" y="${topY}" font-size="${options.labelFontSize}" fill="#AAAAAA" text-anchor="middle" dominant-baseline="middle" font-weight="bold">${COLUMNS[colIdx]}</text>`
+              `<text x="${x}" y="${topY}" font-size="${options.labelFontSize}" fill="#AAAAAA" text-anchor="middle" dominant-baseline="middle" font-weight="bold">${displayColumns[colIdx]}</text>`
             );
           }
 
@@ -256,7 +263,7 @@ async function generateHold(
   // Load SVG data
   const svgData = await loadHoldSvg(hold.type);
 
-  // Calculate position
+  // Calculate position (coordinates are already converted to ABC system by parseHold)
   const pos = getInsertPosition(hold.panel, hold.position, hold.laneOffset);
 
   // Apply anchor offset if present (already in mm)

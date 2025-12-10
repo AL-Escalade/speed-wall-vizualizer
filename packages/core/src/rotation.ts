@@ -44,7 +44,7 @@ export function calculateHoldRotation(
   holdType: string,
   laneOffset: number = 0
 ): number {
-  // Get absolute positions
+  // Get absolute positions (coordinates are already in ABC system)
   const fromPos = getInsertPosition(positionPanel, position, laneOffset);
   const toPos = getInsertPosition(orientationPanel, orientation, laneOffset);
 

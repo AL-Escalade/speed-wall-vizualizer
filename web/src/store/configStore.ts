@@ -6,6 +6,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { WallConfig } from '@voie-vitesse/core';
 import type { Section, SavedConfiguration, DisplayOptions } from './types';
+import type { CoordinateSystemId } from '@/constants/routes';
 
 // Import route data to get default colors
 import ifscData from '../../../data/routes/ifsc.json';
@@ -108,6 +109,8 @@ interface ConfigState {
   setShowArrow: (showArrow: boolean) => void;
   /** Update display options for current configuration */
   updateDisplayOptions: (options: Partial<DisplayOptions>) => void;
+  /** Set coordinate display system for current configuration */
+  setCoordinateDisplaySystem: (system: CoordinateSystemId) => void;
 }
 
 export const useConfigStore = create<ConfigState>()(
@@ -277,6 +280,16 @@ export const useConfigStore = create<ConfigState>()(
                   displayOptions: { ...c.displayOptions, ...options },
                   updatedAt: Date.now(),
                 }
+              : c
+          ),
+        }));
+      },
+
+      setCoordinateDisplaySystem: (system: CoordinateSystemId) => {
+        set((state) => ({
+          configurations: state.configurations.map((c) =>
+            c.id === state.activeConfigId
+              ? { ...c, coordinateDisplaySystem: system, updatedAt: Date.now() }
               : c
           ),
         }));

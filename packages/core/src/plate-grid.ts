@@ -2,7 +2,8 @@
  * IFSC speed climbing wall grid constants and position calculations
  */
 
-import type { PanelSide, PanelNumber, Column, Row, Point, PanelId, InsertPosition } from './types.js';
+import type { PanelSide, PanelNumber, Column, Row, Point, PanelId, InsertPosition, ColumnSystem } from './types.js';
+import { COLUMN_SYSTEMS, DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM } from './types.js';
 
 /** IFSC grid constants (all dimensions in mm) */
 export const GRID = {
@@ -31,14 +32,78 @@ export const PANEL = {
 /** Number of physical panels per lane (horizontally) */
 export const PANELS_PER_LANE = 2;
 
-/** Column letters in order (excluding J) */
-export const COLUMNS: Column[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L'];
+/** Column letters in order for canonical ABC system */
+export const COLUMNS: Column[] = CANONICAL_COLUMN_SYSTEM.split('') as Column[];
 
-/** Column letter to index mapping */
-export const COLUMN_INDEX: Record<Column, number> = {
-  'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5,
-  'G': 6, 'H': 7, 'I': 8, 'K': 9, 'L': 10,
-};
+/**
+ * Get the column index for a given column letter in a specific coordinate system
+ * @param column - Column letter
+ * @param columnSystem - Column coordinate system (default: ABC)
+ * @returns Column index (0-10)
+ * @throws Error if column is not valid for the given system
+ */
+export function getColumnIndex(column: Column, columnSystem: ColumnSystem = DEFAULT_COLUMN_SYSTEM): number {
+  const index = columnSystem.indexOf(column);
+  if (index === -1) {
+    throw new Error(
+      `Invalid column "${column}" for coordinate system "${columnSystem}". ` +
+      `Valid columns are: ${columnSystem.split('').join(', ')}`
+    );
+  }
+  return index;
+}
+
+/**
+ * Get the column letter for a given index in a specific coordinate system
+ * @param index - Column index (0-10)
+ * @param columnSystem - Column coordinate system (default: ABC)
+ * @returns Column letter
+ * @throws Error if index is out of range
+ */
+export function getColumnLetter(index: number, columnSystem: ColumnSystem = DEFAULT_COLUMN_SYSTEM): Column {
+  if (index < 0 || index >= columnSystem.length) {
+    throw new Error(`Column index ${index} out of range (0-${columnSystem.length - 1})`);
+  }
+  return columnSystem[index] as Column;
+}
+
+/**
+ * Convert a column from one coordinate system to another
+ * @param column - Column letter in the source system
+ * @param fromSystem - Source coordinate system
+ * @param toSystem - Target coordinate system
+ * @returns Column letter in the target system
+ */
+export function convertColumn(column: Column, fromSystem: ColumnSystem, toSystem: ColumnSystem): Column {
+  const index = getColumnIndex(column, fromSystem);
+  return getColumnLetter(index, toSystem);
+}
+
+/**
+ * Get all column letters for a coordinate system
+ * @param columnSystem - Column coordinate system
+ * @returns Array of column letters
+ */
+export function getColumnsForSystem(columnSystem: ColumnSystem = DEFAULT_COLUMN_SYSTEM): Column[] {
+  return columnSystem.split('') as Column[];
+}
+
+/**
+ * Validate that a column is valid for a given coordinate system
+ * @param column - Column letter to validate
+ * @param columnSystem - Column coordinate system
+ * @returns true if valid
+ * @throws Error if invalid
+ */
+export function validateColumn(column: string, columnSystem: ColumnSystem = DEFAULT_COLUMN_SYSTEM): column is Column {
+  if (columnSystem.indexOf(column) === -1) {
+    throw new Error(
+      `Invalid column "${column}" for coordinate system "${columnSystem}". ` +
+      `Valid columns are: ${columnSystem.split('').join(', ')}`
+    );
+  }
+  return true;
+}
 
 /** Row numbers */
 export const ROWS: Row[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -60,14 +125,14 @@ export function getLaneOffsetByIndex(laneIndex: number): number {
 
 /**
  * Get the absolute X position of a column
- * @param column - Column letter
+ * @param column - Column letter (must be in canonical ABC system)
  * @param panelSide - Panel side (SN=left panel, DX=right panel)
  * @param laneOffset - Lane offset (0 = leftmost lane). Default: 0
  * @returns X position in mm
  */
 export function getColumnX(column: Column, panelSide: PanelSide, laneOffset: number = 0): number {
   const laneOffsetMm = getLaneOffsetByIndex(laneOffset);
-  const columnIndex = COLUMN_INDEX[column];
+  const columnIndex = getColumnIndex(column, CANONICAL_COLUMN_SYSTEM);
   // SN = left panel (no offset), DX = right panel (add panel width)
   const panelOffset = panelSide === 'DX' ? PANEL.WIDTH : 0;
   // Add horizontal margin to position column A at the margin offset from panel edge
@@ -89,7 +154,7 @@ export function getRowY(row: Row, panelNumber: PanelNumber): number {
 /**
  * Get the absolute position of an insert
  * @param panel - Panel identifier (side = SN/DX, number = height)
- * @param position - Insert position within panel
+ * @param position - Insert position within panel (column must be in ABC system)
  * @param laneOffset - Lane offset (0 = leftmost lane). Default: 0
  * @returns Absolute position in mm
  */
@@ -136,17 +201,27 @@ export function parsePanelId(panelStr: string): PanelId {
 }
 
 /**
- * Parse an insert position string (e.g., "F4", "A10")
+ * Parse an insert position string (e.g., "F4", "A10") and convert to canonical ABC coordinate system
  * @param posStr - Position string
- * @returns Parsed insert position
+ * @param sourceColumnSystem - Column coordinate system of the input. Default: FFME (for backwards compatibility)
+ * @returns Parsed insert position with column converted to canonical ABC system
  */
-export function parseInsertPosition(posStr: string): InsertPosition {
-  const match = posStr.match(/^([A-IKL])(\d+)$/i);
+export function parseInsertPosition(posStr: string, sourceColumnSystem: ColumnSystem = DEFAULT_COLUMN_SYSTEM): InsertPosition {
+  const match = posStr.match(/^([A-M])(\d+)$/i);
   if (!match) {
-    throw new Error(`Invalid insert position: ${posStr}`);
+    throw new Error(`Invalid insert position format: "${posStr}". Expected format: <column><row> (e.g., "F4", "A10")`);
   }
-  const column = match[1].toUpperCase() as Column;
+  const sourceColumn = match[1].toUpperCase() as Column;
   const row = parseInt(match[2], 10) as Row;
+
+  // Validate column against the source coordinate system
+  validateColumn(sourceColumn, sourceColumnSystem);
+
+  // Convert to canonical ABC system for internal representation
+  const column = sourceColumnSystem === CANONICAL_COLUMN_SYSTEM
+    ? sourceColumn
+    : convertColumn(sourceColumn, sourceColumnSystem, CANONICAL_COLUMN_SYSTEM);
+
   if (row < 1 || row > 10) {
     throw new Error(`Row must be 1-10, got: ${row}`);
   }

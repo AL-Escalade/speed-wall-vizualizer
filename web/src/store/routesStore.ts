@@ -28,6 +28,7 @@ function buildRoutes(): ReferenceRoutes {
     routes[name] = {
       color: data.color,
       holdScales: (data as { holdScales?: Record<string, number> }).holdScales,
+      columns: (data as { columns?: string }).columns,
       holds: data.holds,
     };
   }
@@ -61,7 +62,8 @@ function parseHoldPosition(holdStr: string): HoldPosition | undefined {
   const side = panelMatch[1].toUpperCase() as 'SN' | 'DX';
 
   // Parse position (e.g., "G3" -> column: "G", row: 3)
-  const posMatch = positionStr.match(/^([A-L])(\d+)$/i);
+  // Accept all possible column letters A-M (varies by coordinate system)
+  const posMatch = positionStr.match(/^([A-M])(\d+)$/i);
   if (!posMatch) return undefined;
 
   return {

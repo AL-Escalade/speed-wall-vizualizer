@@ -30,7 +30,12 @@ export type {
   OutputFormat,
   HoldTypeConfig,
   HoldTypesConfig,
+  ColumnSystemId,
+  ColumnSystem,
 } from './types.js';
+
+// Column coordinate systems
+export { COLUMN_SYSTEMS, DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM } from './types.js';
 
 // SVG Generation
 export { generateSvg } from './svg-generator.js';
@@ -55,7 +60,23 @@ export {
 } from './hold-svg-parser.js';
 
 // Grid utilities
-export { GRID, PANEL, ROWS, COLUMNS, PANEL_NUMBERS, PANELS_PER_LANE, getWallDimensions, getInsertPosition, parsePanelId } from './plate-grid.js';
+export {
+  GRID,
+  PANEL,
+  ROWS,
+  COLUMNS,
+  PANEL_NUMBERS,
+  PANELS_PER_LANE,
+  getWallDimensions,
+  getInsertPosition,
+  parsePanelId,
+  parseInsertPosition,
+  getColumnIndex,
+  getColumnLetter,
+  convertColumn,
+  getColumnsForSystem,
+  validateColumn,
+} from './plate-grid.js';
 
 // Rotation utilities
 export { calculateAngle, calculateHoldRotation, calculateRotation } from './rotation.js';

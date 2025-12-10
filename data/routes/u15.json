@@ -6,6 +6,7 @@
     "BIG": { "width": 460, "height": 350 },
     "FOOT": { "width": 70, "height": 78 }
   },
+  "columns": "ABCDEFGHIKL",
   "color": "#FF0000",
   "holds": [
     "DX1 FOOT F4 G4 @P1",

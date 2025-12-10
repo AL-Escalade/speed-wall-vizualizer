@@ -11,6 +11,7 @@ import { sectionToSegment, normalizeSvgForWeb } from '@/utils/sectionMapper';
 import { useTouchGestures } from '@/hooks/useTouchGestures';
 import { useIsMobile } from '@/hooks/useMediaQuery';
 import { Birdview } from './Birdview';
+import { COORDINATE_SYSTEM_COLUMNS, DEFAULT_COORDINATE_SYSTEM } from '@/constants/routes';
 import { ZoomIn, ZoomOut, Home } from 'lucide-react';
 
 export function Viewer() {
@@ -108,6 +109,10 @@ export function Viewer() {
         // Merge display options with defaults
         const displayOptions = { ...DEFAULT_DISPLAY_OPTIONS, ...config.displayOptions };
 
+        // Get the coordinate display system (convert from ID to column string)
+        const coordSystemId = config.coordinateDisplaySystem ?? DEFAULT_COORDINATE_SYSTEM;
+        const coordinateDisplaySystem = COORDINATE_SYSTEM_COLUMNS[coordSystemId].join('');
+
         // Generate SVG
         const svg = await generateSvg(svgConfig, composedHolds, {
           showGrid: true,
@@ -117,6 +122,7 @@ export function Viewer() {
           gridColor: displayOptions.gridColor,
           labelFontSize: displayOptions.labelFontSize,
           holdLabelFontSize: displayOptions.holdLabelFontSize,
+          coordinateDisplaySystem,
         });
 
         if (!isCancelled) {

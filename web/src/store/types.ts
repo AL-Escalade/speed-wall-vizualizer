@@ -3,7 +3,7 @@
  */
 
 import type { WallConfig } from '@voie-vitesse/core';
-import type { PanelSide } from '@/constants/routes';
+import type { PanelSide, CoordinateSystemId } from '@/constants/routes';
 
 /** Anchor position for custom placement */
 export interface AnchorPosition {
@@ -59,6 +59,8 @@ export interface SavedConfiguration {
   sections: Section[];
   /** Show arrow indicators for hold orientation */
   showArrow?: boolean;
+  /** Coordinate system for displaying column labels (ABC, FFME, IFSC) */
+  coordinateDisplaySystem?: CoordinateSystemId;
   /** Display options for rendering */
   displayOptions?: Partial<DisplayOptions>;
   createdAt: number;

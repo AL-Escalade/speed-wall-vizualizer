@@ -2,8 +2,9 @@
  * Route composition from segments of reference routes
  */
 
-import type { Hold, ReferenceRoute, ReferenceRoutes, RouteSegment, GeneratedRoute, AnchorPosition, PanelId, InsertPosition } from './types.js';
-import { COLUMNS, COLUMN_INDEX, parsePanelId, getInsertPosition } from './plate-grid.js';
+import type { Hold, ReferenceRoute, ReferenceRoutes, RouteSegment, GeneratedRoute, AnchorPosition, PanelId, InsertPosition, ColumnSystem } from './types.js';
+import { DEFAULT_COLUMN_SYSTEM } from './types.js';
+import { parsePanelId, getInsertPosition, parseInsertPosition as parseInsertPositionCore, validateColumn } from './plate-grid.js';
 
 /** Offset in mm for anchor-based positioning */
 interface MmOffset {
@@ -13,45 +14,46 @@ interface MmOffset {
 
 /**
  * Parse an insert position string (e.g., "A1", "F10") into an InsertPosition object
+ * @param posStr - Position string
+ * @param columnSystem - Column coordinate system for validation
  */
-function parseInsertPosition(posStr: string): InsertPosition {
-  const match = posStr.match(/^([A-L])(\d+)$/i);
-  if (!match) {
-    throw new Error(`Invalid position: "${posStr}". Expected format: A1, F10, etc.`);
-  }
-  return {
-    column: match[1].toUpperCase() as InsertPosition['column'],
-    row: parseInt(match[2], 10) as InsertPosition['row'],
-  };
+function parseInsertPositionWithSystem(posStr: string, columnSystem: ColumnSystem): InsertPosition {
+  return parseInsertPositionCore(posStr, columnSystem);
 }
 
 /**
  * Parse an orientation string that may include a panel reference
  * Format: "F4" (same panel) or "DX1:F4" (explicit panel)
+ * @param orientationStr - Orientation string
+ * @param defaultPanel - Default panel if not specified
+ * @param columnSystem - Column coordinate system for validation
  */
 function parseOrientation(
   orientationStr: string,
-  defaultPanel: PanelId
+  defaultPanel: PanelId,
+  columnSystem: ColumnSystem
 ): { position: InsertPosition; panel?: PanelId } {
   const colonIndex = orientationStr.indexOf(':');
   if (colonIndex > 0) {
     const panelStr = orientationStr.substring(0, colonIndex);
     const posStr = orientationStr.substring(colonIndex + 1);
     return {
-      position: parseInsertPosition(posStr),
+      position: parseInsertPositionWithSystem(posStr, columnSystem),
       panel: parsePanelId(panelStr),
     };
   }
   return {
-    position: parseInsertPosition(orientationStr),
+    position: parseInsertPositionWithSystem(orientationStr, columnSystem),
   };
 }
 
 /**
  * Parse a compact hold string into a Hold object
  * Format: "PANEL TYPE POSITION ORIENTATION [@LABEL] [SCALE]"
+ * @param holdStr - Compact hold string
+ * @param columnSystem - Column coordinate system for validation (default: ABC)
  */
-export function parseHold(holdStr: string): Hold {
+export function parseHold(holdStr: string, columnSystem: ColumnSystem = DEFAULT_COLUMN_SYSTEM): Hold {
   const parts = holdStr.trim().split(/\s+/);
   if (parts.length < 4 || parts.length > 6) {
     throw new Error(`Invalid hold format: "${holdStr}". Expected "PANEL TYPE POSITION ORIENTATION [@LABEL] [SCALE]"`);
@@ -59,7 +61,7 @@ export function parseHold(holdStr: string): Hold {
 
   const [panelStr, type, positionStr, orientationStr, ...rest] = parts;
   const panel = parsePanelId(panelStr);
-  const orientation = parseOrientation(orientationStr, panel);
+  const orientation = parseOrientation(orientationStr, panel, columnSystem);
 
   let label: string | undefined;
   let scale: number | undefined;
@@ -79,7 +81,7 @@ export function parseHold(holdStr: string): Hold {
   return {
     panel,
     type: type.toUpperCase(),
-    position: parseInsertPosition(positionStr),
+    position: parseInsertPositionWithSystem(positionStr, columnSystem),
     orientation: orientation.position,
     orientationPanel: orientation.panel,
     scale,
@@ -91,7 +93,8 @@ export function parseHold(holdStr: string): Hold {
  * Get all parsed holds from a reference route
  */
 export function getRouteHolds(route: ReferenceRoute): Hold[] {
-  return route.holds.map(parseHold);
+  const columnSystem = route.columns || DEFAULT_COLUMN_SYSTEM;
+  return route.holds.map(holdStr => parseHold(holdStr, columnSystem));
 }
 
 /**

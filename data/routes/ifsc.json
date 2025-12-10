@@ -6,6 +6,7 @@
     "BIG": { "width": 460, "height": 350 },
     "FOOT": { "width": 70, "height": 78 }
   },
+  "columns": "ABCDEFGHILM",
   "color": "#FF0000",
   "holds": [
     "DX1 FOOT F4 G4 @P1",
@@ -16,19 +17,19 @@
     "SN2 FOOT G3 H3 @P3",
     "DX3 FOOT C6 C5 @P4",
     "SN3 BIG G4 G1 @M4",
-    "SN3 BIG L10 I8 @M5",
+    "SN3 BIG M10 I8 @M5",
     "DX4 BIG B2 D3 @M6",
-    "SN4 BIG L7 K10 @M7",
+    "SN4 BIG M8 L10 @M7",
     "DX5 FOOT E1 E2 @P5",
     "DX5 BIG C3 C6 @M8",
     "DX5 BIG E9 H9 @M9",
     "SN5 FOOT H1 SN4:H10 @P6",
-    "SN5 FOOT L6 L5 @P7",
+    "SN5 FOOT M6 M5 @P7",
     "SN5 FOOT E7 E6 @P8",
     "SN6 BIG H2 E2 @M10",
-    "SN6 BIG L7 L9 @M11",
+    "SN6 BIG L7 M9 @M11",
     "SN6 BIG F9 F6 @M12",
-    "SN7 BIG L4 DX7:A5 @M13",
+    "SN7 BIG M4 DX7:A5 @M13",
     "SN7 BIG G9 E8 @M14",
     "DX7 FOOT B10 A10 @P9",
     "SN8 BIG L1 SN7:H10 @M15",
@@ -38,7 +39,7 @@
     "SN8 BIG C8 E9 @M17",
     "DX9 BIG A2 C4 @M18",
     "DX9 BIG E7 E9 @M19",
-    "SN9 BIG L10 DX10:A1 @M20",
+    "SN9 BIG M10 DX10:A1 @M20",
     "DX10 STOP A9 A9 @PAD"
   ]
 }

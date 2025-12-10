@@ -2,15 +2,29 @@
  * Anchor position configurator component
  */
 
-import { memo, useCallback } from 'react';
-import { PANEL_SIDES, COLUMN_LABELS, ROW_COUNT, type PanelSide } from '@/constants/routes';
+import { memo, useCallback, useMemo } from 'react';
+import {
+  PANEL_SIDES,
+  ROW_COUNT,
+  type PanelSide,
+  type CoordinateSystemId,
+  DEFAULT_COORDINATE_SYSTEM,
+  INTERNAL_STORAGE_SYSTEM,
+  getColumnLabelsForSystem,
+  convertColumn,
+} from '@/constants/routes';
 import type { AnchorPosition } from './types';
+
+/** Pre-computed row options (1-10) */
+const ROW_OPTIONS = Array.from({ length: ROW_COUNT }, (_, i) => i + 1);
 
 interface AnchorConfiguratorProps {
   anchor: AnchorPosition | undefined;
   defaultAnchor: AnchorPosition;
   onUpdate: (anchor: AnchorPosition) => void;
   onReset: () => void;
+  /** Coordinate system for display (columns are stored in INTERNAL_STORAGE_SYSTEM internally) */
+  coordinateDisplaySystem?: CoordinateSystemId;
 }
 
 export const AnchorConfigurator = memo(function AnchorConfigurator({
@@ -18,8 +32,21 @@ export const AnchorConfigurator = memo(function AnchorConfigurator({
   defaultAnchor,
   onUpdate,
   onReset,
+  coordinateDisplaySystem = DEFAULT_COORDINATE_SYSTEM,
 }: AnchorConfiguratorProps) {
   const currentAnchor: AnchorPosition = anchor ?? defaultAnchor;
+
+  // Get column labels for the display coordinate system
+  const columnLabels = useMemo(
+    () => getColumnLabelsForSystem(coordinateDisplaySystem),
+    [coordinateDisplaySystem]
+  );
+
+  // Convert stored column (INTERNAL_STORAGE_SYSTEM = ABC) to display column
+  const displayColumn = useMemo(
+    () => convertColumn(currentAnchor.column, INTERNAL_STORAGE_SYSTEM, coordinateDisplaySystem),
+    [currentAnchor.column, coordinateDisplaySystem]
+  );
 
   const updateField = useCallback(
     <K extends keyof AnchorPosition>(field: K, value: AnchorPosition[K]) => {
@@ -29,6 +56,15 @@ export const AnchorConfigurator = memo(function AnchorConfigurator({
       });
     },
     [currentAnchor, onUpdate]
+  );
+
+  // Handle column change: convert from display system to internal storage (ABC)
+  const handleColumnChange = useCallback(
+    (displayValue: string) => {
+      const storedValue = convertColumn(displayValue, coordinateDisplaySystem, INTERNAL_STORAGE_SYSTEM);
+      updateField('column', storedValue);
+    },
+    [coordinateDisplaySystem, updateField]
   );
 
   return (
@@ -58,10 +94,10 @@ export const AnchorConfigurator = memo(function AnchorConfigurator({
           </label>
           <select
             className="select select-bordered select-sm w-full"
-            value={currentAnchor.column}
-            onChange={(e) => updateField('column', e.target.value)}
+            value={displayColumn}
+            onChange={(e) => handleColumnChange(e.target.value)}
           >
-            {COLUMN_LABELS.map((col) => (
+            {columnLabels.map((col) => (
               <option key={col} value={col}>
                 {col}
               </option>
@@ -77,9 +113,9 @@ export const AnchorConfigurator = memo(function AnchorConfigurator({
             value={currentAnchor.row}
             onChange={(e) => updateField('row', parseInt(e.target.value))}
           >
-            {Array.from({ length: ROW_COUNT }, (_, i) => (
-              <option key={i + 1} value={i + 1}>
-                {i + 1}
+            {ROW_OPTIONS.map((row) => (
+              <option key={row} value={row}>
+                {row}
               </option>
             ))}
           </select>

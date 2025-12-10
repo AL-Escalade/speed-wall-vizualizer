@@ -43,6 +43,12 @@
         "maximum": 2
       }
     },
+    "columns": {
+      "type": "string",
+      "pattern": "^[A-M]{11}$",
+      "description": "Column coordinate system: 11 letters defining columns A-K position mapping. Predefined: ABC=ABCDEFGHIJK (default), FFME=ABCDEFGHIKL, IFSC=ABCDEFGHILM",
+      "default": "ABCDEFGHIJK"
+    },
     "color": {
       "type": "string",
       "pattern": "^#[0-9A-Fa-f]{6}$",
@@ -53,8 +59,8 @@
       "description": "List of holds in compact format",
       "items": {
         "type": "string",
-        "pattern": "^(SN|DX)(10|[1-9]) (BIG|FOOT|STOP|PAD) [A-IK-L](10|[1-9]) ((SN|DX)(10|[1-9]):)?[A-IK-L](10|[1-9])( [0-9.]+)?( @[A-Za-z0-9-]+)?$",
-        "description": "Hold definition: PANEL TYPE POSITION ORIENTATION [SCALE] [@LABEL]"
+        "pattern": "^(SN|DX)(10|[1-9]) (BIG|FOOT|STOP|PAD) [A-M](10|[1-9]) ((SN|DX)(10|[1-9]):)?[A-M](10|[1-9])( [0-9.]+)?( @[A-Za-z0-9-]+)?$",
+        "description": "Hold definition: PANEL TYPE POSITION ORIENTATION [SCALE] [@LABEL]. Column letters must match the declared coordinate system."
       }
     }
   }

@@ -23,6 +23,9 @@ import {
   DEFAULT_HOLDS,
   DEFAULT_SECTION_COLOR,
   isCompetitionRoute,
+  COORDINATE_SYSTEM_NAMES,
+  DEFAULT_COORDINATE_SYSTEM,
+  type CoordinateSystemId,
 } from '@/constants/routes';
 
 /** Configuration selector component */
@@ -181,11 +184,13 @@ const SectionItem = memo(function SectionItem({
   isExpanded,
   onToggle,
   lanesCount,
+  coordinateDisplaySystem,
 }: {
   section: Section;
   isExpanded: boolean;
   onToggle: (id: string) => void;
   lanesCount: number;
+  coordinateDisplaySystem: CoordinateSystemId;
 }) {
   const { updateSection, removeSection } = useConfigStore(
     useShallow((s) => ({
@@ -342,6 +347,7 @@ const SectionItem = memo(function SectionItem({
             defaultAnchor={defaultAnchor}
             onUpdate={handleAnchorUpdate}
             onReset={handleAnchorReset}
+            coordinateDisplaySystem={coordinateDisplaySystem}
           />
         </div>
       )}
@@ -417,6 +423,7 @@ function SectionList() {
               isExpanded={expandedId === section.id}
               onToggle={handleToggle}
               lanesCount={config.wall.lanes}
+              coordinateDisplaySystem={config.coordinateDisplaySystem ?? DEFAULT_COORDINATE_SYSTEM}
             />
           ))
         )}
@@ -430,8 +437,13 @@ function DisplayOptions() {
   const config = useConfigStore((s) =>
     s.configurations.find((c) => c.id === s.activeConfigId) ?? null
   );
-  const updateDisplayOptions = useConfigStore((s) => s.updateDisplayOptions);
-  const setShowArrow = useConfigStore((s) => s.setShowArrow);
+  const { updateDisplayOptions, setShowArrow, setCoordinateDisplaySystem } = useConfigStore(
+    useShallow((s) => ({
+      updateDisplayOptions: s.updateDisplayOptions,
+      setShowArrow: s.setShowArrow,
+      setCoordinateDisplaySystem: s.setCoordinateDisplaySystem,
+    }))
+  );
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Local state for grid color with debounce
@@ -480,6 +492,22 @@ function DisplayOptions() {
       </button>
       {isExpanded && (
         <div className="px-4 pb-4 space-y-3">
+          <div className="form-control">
+            <label className="label py-1">
+              <span className="label-text text-sm">Système de coordonnées</span>
+            </label>
+            <select
+              className="select select-bordered select-sm w-full"
+              value={config.coordinateDisplaySystem ?? DEFAULT_COORDINATE_SYSTEM}
+              onChange={(e) => setCoordinateDisplaySystem(e.target.value as CoordinateSystemId)}
+            >
+              {Object.entries(COORDINATE_SYSTEM_NAMES).map(([id, name]) => (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="form-control">
             <label className="label cursor-pointer justify-start gap-3 py-1">
               <input

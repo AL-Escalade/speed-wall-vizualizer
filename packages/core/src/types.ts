@@ -8,8 +8,32 @@ export type PanelSide = 'SN' | 'DX';
 /** Panel number (1-10, 1 = bottom) */
 export type PanelNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 
-/** Column letter (A-L, excluding J) */
-export type Column = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'K' | 'L';
+/** Column letter - any letter used in coordinate systems (A-M, varies by system) */
+export type Column = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M';
+
+/**
+ * Column coordinate system identifier
+ * - ABC: ABCDEFGHIJK (11 columns, no L) - default/simple system
+ * - FFME: ABCDEFGHIKL (11 columns, no J) - French federation
+ * - IFSC: ABCDEFGHILM (11 columns, no J/K) - International federation
+ */
+export type ColumnSystemId = 'ABC' | 'FFME' | 'IFSC';
+
+/** Column system definition - string of 11 column letters in order */
+export type ColumnSystem = string;
+
+/** Predefined column systems */
+export const COLUMN_SYSTEMS: Record<ColumnSystemId, ColumnSystem> = {
+  ABC: 'ABCDEFGHIJK',
+  FFME: 'ABCDEFGHIKL',
+  IFSC: 'ABCDEFGHILM',
+} as const;
+
+/** Internal canonical column system (used for all position calculations) */
+export const CANONICAL_COLUMN_SYSTEM: ColumnSystem = COLUMN_SYSTEMS.ABC;
+
+/** Default column system for parsing routes without explicit columns field (FFME for backwards compatibility) */
+export const DEFAULT_COLUMN_SYSTEM: ColumnSystem = COLUMN_SYSTEMS.FFME;
 
 /** Row number within a panel (1-10, 1 = bottom) */
 export type Row = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
@@ -70,6 +94,8 @@ export interface ReferenceRoute {
   color: string;
   /** Scale factors per hold type (e.g., { "BIG": 0.8, "FOOT": 0.8 }) */
   holdScales?: HoldScales;
+  /** Column coordinate system used in hold definitions (default: ABC = "ABCDEFGHIJK") */
+  columns?: ColumnSystem;
   /** List of holds in compact format: "PANEL TYPE POSITION ORIENTATION [SCALE]" */
   holds: string[];
 }
