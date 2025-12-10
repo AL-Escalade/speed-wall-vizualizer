@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,7 +27,33 @@ jobs:
         run: npm ci
 
       - name: Build core package
-        run: npm run build:core
+        run: rm -f packages/core/tsconfig.tsbuildinfo && npm run build:core
+
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Code Coverage Report
+        uses: clearlyip/code-coverage-report-action@v5
+        id: code_coverage_report
+        if: github.event_name == 'pull_request'
+        with:
+          filename: 'coverage/cobertura-coverage.xml'
+          fail_on_negative_difference: true
+          artifact_download_workflow_names: 'Build and deploy'
+
+      - name: Add coverage PR comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request' && steps.code_coverage_report.outputs.report != ''
+        with:
+          recreate: true
+          message: ${{ steps.code_coverage_report.outputs.report }}
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-report
+          path: coverage/cobertura-coverage.xml
+          retention-days: 30
 
       - name: Build web application
         run: npm run build:web
