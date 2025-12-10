@@ -15,9 +15,12 @@
     "generate": "npm run generate -w @voie-vitesse/cli --",
     "generate:base": "npm run generate -w @voie-vitesse/cli -- -c ../../data/base.json -o ../../output/base.svg",
     "generate:assets": "npx tsx scripts/generate-bundled-assets.ts",
-    "test": "vitest"
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^1.2.0",
     "typescript": "^5.3.0",
     "vitest": "^1.2.0"
   }

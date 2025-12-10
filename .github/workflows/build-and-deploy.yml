@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,6 +28,32 @@ jobs:
 
       - name: Build core package
         run: npm run build:core
+
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Code Coverage Report
+        uses: clearlyip/code-coverage-report-action@v5
+        id: code_coverage_report
+        if: github.event_name == 'pull_request'
+        with:
+          filename: 'coverage/coverage-summary.json'
+          fail_on_negative_difference: true
+          artifact_download_workflow_names: 'Build and deploy'
+
+      - name: Add coverage PR comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          recreate: true
+          message: ${{ steps.code_coverage_report.outputs.report }}
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-report
+          path: coverage/coverage-summary.json
+          retention-days: 30
 
       - name: Build web application
         run: npm run build:web
