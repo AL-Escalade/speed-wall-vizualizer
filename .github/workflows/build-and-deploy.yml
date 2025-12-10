@@ -32,15 +32,20 @@ jobs:
       - name: Run tests with coverage
         run: npm run test:coverage
 
+      - name: Copy coverage file to root
+        run: cp coverage/cobertura-coverage.xml cobertura-coverage.xml
+
       - name: Code Coverage Report
         uses: clearlyip/code-coverage-report-action@v5
         id: code_coverage_report
         if: github.event_name == 'pull_request'
         with:
-          filename: 'coverage/cobertura-coverage.xml'
+          filename: 'cobertura-coverage.xml'
           fail_on_negative_difference: true
           artifact_download_workflow_names: 'Build and deploy'
           artifact_name: 'code-coverage-%name%'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add coverage PR comment
         uses: marocchino/sticky-pull-request-comment@v2
@@ -60,7 +65,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.coverage_artifact.outputs.name }}
-          path: coverage/cobertura-coverage.xml
+          path: cobertura-coverage.xml
           retention-days: 30
 
       - name: Build web application
