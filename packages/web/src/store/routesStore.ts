@@ -7,10 +7,10 @@ import { create } from 'zustand';
 import type { ReferenceRoute, ReferenceRoutes } from '@voie-vitesse/core';
 
 // Import route data from single source of truth
-import ifscData from '../../../data/routes/ifsc.json';
-import trainingData from '../../../data/routes/training.json';
-import u11u13Data from '../../../data/routes/u11-u13.json';
-import u15Data from '../../../data/routes/u15.json';
+import ifscData from '../../../../data/routes/ifsc.json';
+import trainingData from '../../../../data/routes/training.json';
+import u11u13Data from '../../../../data/routes/u11-u13.json';
+import u15Data from '../../../../data/routes/u15.json';
 
 /** Build reference routes from imported data */
 function buildRoutes(): ReferenceRoutes {

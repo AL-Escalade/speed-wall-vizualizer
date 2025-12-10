@@ -9,7 +9,7 @@ import type { Section, SavedConfiguration, DisplayOptions } from './types';
 import type { CoordinateSystemId } from '@/constants/routes';
 
 // Import route data to get default colors
-import ifscData from '../../../data/routes/ifsc.json';
+import ifscData from '../../../../data/routes/ifsc.json';
 
 /** Generate unique ID */
 const generateId = () => crypto.randomUUID();

@@ -6,14 +6,50 @@
 import { readFileSync, readdirSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import type { ReferenceRoute, ReferenceRoutes, Hold, PanelId, InsertPosition } from '../types.js';
-import { parsePanelId, parseInsertPosition } from '../plate-grid.js';
+import type { ReferenceRoute, ReferenceRoutes, Hold, PanelId, PanelSide, PanelNumber, InsertPosition, Column, Row, ColumnSystem } from '@voie-vitesse/core';
+import { DEFAULT_COLUMN_SYSTEM, validateColumn } from '@voie-vitesse/core';
+
+/**
+ * Parse a panel ID string (e.g., "SN1", "DX2") into a PanelId object
+ */
+function parsePanelId(panelStr: string): PanelId {
+  const match = panelStr.match(/^(SN|DX)(\d+)$/i);
+  if (!match) {
+    throw new Error(`Invalid panel ID: "${panelStr}". Expected format: SN1, DX2, etc.`);
+  }
+  return {
+    side: match[1].toUpperCase() as PanelSide,
+    number: parseInt(match[2], 10) as PanelNumber,
+  };
+}
+
+/**
+ * Parse an insert position string (e.g., "A1", "F10") into an InsertPosition object
+ * @param posStr - Position string
+ * @param columnSystem - Column coordinate system for validation
+ */
+function parseInsertPositionWithSystem(posStr: string, columnSystem: ColumnSystem): InsertPosition {
+  const match = posStr.match(/^([A-M])(\d+)$/i);
+  if (!match) {
+    throw new Error(`Invalid position: "${posStr}". Expected format: A1, F10, etc.`);
+  }
+  const column = match[1].toUpperCase();
+  const row = parseInt(match[2], 10) as Row;
+
+  // Validate column against the coordinate system
+  validateColumn(column, columnSystem);
+
+  return {
+    column: column as Column,
+    row,
+  };
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 /** Default routes directory */
-const DEFAULT_ROUTES_DIR = join(__dirname, '../../data/routes');
+const DEFAULT_ROUTES_DIR = join(__dirname, '../../../../data/routes');
 
 /** Cache for loaded routes */
 let routesCache: ReferenceRoutes | null = null;
@@ -31,6 +67,7 @@ function loadRouteFromFile(filePath: string): ReferenceRoute {
   return {
     color: data.color,
     holdScales: data.holdScales,
+    columns: data.columns,
     holds: data.holds,
   };
 }
@@ -94,11 +131,13 @@ export function getReferenceRoutes(): ReferenceRoutes {
  *
  * @param orientationStr - Orientation string
  * @param defaultPanel - Default panel if not specified
+ * @param columnSystem - Column coordinate system for validation
  * @returns Object with position and optional panel
  */
 function parseOrientation(
   orientationStr: string,
-  defaultPanel: PanelId
+  defaultPanel: PanelId,
+  columnSystem: ColumnSystem
 ): { position: InsertPosition; panel?: PanelId } {
   // Check if orientation includes a panel reference (e.g., "DX1:F4")
   const colonIndex = orientationStr.indexOf(':');
@@ -106,14 +145,14 @@ function parseOrientation(
     const panelStr = orientationStr.substring(0, colonIndex);
     const posStr = orientationStr.substring(colonIndex + 1);
     return {
-      position: parseInsertPosition(posStr),
+      position: parseInsertPositionWithSystem(posStr, columnSystem),
       panel: parsePanelId(panelStr),
     };
   }
 
   // No panel reference, use default (same panel)
   return {
-    position: parseInsertPosition(orientationStr),
+    position: parseInsertPositionWithSystem(orientationStr, columnSystem),
   };
 }
 
@@ -126,9 +165,10 @@ function parseOrientation(
  * Example: "DX2 BIG F1 D3" or "DX2 BIG F10 DX1:C1 @M5 0.5"
  *
  * @param holdStr - Compact hold string
+ * @param columnSystem - Column coordinate system for validation (default: ABC)
  * @returns Parsed Hold object
  */
-export function parseHold(holdStr: string): Hold {
+export function parseHold(holdStr: string, columnSystem: ColumnSystem = DEFAULT_COLUMN_SYSTEM): Hold {
   const parts = holdStr.trim().split(/\s+/);
   if (parts.length < 4 || parts.length > 6) {
     throw new Error(`Invalid hold format: "${holdStr}". Expected "PANEL TYPE POSITION ORIENTATION [@LABEL] [SCALE]"`);
@@ -136,7 +176,7 @@ export function parseHold(holdStr: string): Hold {
 
   const [panelStr, type, positionStr, orientationStr, ...rest] = parts;
   const panel = parsePanelId(panelStr);
-  const orientation = parseOrientation(orientationStr, panel);
+  const orientation = parseOrientation(orientationStr, panel, columnSystem);
 
   // Parse optional label and scale from remaining parts
   let label: string | undefined;
@@ -157,7 +197,7 @@ export function parseHold(holdStr: string): Hold {
   return {
     panel,
     type: type.toUpperCase(),
-    position: parseInsertPosition(positionStr),
+    position: parseInsertPositionWithSystem(positionStr, columnSystem),
     orientation: orientation.position,
     orientationPanel: orientation.panel,
     scale,
@@ -171,7 +211,8 @@ export function parseHold(holdStr: string): Hold {
  * @returns Array of parsed Hold objects
  */
 export function getRouteHolds(route: ReferenceRoute): Hold[] {
-  return route.holds.map(parseHold);
+  const columnSystem = route.columns || DEFAULT_COLUMN_SYSTEM;
+  return route.holds.map(holdStr => parseHold(holdStr, columnSystem));
 }
 
 /**

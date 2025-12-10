@@ -4,12 +4,10 @@
   "private": true,
   "type": "module",
   "workspaces": [
-    "packages/*",
-    "cli",
-    "web"
+    "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
+    "build": "npx tsc -b && npm run build -w @voie-vitesse/web",
     "build:core": "npm run build -w @voie-vitesse/core",
     "build:cli": "npm run build -w @voie-vitesse/cli",
     "build:web": "npm run build -w @voie-vitesse/web",
