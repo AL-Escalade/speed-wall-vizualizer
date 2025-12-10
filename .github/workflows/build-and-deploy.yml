@@ -27,7 +27,7 @@ jobs:
         run: npm ci
 
       - name: Build core package
-        run: npm run build:core
+        run: rm -f packages/core/tsconfig.tsbuildinfo && npm run build:core
 
       - name: Run tests with coverage
         run: npm run test:coverage
