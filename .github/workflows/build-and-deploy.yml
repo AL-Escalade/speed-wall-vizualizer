@@ -40,6 +40,7 @@ jobs:
           filename: 'coverage/cobertura-coverage.xml'
           fail_on_negative_difference: true
           artifact_download_workflow_names: 'Build and deploy'
+          artifact_name: 'code-coverage-%name%'
 
       - name: Add coverage PR comment
         uses: marocchino/sticky-pull-request-comment@v2
@@ -48,10 +49,17 @@ jobs:
           recreate: true
           message: ${{ steps.code_coverage_report.outputs.report }}
 
+      - name: Set coverage artifact name
+        id: coverage_artifact
+        run: |
+          BRANCH_NAME="${{ github.event.pull_request.head.ref || github.ref_name }}"
+          SAFE_NAME=$(echo "$BRANCH_NAME" | tr '/' '-')
+          echo "name=code-coverage-$SAFE_NAME" >> $GITHUB_OUTPUT
+
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
-          name: code-coverage-report
+          name: ${{ steps.coverage_artifact.outputs.name }}
           path: coverage/cobertura-coverage.xml
           retention-days: 30
 
