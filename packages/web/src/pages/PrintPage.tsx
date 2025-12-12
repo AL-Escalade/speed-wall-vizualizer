@@ -205,9 +205,10 @@ export function PrintPage() {
   return (
     <div className="h-screen flex flex-col bg-base-300">
       {/* Header */}
-      <header className="navbar bg-base-200 border-b border-base-300 px-2 md:px-4 min-h-12 md:min-h-16">
+      <header data-testid="print-header" className="navbar bg-base-200 border-b border-base-300 px-2 md:px-4 min-h-12 md:min-h-16">
         <div className="flex-1 flex items-center gap-2 md:gap-4">
           <button
+            data-testid="back-button"
             className="btn btn-sm btn-ghost gap-1 md:gap-2 px-2 md:px-3"
             onClick={handleBack}
           >
@@ -220,7 +221,7 @@ export function PrintPage() {
         </div>
         {config && !isMobile && (
           <div className="flex-none">
-            <span className="text-base-content/70">{config.name}</span>
+            <span data-testid="config-name" className="text-base-content/70">{config.name}</span>
           </div>
         )}
       </header>
@@ -243,13 +244,13 @@ export function PrintPage() {
         <div className={`${isMobile ? '' : 'flex-1 flex flex-col min-w-0'} gap-4`}>
           {/* Loading / Error states */}
           {isGenerating && (
-            <div className={`${isMobile ? 'py-8' : 'flex-1'} flex items-center justify-center`}>
+            <div data-testid="loading" className={`${isMobile ? 'py-8' : 'flex-1'} flex items-center justify-center`}>
               <span className="loading loading-spinner loading-lg"></span>
             </div>
           )}
 
           {error && (
-            <div className={`${isMobile ? 'py-8' : 'flex-1'} flex items-center justify-center`}>
+            <div data-testid="error" className={`${isMobile ? 'py-8' : 'flex-1'} flex items-center justify-center`}>
               <div className="alert alert-error max-w-md">
                 <span>{error}</span>
               </div>
@@ -257,7 +258,7 @@ export function PrintPage() {
           )}
 
           {!config && (
-            <div className={`${isMobile ? 'py-8' : 'flex-1'} flex items-center justify-center`}>
+            <div data-testid="empty" className={`${isMobile ? 'py-8' : 'flex-1'} flex items-center justify-center`}>
               <div className="text-base-content/40 text-lg text-center">
                 <p>Aucune configuration sélectionnée</p>
               </div>
@@ -265,7 +266,7 @@ export function PrintPage() {
           )}
 
           {config && config.sections.length === 0 && !isGenerating && (
-            <div className={`${isMobile ? 'py-8' : 'flex-1'} flex items-center justify-center`}>
+            <div data-testid="empty" className={`${isMobile ? 'py-8' : 'flex-1'} flex items-center justify-center`}>
               <div className="text-base-content/40 text-lg text-center">
                 <p>La configuration ne contient aucune section</p>
               </div>

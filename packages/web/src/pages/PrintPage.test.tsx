@@ -47,17 +47,8 @@ vi.mock('@/components/print', () => ({
   PageDetail: vi.fn(() => <div data-testid="page-detail">Page Detail</div>),
 }));
 
-vi.mock('./print', () => ({
-  PrintPageHeader: vi.fn(({ onBack, configName }) => (
-    <header data-testid="print-header">
-      <button data-testid="back-button" onClick={onBack}>Back</button>
-      {configName && <span data-testid="config-name">{configName}</span>}
-    </header>
-  )),
-  PrintPreviewLoading: vi.fn(() => <div data-testid="loading">Loading...</div>),
-  PrintPreviewError: vi.fn(({ error }) => <div data-testid="error">{error}</div>),
-  PrintPreviewEmpty: vi.fn(({ message }) => <div data-testid="empty">{message}</div>),
-}));
+// Note: PrintPage uses inline header and state components, not imported ones
+// The data-testid attributes are set directly in PrintPage.tsx
 
 // Store mock setup
 const createMockConfig = (overrides: Partial<SavedConfiguration> = {}): SavedConfiguration => ({
