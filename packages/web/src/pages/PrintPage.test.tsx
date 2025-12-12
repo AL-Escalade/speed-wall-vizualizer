@@ -15,6 +15,7 @@ vi.mock('react-router-dom', () => ({
 vi.mock('@voie-vitesse/core', () => ({
   generateSvg: vi.fn(),
   composeAllRoutes: vi.fn().mockReturnValue([]),
+  composeAllSmearingZones: vi.fn().mockReturnValue([]),
 }));
 
 // Mock useIsMobile hook
@@ -47,17 +48,6 @@ vi.mock('@/components/print', () => ({
   PageDetail: vi.fn(() => <div data-testid="page-detail">Page Detail</div>),
 }));
 
-vi.mock('./print', () => ({
-  PrintPageHeader: vi.fn(({ onBack, configName }) => (
-    <header data-testid="print-header">
-      <button data-testid="back-button" onClick={onBack}>Back</button>
-      {configName && <span data-testid="config-name">{configName}</span>}
-    </header>
-  )),
-  PrintPreviewLoading: vi.fn(() => <div data-testid="loading">Loading...</div>),
-  PrintPreviewError: vi.fn(({ error }) => <div data-testid="error">{error}</div>),
-  PrintPreviewEmpty: vi.fn(({ message }) => <div data-testid="empty">{message}</div>),
-}));
 
 // Store mock setup
 const createMockConfig = (overrides: Partial<SavedConfiguration> = {}): SavedConfiguration => ({
@@ -92,6 +82,7 @@ let mockRoutesStoreState: {
 vi.mock('@/store', () => ({
   useConfigStore: vi.fn((selector) => selector(mockConfigStoreState)),
   useRoutesStore: vi.fn((selector) => selector(mockRoutesStoreState)),
+  useViewerStore: vi.fn((selector) => selector({ showSmearingZones: true })),
   DEFAULT_DISPLAY_OPTIONS: {
     gridColor: '#999999',
     labelFontSize: 40,
@@ -135,8 +126,9 @@ describe('PrintPage', () => {
         await Promise.resolve();
       });
 
-      expect(screen.getByTestId('print-header')).toBeInTheDocument();
-      expect(screen.getByTestId('back-button')).toBeInTheDocument();
+      // PrintPage renders header directly, not via a subcomponent
+      expect(screen.getByRole('banner')).toBeInTheDocument();
+      expect(screen.getByText('Retour')).toBeInTheDocument();
     });
 
     it('should show loading state while generating SVG', async () => {
@@ -151,8 +143,8 @@ describe('PrintPage', () => {
 
       render(<PrintPage />);
 
-      // Initially shows loading
-      expect(screen.getByTestId('loading')).toBeInTheDocument();
+      // Initially shows loading spinner (uses DaisyUI loading class)
+      expect(document.querySelector('.loading-spinner')).toBeInTheDocument();
 
       // Cleanup: resolve to complete the effect
       await act(async () => {
@@ -174,7 +166,8 @@ describe('PrintPage', () => {
         await Promise.resolve();
       });
 
-      expect(screen.getByTestId('error')).toBeInTheDocument();
+      // PrintPage uses DaisyUI alert class for errors
+      expect(document.querySelector('.alert-error')).toBeInTheDocument();
       expect(screen.getByText('Generation failed')).toBeInTheDocument();
 
       consoleError.mockRestore();
@@ -188,7 +181,7 @@ describe('PrintPage', () => {
 
       render(<PrintPage />);
 
-      expect(screen.getByTestId('empty')).toBeInTheDocument();
+      // PrintPage renders text directly when no config
       expect(screen.getByText('Aucune configuration sélectionnée')).toBeInTheDocument();
     });
 
@@ -206,7 +199,7 @@ describe('PrintPage', () => {
         await Promise.resolve();
       });
 
-      expect(screen.getByTestId('empty')).toBeInTheDocument();
+      // PrintPage renders text directly when no sections
       expect(
         screen.getByText('La configuration ne contient aucune section')
       ).toBeInTheDocument();
@@ -231,7 +224,8 @@ describe('PrintPage', () => {
         await Promise.resolve();
       });
 
-      expect(screen.getByTestId('config-name')).toHaveTextContent('Test Configuration');
+      // PrintPage renders config name directly in header
+      expect(screen.getByText('Test Configuration')).toBeInTheDocument();
     });
   });
 
@@ -243,7 +237,8 @@ describe('PrintPage', () => {
         await Promise.resolve();
       });
 
-      fireEvent.click(screen.getByTestId('back-button'));
+      // Find and click the back button (contains "Retour" text)
+      fireEvent.click(screen.getByText('Retour'));
 
       expect(mockNavigate).toHaveBeenCalledWith('/');
     });
@@ -373,7 +368,8 @@ describe('PrintPage', () => {
       });
 
       // Component renders successfully with mobile flag
-      expect(screen.getByTestId('print-header')).toBeInTheDocument();
+      // On mobile, the title says "Impression" instead of "Impression multi-pages"
+      expect(screen.getByText('Impression')).toBeInTheDocument();
     });
   });
 });

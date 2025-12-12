@@ -5,7 +5,7 @@
 import { useState, memo, useCallback, useRef, useEffect } from 'react';
 import { Plus, Trash2, Pencil, Check, X, ChevronDown } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
-import { useConfigStore, useRoutesStore, DEFAULT_DISPLAY_OPTIONS } from '@/store';
+import { useConfigStore, useRoutesStore, useViewerStore, DEFAULT_DISPLAY_OPTIONS } from '@/store';
 import type { Section } from '@/store';
 import {
   SectionHeader,
@@ -444,6 +444,12 @@ function DisplayOptions() {
       setCoordinateDisplaySystem: s.setCoordinateDisplaySystem,
     }))
   );
+  const { showSmearingZones, setShowSmearingZones } = useViewerStore(
+    useShallow((s) => ({
+      showSmearingZones: s.showSmearingZones,
+      setShowSmearingZones: s.setShowSmearingZones,
+    }))
+  );
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Local state for grid color with debounce
@@ -517,6 +523,17 @@ function DisplayOptions() {
                 onChange={(e) => setShowArrow(e.target.checked)}
               />
               <span className="label-text text-sm">Afficher les flèches d'orientation</span>
+            </label>
+          </div>
+          <div className="form-control">
+            <label className="label cursor-pointer justify-start gap-3 py-1">
+              <input
+                type="checkbox"
+                className="checkbox checkbox-sm"
+                checked={showSmearingZones}
+                onChange={(e) => setShowSmearingZones(e.target.checked)}
+              />
+              <span className="label-text text-sm">Zones d'adhérence</span>
             </label>
           </div>
           <div className="form-control">

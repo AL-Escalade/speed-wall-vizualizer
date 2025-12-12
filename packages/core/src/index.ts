@@ -16,6 +16,8 @@ export type {
   HoldTypeDimensions,
   Hold,
   HoldScales,
+  SmearingZone,
+  ComposedSmearingZone,
   ReferenceRoute,
   ReferenceRoutes,
   AnchorPosition,
@@ -42,7 +44,7 @@ export { generateSvg } from './svg-generator.js';
 export type { SvgOptions } from './svg-generator.js';
 
 // Route Composition
-export { composeAllRoutes, composeRoute, extractHolds, parseHold, getRouteHolds } from './route-composer.js';
+export { composeAllRoutes, composeRoute, extractHolds, parseHold, getRouteHolds, composeAllSmearingZones, composeSmearingZones, extractSmearingZones } from './route-composer.js';
 export type { ComposedHold } from './route-composer.js';
 
 // Hold SVG Parsing

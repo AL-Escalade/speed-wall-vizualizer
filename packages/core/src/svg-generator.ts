@@ -2,9 +2,9 @@
  * SVG Generator for speed climbing wall visualization
  */
 
-import type { Config, Dimensions, ArrowDirection, ColumnSystem } from './types.js';
+import type { Config, Dimensions, ArrowDirection, ColumnSystem, ComposedSmearingZone } from './types.js';
 import { DEFAULT_COLUMN_SYSTEM } from './types.js';
-import { GRID, PANEL, PANELS_PER_LANE, COLUMNS, ROWS, PANEL_NUMBERS, getInsertPosition, getWallDimensions, getColumnsForSystem } from './plate-grid.js';
+import { GRID, PANEL, PANELS_PER_LANE, COLUMNS, ROWS, PANEL_NUMBERS, getInsertPosition, getWallDimensions, getColumnsForSystem, parsePanelId } from './plate-grid.js';
 import { calculateHoldRotation } from './rotation.js';
 import { loadHoldSvg, getHoldDimensions, getHoldDefaultOrientation, getHoldShowArrow } from './hold-svg-parser.js';
 import type { ComposedHold } from './route-composer.js';
@@ -107,6 +107,8 @@ export interface SvgOptions {
   showArrow?: boolean;
   /** Column coordinate system for display labels (default: ABC) */
   coordinateDisplaySystem?: ColumnSystem;
+  /** Show smearing zones (default: true) */
+  showSmearingZones?: boolean;
 }
 
 const DEFAULT_OPTIONS: Required<SvgOptions> = {
@@ -120,6 +122,7 @@ const DEFAULT_OPTIONS: Required<SvgOptions> = {
   holdLabelFontSize: 40,
   showArrow: false,
   coordinateDisplaySystem: DEFAULT_COLUMN_SYSTEM,
+  showSmearingZones: true,
 };
 
 /**
@@ -417,13 +420,116 @@ async function generateHold(
   return { holdSvg, labelSvg, arrowSvg };
 }
 
+/** Smearing zone rendering constants */
+const SMEARING_ZONE_FILL_OPACITY = 0.2;
+const SMEARING_ZONE_HATCH_OPACITY = 0.5;
+const SMEARING_ZONE_HATCH_LINE_WIDTH = 0;
+const SMEARING_ZONE_HATCH_SPACING = 40;
+const SMEARING_ZONE_BORDER_WIDTH = 10;
+const SMEARING_ZONE_BORDER_OPACITY = 0.3;
+const SMEARING_ZONE_LABEL_MARGIN = 5; // Margin below the zone for the label
+
+/**
+ * Generate a unique pattern ID for a color (for hatched patterns)
+ */
+function getHatchPatternId(color: string): string {
+  // Remove # and use the hex value
+  return `smearing-hatch-${color.replace('#', '')}`;
+}
+
+/**
+ * Generate SVG pattern definition for hatched fill
+ */
+function generateHatchPattern(color: string): string {
+  const patternId = getHatchPatternId(color);
+  return `<pattern id="${patternId}" patternUnits="userSpaceOnUse" width="${SMEARING_ZONE_HATCH_SPACING}" height="${SMEARING_ZONE_HATCH_SPACING}" patternTransform="rotate(45)">
+    <line x1="0" y1="0" x2="0" y2="${SMEARING_ZONE_HATCH_SPACING}" stroke="${color}" stroke-width="${SMEARING_ZONE_HATCH_LINE_WIDTH}" stroke-opacity="${SMEARING_ZONE_HATCH_OPACITY}" />
+  </pattern>`;
+}
+
+/**
+ * Generate SVG for smearing zones
+ */
+function generateSmearingZones(
+  zones: ComposedSmearingZone[],
+  wallDimensions: Dimensions,
+  labelFontSize: number
+): { defs: string; elements: string } {
+  if (zones.length === 0) {
+    return { defs: '', elements: '' };
+  }
+
+  // Collect unique colors for pattern definitions
+  const uniqueColors = new Set(zones.map(z => z.color));
+  const patterns = Array.from(uniqueColors).map(generateHatchPattern);
+  const defs = patterns.join('\n');
+
+  // Generate zone rectangles and labels
+  const elements: string[] = [];
+
+  for (const zone of zones) {
+    // Calculate position
+    const panel = parsePanelId(zone.panel);
+    // Use integer part of row for base position calculation
+    const integerRow = Math.floor(zone.row) as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+    const basePos = getInsertPosition(panel, { column: zone.column, row: integerRow }, zone.laneOffset);
+
+    // Apply fractional row offset
+    const fractionalRowOffset = (zone.row - integerRow) * GRID.ROW_SPACING;
+    basePos.y += fractionalRowOffset;
+
+    // Apply columnOffset if present
+    if (zone.columnOffset !== undefined) {
+      basePos.x += zone.columnOffset * GRID.COLUMN_SPACING;
+    }
+
+    // Apply anchor offset if present
+    if (zone.anchorOffset) {
+      basePos.x += zone.anchorOffset.x;
+      basePos.y += zone.anchorOffset.y;
+    }
+
+    // Calculate dimensions in mm
+    const widthMm = zone.width * GRID.COLUMN_SPACING;
+    const heightMm = zone.height * GRID.ROW_SPACING;
+
+    // Convert to SVG coordinates (Y is inverted, origin at top-left)
+    const svgX = basePos.x;
+    const svgY = wallDimensions.height - basePos.y - heightMm; // Bottom-left corner in wall coords -> top-left in SVG
+
+    const patternId = getHatchPatternId(zone.color);
+
+    // Zone group with data attribute
+    elements.push(`<g class="smearing-zone" data-label="${zone.label}">`);
+
+    // Solid fill rectangle with opacity
+    elements.push(`  <rect x="${svgX}" y="${svgY}" width="${widthMm}" height="${heightMm}" fill="${zone.color}" fill-opacity="${SMEARING_ZONE_FILL_OPACITY}" />`);
+
+    // Hatched pattern overlay
+    elements.push(`  <rect x="${svgX}" y="${svgY}" width="${widthMm}" height="${heightMm}" fill="url(#${patternId})" />`);
+
+    // Border rectangle
+    elements.push(`  <rect x="${svgX}" y="${svgY}" width="${widthMm}" height="${heightMm}" fill="none" stroke="${zone.color}" stroke-width="${SMEARING_ZONE_BORDER_WIDTH}" stroke-opacity="${SMEARING_ZONE_BORDER_OPACITY}" />`);
+
+    // Label BELOW the zone (in SVG coords, y increases downward)
+    const labelX = svgX;
+    const labelY = svgY + heightMm + SMEARING_ZONE_LABEL_MARGIN; // Below the rectangle
+    elements.push(`  <text x="${labelX}" y="${labelY}" font-size="${labelFontSize}" font-family="'Lucida Grande', sans-serif" fill="${zone.color}" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">${zone.label}</text>`);
+
+    elements.push(`</g>`);
+  }
+
+  return { defs, elements: elements.join('\n') };
+}
+
 /**
  * Generate full SVG document
  */
 export async function generateSvg(
   config: Config,
   holds: ComposedHold[],
-  options: SvgOptions = {}
+  options: SvgOptions = {},
+  smearingZones: ComposedSmearingZone[] = []
 ): Promise<string> {
   const opts = { ...DEFAULT_OPTIONS, ...options };
   const wallDimensions = getWallDimensions(config.wall.lanes, config.wall.panelsHeight);
@@ -439,6 +545,21 @@ export async function generateSvg(
   parts.push(`<?xml version="1.0" encoding="UTF-8"?>`);
   parts.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}mm" height="${svgHeight}mm" viewBox="${-margin} ${-margin} ${svgWidth} ${svgHeight}">`);
 
+  // Generate smearing zone patterns (need to be in defs before use)
+  const zonesToRender = opts.showSmearingZones ? smearingZones : [];
+  const { defs: zoneDefs, elements: zoneElements } = generateSmearingZones(
+    zonesToRender,
+    wallDimensions,
+    opts.holdLabelFontSize
+  );
+
+  // Add defs section if we have patterns
+  if (zoneDefs) {
+    parts.push(`<defs>`);
+    parts.push(zoneDefs);
+    parts.push(`</defs>`);
+  }
+
   // Background
   parts.push(`<rect x="0" y="0" width="${wallDimensions.width}" height="${wallDimensions.height}" fill="white" stroke="#333333" stroke-width="1" />`);
 
@@ -446,6 +567,13 @@ export async function generateSvg(
   if (opts.showGrid) {
     parts.push(`<g id="grid">`);
     parts.push(generateGrid(wallDimensions, config, opts));
+    parts.push(`</g>`);
+  }
+
+  // Smearing zones (rendered after grid, before arrows and holds)
+  if (zoneElements) {
+    parts.push(`<g id="smearing-zones">`);
+    parts.push(zoneElements);
     parts.push(`</g>`);
   }
 

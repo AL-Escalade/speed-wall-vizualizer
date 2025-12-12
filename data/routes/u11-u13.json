@@ -26,5 +26,27 @@
     "SN5 BIG D5 E7 @M11",
     "SN5 BIG B10 B8 @M12",
     "SN6 STOP B3 B3 @PAD"
-  ]
+  ],
+  "smearingZones": [{
+    "label": "A1",
+    "panel": "SN1",
+    "column": "A",
+    "row": 8,
+    "height": 4,
+    "width": 4
+  },{
+    "label": "A2",
+    "panel": "SN4",
+    "column": "E",
+    "row": 1,
+    "height": 3,
+    "width": 5
+  },{
+    "label": "A3",
+    "panel": "SN4",
+    "column": "A",
+    "row": 7,
+    "height": 4,
+    "width": 4
+  }]
 }
