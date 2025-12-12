@@ -269,4 +269,18 @@ describe('viewerStore', () => {
       expect(useViewerStore.getState().panY).toBe(1000);
     });
   });
+
+  describe('setShowSmearingZones', () => {
+    it('should set showSmearingZones to true', () => {
+      useViewerStore.setState({ showSmearingZones: false });
+      useViewerStore.getState().setShowSmearingZones(true);
+      expect(useViewerStore.getState().showSmearingZones).toBe(true);
+    });
+
+    it('should set showSmearingZones to false', () => {
+      useViewerStore.setState({ showSmearingZones: true });
+      useViewerStore.getState().setShowSmearingZones(false);
+      expect(useViewerStore.getState().showSmearingZones).toBe(false);
+    });
+  });
 });

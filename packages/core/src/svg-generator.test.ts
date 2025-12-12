@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { generateSvg } from './svg-generator.js';
-import type { Config } from './types.js';
+import type { Config, ComposedSmearingZone } from './types.js';
 import type { ComposedHold } from './route-composer.js';
 
 describe('generateSvg', () => {
@@ -161,5 +161,78 @@ describe('generateSvg', () => {
     };
     const svg = await generateSvg(basicConfig, [crossPanelHold]);
     expect(svg).toContain('class="hold"');
+  });
+
+  describe('smearing zones', () => {
+    const basicZone: ComposedSmearingZone = {
+      label: 'Z1',
+      panel: 'SN1',
+      column: 'F',
+      row: 3,
+      width: 2,
+      height: 3,
+      color: '#FF0000',
+      laneOffset: 0,
+    };
+
+    it('should render smearing zones when showSmearingZones is true', async () => {
+      const svg = await generateSvg(basicConfig, [basicHold], { showSmearingZones: true }, [basicZone]);
+      expect(svg).toContain('id="smearing-zones"');
+      expect(svg).toContain('<defs>');
+      expect(svg).toContain('pattern');
+    });
+
+    it('should not render smearing zones when showSmearingZones is false', async () => {
+      const svg = await generateSvg(basicConfig, [basicHold], { showSmearingZones: false }, [basicZone]);
+      expect(svg).not.toContain('id="smearing-zones"');
+    });
+
+    it('should include zone label', async () => {
+      const svg = await generateSvg(basicConfig, [basicHold], { showSmearingZones: true }, [basicZone]);
+      expect(svg).toContain('Z1');
+    });
+
+    it('should handle zone with columnOffset', async () => {
+      const zoneWithOffset: ComposedSmearingZone = {
+        ...basicZone,
+        columnOffset: 0.5,
+      };
+      const svg = await generateSvg(basicConfig, [basicHold], { showSmearingZones: true }, [zoneWithOffset]);
+      expect(svg).toContain('id="smearing-zones"');
+    });
+
+    it('should handle zone with decimal row', async () => {
+      const zoneWithDecimalRow: ComposedSmearingZone = {
+        ...basicZone,
+        row: 3.5,
+      };
+      const svg = await generateSvg(basicConfig, [basicHold], { showSmearingZones: true }, [zoneWithDecimalRow]);
+      expect(svg).toContain('id="smearing-zones"');
+    });
+
+    it('should handle zone with anchorOffset', async () => {
+      const zoneWithAnchor: ComposedSmearingZone = {
+        ...basicZone,
+        anchorOffset: { x: 50, y: 100 },
+      };
+      const svg = await generateSvg(basicConfig, [basicHold], { showSmearingZones: true }, [zoneWithAnchor]);
+      expect(svg).toContain('id="smearing-zones"');
+    });
+
+    it('should render multiple zones', async () => {
+      const secondZone: ComposedSmearingZone = {
+        ...basicZone,
+        label: 'Z2',
+        column: 'H',
+      };
+      const svg = await generateSvg(basicConfig, [basicHold], { showSmearingZones: true }, [basicZone, secondZone]);
+      expect(svg).toContain('Z1');
+      expect(svg).toContain('Z2');
+    });
+
+    it('should not add defs when no zones provided', async () => {
+      const svg = await generateSvg(basicConfig, [basicHold], { showSmearingZones: true }, []);
+      expect(svg).not.toContain('<defs>');
+    });
   });
 });

@@ -22,6 +22,7 @@ vi.mock('@/store', async (importOriginal) => {
         zoomAtPoint: vi.fn(),
         resetToFit: mockResetToFit,
         setContainerDimensions: vi.fn(),
+        showSmearingZones: true,
       })
     ),
   };
