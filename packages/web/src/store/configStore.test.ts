@@ -782,10 +782,10 @@ describe('configStore', () => {
         activeConfigId: 'config-1',
       });
 
-      useConfigStore.getState().setCoordinateDisplaySystem('row-column');
+      useConfigStore.getState().setCoordinateDisplaySystem('FFME');
       const state = useConfigStore.getState();
 
-      expect(state.configurations[0].coordinateDisplaySystem).toBe('row-column');
+      expect(state.configurations[0].coordinateDisplaySystem).toBe('FFME');
     });
   });
 });
