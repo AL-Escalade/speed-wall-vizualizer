@@ -21,10 +21,14 @@ vi.mock('@/hooks/useUrlSync', () => ({
   useUrlSync: vi.fn(),
 }));
 
-// Mock layout components
-vi.mock('@/components/layouts', () => ({
-  MainLayout: () => <div data-testid="main-layout">MainLayout</div>,
-  SharedConfigLoader: () => <div data-testid="shared-config-loader">SharedConfigLoader</div>,
+// Mock useIsMobile hook
+vi.mock('@/hooks/useMediaQuery', () => ({
+  useIsMobile: vi.fn().mockReturnValue(false),
+}));
+
+// Mock useMobileTab hook
+vi.mock('@/hooks/useMobileTab', () => ({
+  useMobileTab: vi.fn().mockReturnValue('config'),
 }));
 
 // Mock pages

@@ -48,7 +48,6 @@ vi.mock('@/components/print', () => ({
   PageDetail: vi.fn(() => <div data-testid="page-detail">Page Detail</div>),
 }));
 
-
 // Store mock setup
 const createMockConfig = (overrides: Partial<SavedConfiguration> = {}): SavedConfiguration => ({
   id: 'test-config-id',
