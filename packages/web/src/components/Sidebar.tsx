@@ -484,7 +484,7 @@ function DisplayOptions() {
   if (!config) return null;
 
   return (
-    <div className="border-t border-base-300">
+    <div className="border-t border-base-300 bg-base-100">
       <button
         type="button"
         className="w-full p-4 flex items-center justify-between hover:bg-base-200 transition-colors"
