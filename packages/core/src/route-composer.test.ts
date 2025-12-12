@@ -9,7 +9,7 @@ import {
   composeSmearingZones,
   composeAllSmearingZones,
 } from './route-composer.js';
-import type { ReferenceRoute, ReferenceRoutes, RouteSegment, GeneratedRoute, Hold } from './types.js';
+import type { ReferenceRoute, ReferenceRoutes, RouteSegment, GeneratedRoute } from './types.js';
 import { COLUMN_SYSTEMS } from './types.js';
 
 describe('parseHold', () => {
