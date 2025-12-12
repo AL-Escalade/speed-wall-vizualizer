@@ -402,7 +402,7 @@ function SectionList() {
   }, []);
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 p-4">
+    <div className="p-4 md:flex-1 md:flex md:flex-col md:min-h-0">
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-semibold">Sections</h3>
         <button className="btn btn-sm btn-primary" onClick={handleAddSection}>
@@ -410,7 +410,7 @@ function SectionList() {
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto space-y-3">
+      <div className="space-y-3 md:flex-1 md:overflow-y-auto">
         {config.sections.length === 0 ? (
           <div className="text-center text-base-content/50 py-8">
             Aucune section. Cliquez sur "Ajouter" pour commencer.
@@ -484,13 +484,13 @@ function DisplayOptions() {
   if (!config) return null;
 
   return (
-    <div className="border-t border-base-300 bg-base-100">
+    <div className="border-b border-base-300 md:border-t md:border-b-0 md:bg-base-100">
       <button
         type="button"
         className="w-full p-4 flex items-center justify-between hover:bg-base-200 transition-colors"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <h3 className="font-semibold">Options</h3>
+        <h3 className="font-semibold">Options d'affichage</h3>
         <ChevronDown
           size={16}
           className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`}
@@ -591,7 +591,7 @@ function DisplayOptions() {
 
 export function Sidebar() {
   return (
-    <aside className="w-full md:w-80 bg-base-100 md:border-r border-base-300 flex flex-col overflow-hidden h-full">
+    <aside className="w-full md:w-80 bg-base-100 md:border-r border-base-300 md:flex md:flex-col md:overflow-hidden md:h-full">
       <ConfigSelector />
       <WallConfig />
       <SectionList />
