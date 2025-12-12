@@ -4,6 +4,7 @@ import {
   encodeConfig,
   decodeConfig,
   hydrateShareableConfig,
+  getConfigFingerprint,
   type ShareableConfig,
 } from './urlConfig';
 import type { SavedConfiguration } from '@/store';
@@ -263,5 +264,170 @@ describe('roundtrip encoding/decoding', () => {
     const decoded = decodeConfig(encoded);
 
     expect(decoded).toEqual(original);
+  });
+});
+
+describe('getConfigFingerprint', () => {
+  it('should generate same fingerprint for identical configs', () => {
+    const config1: SavedConfiguration = {
+      id: 'id-1',
+      name: 'Config 1',
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [
+        { id: 's1', name: 'Section', source: 'ifsc', lane: 0, fromHold: 1, toHold: 20, color: '#FF0000' },
+      ],
+      createdAt: 1000,
+      updatedAt: 2000,
+    };
+
+    const config2: SavedConfiguration = {
+      id: 'id-2',
+      name: 'Config 2 (different name)',
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [
+        { id: 's2', name: 'Section', source: 'ifsc', lane: 0, fromHold: 1, toHold: 20, color: '#FF0000' },
+      ],
+      createdAt: 3000,
+      updatedAt: 4000,
+    };
+
+    expect(getConfigFingerprint(config1)).toBe(getConfigFingerprint(config2));
+  });
+
+  it('should generate different fingerprint for different wall configs', () => {
+    const config1: SavedConfiguration = {
+      id: 'id-1',
+      name: 'Config',
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [],
+      createdAt: 1000,
+      updatedAt: 2000,
+    };
+
+    const config2: SavedConfiguration = {
+      id: 'id-2',
+      name: 'Config',
+      wall: { lanes: 3, panelsHeight: 10 },
+      sections: [],
+      createdAt: 1000,
+      updatedAt: 2000,
+    };
+
+    expect(getConfigFingerprint(config1)).not.toBe(getConfigFingerprint(config2));
+  });
+
+  it('should generate different fingerprint for different sections', () => {
+    const config1: SavedConfiguration = {
+      id: 'id-1',
+      name: 'Config',
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [
+        { id: 's1', name: 'Section', source: 'ifsc', lane: 0, fromHold: 1, toHold: 20, color: '#FF0000' },
+      ],
+      createdAt: 1000,
+      updatedAt: 2000,
+    };
+
+    const config2: SavedConfiguration = {
+      id: 'id-2',
+      name: 'Config',
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [
+        { id: 's2', name: 'Section', source: 'u15', lane: 0, fromHold: 1, toHold: 20, color: '#FF0000' },
+      ],
+      createdAt: 1000,
+      updatedAt: 2000,
+    };
+
+    expect(getConfigFingerprint(config1)).not.toBe(getConfigFingerprint(config2));
+  });
+
+  it('should generate same fingerprint regardless of section order', () => {
+    const config1: SavedConfiguration = {
+      id: 'id-1',
+      name: 'Config',
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [
+        { id: 's1', name: 'Section A', source: 'ifsc', lane: 0, fromHold: 1, toHold: 10, color: '#FF0000' },
+        { id: 's2', name: 'Section B', source: 'u15', lane: 1, fromHold: 1, toHold: 10, color: '#00FF00' },
+      ],
+      createdAt: 1000,
+      updatedAt: 2000,
+    };
+
+    const config2: SavedConfiguration = {
+      id: 'id-2',
+      name: 'Config',
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [
+        { id: 's3', name: 'Section B', source: 'u15', lane: 1, fromHold: 1, toHold: 10, color: '#00FF00' },
+        { id: 's4', name: 'Section A', source: 'ifsc', lane: 0, fromHold: 1, toHold: 10, color: '#FF0000' },
+      ],
+      createdAt: 1000,
+      updatedAt: 2000,
+    };
+
+    expect(getConfigFingerprint(config1)).toBe(getConfigFingerprint(config2));
+  });
+
+  it('should ignore displayOptions in fingerprint', () => {
+    const config1: SavedConfiguration = {
+      id: 'id-1',
+      name: 'Config',
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [],
+      displayOptions: { gridColor: '#AAAAAA' },
+      createdAt: 1000,
+      updatedAt: 2000,
+    };
+
+    const Drawing: SavedConfiguration = {
+      id: 'id-2',
+      name: 'Config',
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [],
+      displayOptions: { gridColor: '#BBBBBB', labelFontSize: 50 },
+      createdAt: 1000,
+      updatedAt: 2000,
+    };
+
+    expect(getConfigFingerprint(config1)).toBe(getConfigFingerprint(Drawing));
+  });
+
+  it('should include showArrow in fingerprint', () => {
+    const config1: SavedConfiguration = {
+      id: 'id-1',
+      name: 'Config',
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [],
+      showArrow: true,
+      createdAt: 1000,
+      updatedAt: 2000,
+    };
+
+    const config2: SavedConfiguration = {
+      id: 'id-2',
+      name: 'Config',
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [],
+      showArrow: false,
+      createdAt: 1000,
+      updatedAt: 2000,
+    };
+
+    expect(getConfigFingerprint(config1)).not.toBe(getConfigFingerprint(config2));
+  });
+
+  it('should work with ShareableConfig type', () => {
+    const shareable: ShareableConfig = {
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [
+        { name: 'Section', source: 'ifsc', lane: 0, fromHold: 1, toHold: 20, color: '#FF0000' },
+      ],
+    };
+
+    const fingerprint = getConfigFingerprint(shareable);
+    expect(typeof fingerprint).toBe('string');
+    expect(fingerprint.length).toBeGreaterThan(0);
   });
 });

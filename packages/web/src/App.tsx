@@ -107,6 +107,13 @@ function SharedConfigLoader() {
 }
 
 function App() {
+  const deduplicateConfigurations = useConfigStore((s) => s.deduplicateConfigurations);
+
+  // Run deduplication once on mount to clean up any existing duplicates
+  useEffect(() => {
+    deduplicateConfigurations();
+  }, [deduplicateConfigurations]);
+
   return (
     <ErrorBoundary>
       <BrowserRouter>
