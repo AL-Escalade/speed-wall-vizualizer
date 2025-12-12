@@ -88,6 +88,34 @@ export interface Hold {
 /** Scale factors per hold type */
 export type HoldScales = Record<string, number>;
 
+/** Smearing zone definition in reference route */
+export interface SmearingZone {
+  /** Zone identifier displayed on the plan (e.g., "Z1", "Zone A") */
+  label: string;
+  /** Panel identifier where the zone starts (e.g., "DX1", "SN3") */
+  panel: string;
+  /** Column letter for the bottom-left corner (A-L) */
+  column: Column;
+  /** Horizontal offset from the column in insert units (e.g., 0.5 = half column to the right) */
+  columnOffset?: number;
+  /** Row number for the bottom-left corner (can be decimal, e.g., 4.5 = between rows 4 and 5) */
+  row: number;
+  /** Width in insert units (float, e.g., 2.5 = 2.5 column spacings) */
+  width: number;
+  /** Height in insert units (float, e.g., 4.0 = 4 row spacings, can span panels) */
+  height: number;
+}
+
+/** Composed smearing zone with computed offsets */
+export interface ComposedSmearingZone extends SmearingZone {
+  /** Color inherited from reference route or segment override */
+  color: string;
+  /** Anchor offset applied from segment (in mm) */
+  anchorOffset?: Point;
+  /** Horizontal lane offset from segment */
+  laneOffset: number;
+}
+
 /** Reference route definition */
 export interface ReferenceRoute {
   /** Color for holds from this route */
@@ -98,6 +126,8 @@ export interface ReferenceRoute {
   columns?: ColumnSystem;
   /** List of holds in compact format: "PANEL TYPE POSITION ORIENTATION [SCALE]" */
   holds: string[];
+  /** Smearing zones (areas for friction-based foot placements) */
+  smearingZones?: SmearingZone[];
 }
 
 /** All reference routes */

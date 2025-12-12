@@ -30,6 +30,7 @@ function buildRoutes(): ReferenceRoutes {
       holdScales: (data as { holdScales?: Record<string, number> }).holdScales,
       columns: (data as { columns?: string }).columns,
       holds: data.holds,
+      smearingZones: (data as { smearingZones?: ReferenceRoute['smearingZones'] }).smearingZones,
     };
   }
 

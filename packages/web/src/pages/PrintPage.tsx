@@ -6,8 +6,8 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { generateSvg, composeAllRoutes, type Config } from '@voie-vitesse/core';
-import { useConfigStore, useRoutesStore, DEFAULT_DISPLAY_OPTIONS } from '@/store';
+import { generateSvg, composeAllRoutes, composeAllSmearingZones, type Config } from '@voie-vitesse/core';
+import { useConfigStore, useRoutesStore, useViewerStore, DEFAULT_DISPLAY_OPTIONS } from '@/store';
 import { sectionToSegment, normalizeSvgForWeb } from '@/utils/sectionMapper';
 import { generateAndDownloadPdf } from '@/utils/pdfGenerator';
 import { usePrintLayout, type PrintConfig as PrintConfigType, type Lane } from '@/hooks/usePrintLayout';
@@ -21,6 +21,7 @@ export function PrintPage() {
     s.configurations.find((c) => c.id === s.activeConfigId) ?? null
   );
   const routes = useRoutesStore((s) => s.routes);
+  const showSmearingZones = useViewerStore((s) => s.showSmearingZones);
 
   // SVG state
   const [svgContent, setSvgContent] = useState<string | null>(null);
@@ -101,6 +102,9 @@ export function PrintPage() {
 
         const composedHolds = composeAllRoutes(svgConfig.routes, routes);
 
+        // Compose smearing zones
+        const composedSmearingZones = composeAllSmearingZones(svgConfig.routes, routes, composedHolds);
+
         // Merge display options with defaults
         const displayOptions = { ...DEFAULT_DISPLAY_OPTIONS, ...config.displayOptions };
 
@@ -109,10 +113,11 @@ export function PrintPage() {
           showPanelLabels: true,
           showCoordinateLabels: true,
           showArrow: config.showArrow ?? false,
+          showSmearingZones,
           gridColor: displayOptions.gridColor,
           labelFontSize: displayOptions.labelFontSize,
           holdLabelFontSize: displayOptions.holdLabelFontSize,
-        });
+        }, composedSmearingZones);
 
         if (!isCancelled) {
           const normalizedSvg = normalizeSvgForWeb(svg);
@@ -150,7 +155,7 @@ export function PrintPage() {
     return () => {
       isCancelled = true;
     };
-  }, [config, routes]);
+  }, [config, routes, showSmearingZones]);
 
   // Reset selected page only when total pages changes or layout becomes null
   const totalPages = layout?.layout.totalPages ?? 0;

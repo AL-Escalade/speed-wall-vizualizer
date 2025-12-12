@@ -2,9 +2,9 @@
  * Route composition from segments of reference routes
  */
 
-import type { Hold, ReferenceRoute, ReferenceRoutes, RouteSegment, GeneratedRoute, AnchorPosition, PanelId, InsertPosition, ColumnSystem } from './types.js';
-import { DEFAULT_COLUMN_SYSTEM } from './types.js';
-import { parsePanelId, getInsertPosition, parseInsertPosition as parseInsertPositionCore, validateColumn } from './plate-grid.js';
+import type { Hold, ReferenceRoute, ReferenceRoutes, RouteSegment, GeneratedRoute, AnchorPosition, PanelId, InsertPosition, ColumnSystem, SmearingZone, ComposedSmearingZone, Column, Row } from './types.js';
+import { DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM } from './types.js';
+import { parsePanelId, getInsertPosition, parseInsertPosition as parseInsertPositionCore, validateColumn, convertColumn, GRID } from './plate-grid.js';
 
 /** Offset in mm for anchor-based positioning */
 interface MmOffset {
@@ -241,4 +241,169 @@ export function composeAllRoutes(generatedRoutes: GeneratedRoute[], routes: Refe
   }
 
   return allHolds;
+}
+
+/**
+ * Check if a smearing zone overlaps vertically with the selected holds
+ * Zone is included if it starts before the highest hold AND ends after the lowest hold
+ * @param zone - Smearing zone to check (column must be in canonical system)
+ * @param holds - Selected holds to check overlap with
+ * @param laneOffset - Lane offset for position calculation
+ * @returns true if zone should be included
+ */
+function shouldIncludeZone(zone: SmearingZone & { canonicalColumn: Column }, holds: Hold[], laneOffset: number): boolean {
+  if (holds.length === 0) return false;
+
+  // Get Y positions of all holds
+  const holdYPositions = holds.map(h => getInsertPosition(h.panel, h.position, laneOffset).y);
+  const minHoldY = Math.min(...holdYPositions);
+  const maxHoldY = Math.max(...holdYPositions);
+
+  // Get Y range of zone (using canonical column)
+  const zonePanel = parsePanelId(zone.panel);
+  // Handle decimal row values: use integer part for base position, add fractional offset
+  const integerRow = Math.floor(zone.row) as Row;
+  const fractionalRowOffset = (zone.row - integerRow) * GRID.ROW_SPACING;
+  const zoneBaseY = getInsertPosition(zonePanel, { column: zone.canonicalColumn, row: integerRow }, laneOffset).y + fractionalRowOffset;
+  const zoneTopY = zoneBaseY + zone.height * GRID.ROW_SPACING;
+
+  // Zone overlaps if it starts before highest hold AND ends after lowest hold
+  return zoneBaseY <= maxHoldY && zoneTopY >= minHoldY;
+}
+
+/**
+ * Extract smearing zones from a reference route for a given segment
+ * Zones are filtered based on vertical overlap with selected holds
+ * @param segment - Route segment configuration
+ * @param routes - Available reference routes
+ * @param selectedHolds - Holds that were selected for this segment
+ * @returns Array of composed smearing zones
+ */
+export function extractSmearingZones(
+  segment: RouteSegment,
+  routes: ReferenceRoutes,
+  selectedHolds: Hold[]
+): ComposedSmearingZone[] {
+  const route = routes[segment.source.toLowerCase()];
+  if (!route) {
+    return [];
+  }
+
+  const zones = route.smearingZones ?? [];
+  if (zones.length === 0) {
+    return [];
+  }
+
+  const laneOffset = segment.laneOffset ?? 0;
+  const color = segment.color ?? route.color;
+  const routeColumnSystem = route.columns || DEFAULT_COLUMN_SYSTEM;
+
+  // Calculate anchor offset if segment has anchor
+  let anchorOffset: MmOffset | undefined;
+  if (segment.anchor && selectedHolds.length > 0) {
+    const firstHold = selectedHolds[0];
+    anchorOffset = calculateMmOffset(firstHold.panel, firstHold.position, segment.anchor, laneOffset);
+  }
+
+  // Filter zones by vertical overlap with selected holds
+  // If no fromHold/toHold specified (full route), include all zones
+  const hasHoldFilter = segment.fromHold !== undefined || segment.toHold !== undefined;
+
+  // First convert zone columns to canonical system (needed for filtering)
+  const zonesWithCanonicalColumn = zones.map(zone => ({
+    ...zone,
+    canonicalColumn: convertColumn(zone.column, routeColumnSystem, CANONICAL_COLUMN_SYSTEM),
+  }));
+
+  // Filter and convert zone columns from route's coordinate system to canonical system
+  return zonesWithCanonicalColumn
+    .filter(zone => !hasHoldFilter || shouldIncludeZone(zone, selectedHolds, laneOffset))
+    .map(zone => ({
+      label: zone.label,
+      panel: zone.panel,
+      row: zone.row,
+      width: zone.width,
+      height: zone.height,
+      // Use the canonical column
+      column: zone.canonicalColumn,
+      // Pass through columnOffset if present
+      columnOffset: zone.columnOffset,
+      color,
+      anchorOffset,
+      laneOffset,
+    }));
+}
+
+/**
+ * Compose smearing zones from a route's segments
+ * @param segments - Route segments to compose
+ * @param routes - Available reference routes
+ * @param composedHolds - Already composed holds (used for filtering)
+ * @returns Array of composed smearing zones
+ */
+export function composeSmearingZones(
+  segments: RouteSegment[],
+  routes: ReferenceRoutes,
+  composedHolds: ComposedHold[]
+): ComposedSmearingZone[] {
+  const allZones: ComposedSmearingZone[] = [];
+
+  // Group composed holds by segment source and lane offset for filtering
+  let holdIndex = 0;
+  for (const segment of segments) {
+    // Count how many holds came from this segment
+    const segmentHolds: ComposedHold[] = [];
+    while (holdIndex < composedHolds.length) {
+      const hold = composedHolds[holdIndex];
+      if (hold.sourceRoute.toLowerCase() === segment.source.toLowerCase() &&
+          hold.laneOffset === (segment.laneOffset ?? 0)) {
+        segmentHolds.push(hold);
+        holdIndex++;
+      } else {
+        break;
+      }
+    }
+
+    const zones = extractSmearingZones(segment, routes, segmentHolds);
+    allZones.push(...zones);
+  }
+
+  return allZones;
+}
+
+/**
+ * Compose all smearing zones from configuration
+ * @param generatedRoutes - Array of generated route configurations
+ * @param routes - Available reference routes
+ * @param allComposedHolds - All composed holds (for filtering)
+ * @returns Array of all composed smearing zones
+ */
+export function composeAllSmearingZones(
+  generatedRoutes: GeneratedRoute[],
+  routes: ReferenceRoutes,
+  allComposedHolds: ComposedHold[]
+): ComposedSmearingZone[] {
+  const allZones: ComposedSmearingZone[] = [];
+  let holdIndex = 0;
+
+  for (const route of generatedRoutes) {
+    // Count holds for this route
+    const routeHoldCount = route.segments.reduce((count, segment) => {
+      const sourceRoute = routes[segment.source.toLowerCase()];
+      if (!sourceRoute) return count;
+      const holds = getRouteHolds(sourceRoute);
+      const from = typeof segment.fromHold === 'number' ? segment.fromHold : 1;
+      const to = typeof segment.toHold === 'number' ? segment.toHold : holds.length;
+      const excludeCount = segment.excludeHolds?.length ?? 0;
+      return count + (to - from + 1) - excludeCount;
+    }, 0);
+
+    const routeHolds = allComposedHolds.slice(holdIndex, holdIndex + routeHoldCount);
+    holdIndex += routeHoldCount;
+
+    const zones = composeSmearingZones(route.segments, routes, routeHolds);
+    allZones.push(...zones);
+  }
+
+  return allZones;
 }

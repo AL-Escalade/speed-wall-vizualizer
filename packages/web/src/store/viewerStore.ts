@@ -46,6 +46,8 @@ interface ViewerStoreState extends ViewerState {
   /** Container dimensions for pan constraints */
   containerWidth: number;
   containerHeight: number;
+  /** Show smearing zones (session-only, not persisted) */
+  showSmearingZones: boolean;
   // Actions
   /** Zoom in */
   zoomIn: () => void;
@@ -68,6 +70,8 @@ interface ViewerStoreState extends ViewerState {
    * Since SVG uses 100% width/height with viewBox, it auto-fits at zoom=1.
    */
   resetToFit: () => void;
+  /** Toggle smearing zones visibility */
+  setShowSmearingZones: (show: boolean) => void;
 }
 
 export const useViewerStore = create<ViewerStoreState>()((set) => ({
@@ -76,6 +80,7 @@ export const useViewerStore = create<ViewerStoreState>()((set) => ({
   panY: 0,
   containerWidth: 0,
   containerHeight: 0,
+  showSmearingZones: true, // Default to visible
 
   zoomIn: () => {
     set((state) => ({
@@ -153,5 +158,9 @@ export const useViewerStore = create<ViewerStoreState>()((set) => ({
       panX: 0,
       panY: 0,
     });
+  },
+
+  setShowSmearingZones: (show: boolean) => {
+    set({ showSmearingZones: show });
   },
 }));

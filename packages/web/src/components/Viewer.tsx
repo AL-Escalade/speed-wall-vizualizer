@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { generateSvg, composeAllRoutes, type Config } from '@voie-vitesse/core';
+import { generateSvg, composeAllRoutes, composeAllSmearingZones, type Config } from '@voie-vitesse/core';
 import { useShallow } from 'zustand/react/shallow';
 import { useConfigStore, useRoutesStore, useViewerStore, DEFAULT_DISPLAY_OPTIONS } from '@/store';
 import { sectionToSegment, normalizeSvgForWeb } from '@/utils/sectionMapper';
@@ -19,7 +19,7 @@ export function Viewer() {
     s.configurations.find((c) => c.id === s.activeConfigId) ?? null
   );
   const routes = useRoutesStore((s) => s.routes);
-  const { zoom, panX, panY, zoomIn, zoomOut, pan, zoomAtPoint, resetToFit, setContainerDimensions: setStoreDimensions } = useViewerStore(
+  const { zoom, panX, panY, zoomIn, zoomOut, pan, zoomAtPoint, resetToFit, setContainerDimensions: setStoreDimensions, showSmearingZones } = useViewerStore(
     useShallow((s) => ({
       zoom: s.zoom,
       panX: s.panX,
@@ -30,6 +30,7 @@ export function Viewer() {
       zoomAtPoint: s.zoomAtPoint,
       resetToFit: s.resetToFit,
       setContainerDimensions: s.setContainerDimensions,
+      showSmearingZones: s.showSmearingZones,
     }))
   );
 
@@ -106,6 +107,9 @@ export function Viewer() {
         // Compose all routes
         const composedHolds = composeAllRoutes(svgConfig.routes, routes);
 
+        // Compose smearing zones
+        const composedSmearingZones = composeAllSmearingZones(svgConfig.routes, routes, composedHolds);
+
         // Merge display options with defaults
         const displayOptions = { ...DEFAULT_DISPLAY_OPTIONS, ...config.displayOptions };
 
@@ -119,11 +123,12 @@ export function Viewer() {
           showPanelLabels: true,
           showCoordinateLabels: true,
           showArrow: config.showArrow ?? false,
+          showSmearingZones,
           gridColor: displayOptions.gridColor,
           labelFontSize: displayOptions.labelFontSize,
           holdLabelFontSize: displayOptions.holdLabelFontSize,
           coordinateDisplaySystem,
-        });
+        }, composedSmearingZones);
 
         if (!isCancelled) {
           setSvgContent(normalizeSvgForWeb(svg));
@@ -156,7 +161,7 @@ export function Viewer() {
         clearTimeout(generateTimeoutRef.current);
       }
     };
-  }, [config, routes]);
+  }, [config, routes, showSmearingZones]);
 
   // Convert SVG to data URL for optimized rendering
   useEffect(() => {
