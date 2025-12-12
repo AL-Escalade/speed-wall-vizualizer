@@ -7,6 +7,7 @@ import { persist } from 'zustand/middleware';
 import type { WallConfig } from '@voie-vitesse/core';
 import type { Section, SavedConfiguration, DisplayOptions } from './types';
 import type { CoordinateSystemId } from '@/constants/routes';
+import { getConfigFingerprint } from '@/utils/urlConfig';
 
 // Import route data to get default colors
 import ifscData from '../../../../data/routes/ifsc.json';
@@ -111,6 +112,8 @@ interface ConfigState {
   updateDisplayOptions: (options: Partial<DisplayOptions>) => void;
   /** Set coordinate display system for current configuration */
   setCoordinateDisplaySystem: (system: CoordinateSystemId) => void;
+  /** Remove duplicate configurations (keeps oldest of each) */
+  deduplicateConfigurations: () => void;
 }
 
 export const useConfigStore = create<ConfigState>()(
@@ -238,6 +241,21 @@ export const useConfigStore = create<ConfigState>()(
       },
 
       importConfiguration: (config: SavedConfiguration) => {
+        const state = get();
+        const incomingFingerprint = getConfigFingerprint(config);
+
+        // Check if a configuration with the same content already exists
+        const existingConfig = state.configurations.find(
+          (c) => getConfigFingerprint(c) === incomingFingerprint
+        );
+
+        if (existingConfig) {
+          // Activate the existing configuration instead of creating a duplicate
+          set({ activeConfigId: existingConfig.id });
+          return;
+        }
+
+        // No duplicate found, create new configuration
         const id = generateId();
         const importedConfig: SavedConfiguration = {
           ...config,
@@ -293,6 +311,56 @@ export const useConfigStore = create<ConfigState>()(
               : c
           ),
         }));
+      },
+
+      deduplicateConfigurations: () => {
+        set((state) => {
+          // Group configurations by fingerprint
+          const fingerprints = new Map<string, SavedConfiguration[]>();
+          for (const config of state.configurations) {
+            const fp = getConfigFingerprint(config);
+            const group = fingerprints.get(fp) ?? [];
+            group.push(config);
+            fingerprints.set(fp, group);
+          }
+
+          // Keep only the oldest configuration from each group
+          const deduped: SavedConfiguration[] = [];
+          const removedIds = new Set<string>();
+
+          for (const group of fingerprints.values()) {
+            if (group.length === 1) {
+              deduped.push(group[0]);
+            } else {
+              // Sort by createdAt ascending (oldest first)
+              group.sort((a, b) => a.createdAt - b.createdAt);
+              const kept = group[0];
+              deduped.push(kept);
+
+              // Track removed configs
+              for (let i = 1; i < group.length; i++) {
+                removedIds.add(group[i].id);
+              }
+            }
+          }
+
+          // Update activeConfigId if it was a removed duplicate
+          let newActiveId = state.activeConfigId;
+          if (newActiveId && removedIds.has(newActiveId)) {
+            // Find the kept config that matches this fingerprint
+            const removedConfig = state.configurations.find((c) => c.id === newActiveId);
+            if (removedConfig) {
+              const fp = getConfigFingerprint(removedConfig);
+              const keptConfig = deduped.find((c) => getConfigFingerprint(c) === fp);
+              newActiveId = keptConfig?.id ?? (deduped.length > 0 ? deduped[0].id : null);
+            }
+          }
+
+          return {
+            configurations: deduped,
+            activeConfigId: newActiveId,
+          };
+        });
       },
     }),
     {

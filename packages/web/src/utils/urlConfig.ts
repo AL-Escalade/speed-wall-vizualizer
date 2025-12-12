@@ -161,3 +161,31 @@ export function generateShareUrl(config: SavedConfiguration): string {
   const baseUrl = window.location.origin;
   return `${baseUrl}${ROUTES.SHARE(encoded)}`;
 }
+
+/**
+ * Generate a fingerprint for a configuration based on its content
+ * Used to detect duplicate configurations
+ * Ignores: id, name, timestamps, displayOptions (view preferences)
+ */
+export function getConfigFingerprint(config: SavedConfiguration | ShareableConfig): string {
+  // Normalize sections for consistent comparison
+  // Sort by lane first, then by source
+  const normalizedSections = [...config.sections]
+    .sort((a, b) => a.lane - b.lane || a.source.localeCompare(b.source))
+    .map(s => ({
+      source: s.source,
+      lane: s.lane,
+      fromHold: s.fromHold,
+      toHold: s.toHold,
+      color: s.color,
+      anchor: s.anchor,
+    }));
+
+  const normalized = {
+    wall: config.wall,
+    sections: normalizedSections,
+    showArrow: config.showArrow ?? false,
+  };
+
+  return JSON.stringify(normalized);
+}
