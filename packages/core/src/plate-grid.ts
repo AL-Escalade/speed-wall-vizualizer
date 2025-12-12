@@ -3,7 +3,7 @@
  */
 
 import type { PanelSide, PanelNumber, Column, Row, Point, PanelId, InsertPosition, ColumnSystem } from './types.js';
-import { COLUMN_SYSTEMS, DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM } from './types.js';
+import { DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM } from './types.js';
 
 /** IFSC grid constants (all dimensions in mm) */
 export const GRID = {

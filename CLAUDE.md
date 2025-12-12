@@ -25,8 +25,8 @@ npx vitest run <file>    # Run single test file
 npm run generate -- -c data/base.json -o output/wall.svg
 npm run generate:base    # Generate from base.json
 
-# Lint (web package only)
-npm run lint -w @voie-vitesse/web
+# Lint (all packages with oxlint)
+npm run lint
 
 # Regenerate bundled assets (after modifying hold SVGs)
 npm run generate:assets
