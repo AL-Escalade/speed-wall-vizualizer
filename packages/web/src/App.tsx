@@ -30,11 +30,11 @@ function MobileLayout() {
       <Header />
       <div className="flex-1 relative min-h-0 pb-14 overflow-hidden">
         {/* Sidebar visible only on config tab */}
-        <div className={`absolute inset-0 overflow-y-auto ${activeTab === 'config' ? '' : 'hidden'}`}>
+        <div className={`absolute inset-x-0 top-0 bottom-14 overflow-y-auto ${activeTab === 'config' ? '' : 'hidden'}`}>
           <Sidebar />
         </div>
         {/* Viewer always rendered for SVG export, positioned offscreen on config tab */}
-        <div className={`absolute inset-0 flex ${activeTab === 'viewer' ? '' : 'pointer-events-none -translate-x-full'}`}>
+        <div className={`absolute inset-x-0 top-0 bottom-14 flex ${activeTab === 'viewer' ? '' : 'pointer-events-none -translate-x-full'}`}>
           <Viewer />
         </div>
       </div>
