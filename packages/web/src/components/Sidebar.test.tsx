@@ -51,12 +51,12 @@ describe('Sidebar', () => {
   describe('DisplayOptions section', () => {
     it('should render options header', () => {
       render(<Sidebar />);
-      expect(screen.getByText('Options')).toBeInTheDocument();
+      expect(screen.getByText("Options d'affichage")).toBeInTheDocument();
     });
 
     it('should have expandable options button', () => {
       render(<Sidebar />);
-      const optionsButton = screen.getByText('Options').closest('button');
+      const optionsButton = screen.getByText("Options d'affichage").closest('button');
       expect(optionsButton).toBeInTheDocument();
     });
 
@@ -67,7 +67,7 @@ describe('Sidebar', () => {
       expect(screen.queryByText('Système de coordonnées')).not.toBeInTheDocument();
 
       // Click to expand
-      fireEvent.click(screen.getByText('Options'));
+      fireEvent.click(screen.getByText("Options d'affichage"));
 
       // Options should now be visible
       expect(screen.getByText('Système de coordonnées')).toBeInTheDocument();
