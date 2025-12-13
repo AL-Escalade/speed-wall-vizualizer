@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+  "plugins": ["react"],
+  "jsPlugins": ["eslint-plugin-react-refresh"],
+  "rules": {
+    "correctness": "error",
+    "suspicious": "error",
+    "pedantic": "warn",
+    "style": "warn",
+    "perf": "warn",
+    "restriction": "off",
+    "react-refresh/only-export-components": ["warn", { "allowConstantExport": true }]
+  },
+  "ignorePatterns": [
+    "dist",
+    "node_modules",
+    "coverage",
+    "*.config.js",
+    "*.config.ts"
+  ]
+}

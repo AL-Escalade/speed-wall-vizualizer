@@ -21,7 +21,7 @@ export function SharedConfigLoader() {
     if (hasImportedRef.current) return;
 
     if (!encoded) {
-      navigate(ROUTES.HOME, { replace: true });
+      void navigate(ROUTES.HOME, { replace: true });
       return;
     }
 
@@ -35,7 +35,7 @@ export function SharedConfigLoader() {
     hasImportedRef.current = true;
 
     importConfiguration(hydrateShareableConfig(config));
-    navigate(ROUTES.HOME, { replace: true });
+    void navigate(ROUTES.HOME, { replace: true });
   }, [encoded, navigate, importConfiguration]);
 
   if (error) {

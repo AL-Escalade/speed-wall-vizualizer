@@ -1,4 +1,7 @@
 {
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "explicit"
+  },
   "json.schemas": [
     {
       "fileMatch": ["data/*.json", "!data/routes/*.json"],
