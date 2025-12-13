@@ -3,7 +3,7 @@
  * Displays and manages a single section configuration
  */
 
-import { memo, useCallback, useState, useEffect } from 'react';
+import { memo, useCallback, useState, useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useConfigStore, useRoutesStore } from '@/store';
 import type { Section } from '@/store';
@@ -60,7 +60,7 @@ export const SectionItem = memo(function SectionItem({
 
   // Local color state for immediate visual feedback during color picker drag
   const [localColor, setLocalColor] = useState(section.color);
-  const colorDebounceRef = { current: null as ReturnType<typeof setTimeout> | null };
+  const colorDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Sync local color with section color when section changes externally
   useEffect(() => {

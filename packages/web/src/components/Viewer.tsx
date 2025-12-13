@@ -152,7 +152,7 @@ export function Viewer() {
 
     // Debounce SVG generation to avoid excessive regeneration during rapid changes
     generateTimeoutRef.current = setTimeout(() => {
-      generateWallSvg();
+      void generateWallSvg();
     }, 150);
 
     return () => {

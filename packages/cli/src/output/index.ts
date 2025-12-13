@@ -29,7 +29,7 @@ export async function writeOutput(
       await writePdf(svgContent, outputPath);
       break;
     default:
-      throw new Error(`Unknown output format: ${format}`);
+      throw new Error(`Unknown output format: ${format as string}`);
   }
 }
 

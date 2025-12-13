@@ -150,7 +150,7 @@ export function PrintPage() {
       }
     };
 
-    generateWallSvg();
+    void generateWallSvg();
 
     return () => {
       isCancelled = true;
@@ -204,7 +204,7 @@ export function PrintPage() {
 
   // Go back to main view
   const handleBack = useCallback(() => {
-    navigate('/');
+    void navigate('/');
   }, [navigate]);
 
   return (
