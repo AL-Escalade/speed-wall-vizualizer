@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
 
 jobs:
@@ -16,12 +16,30 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
           cache: 'npm'
+
+      - name: Fix Dependabot lockfile
+        if: github.actor == 'dependabot[bot]'
+        run: |
+          echo "Dependabot PR detected, updating package-lock.json..."
+          npm install --package-lock-only
+
+      - name: Commit lockfile changes
+        if: github.actor == 'dependabot[bot]'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore: update package-lock.json for workspace dependencies'
+          file_pattern: 'package-lock.json'
+          commit_user_name: 'github-actions[bot]'
+          commit_user_email: 'github-actions[bot]@users.noreply.github.com'
 
       - name: Install dependencies
         run: npm ci
