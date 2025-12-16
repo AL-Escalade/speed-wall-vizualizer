@@ -19,8 +19,8 @@
     "assets"
   ],
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "build": "tsgo",
+    "dev": "tsgo --watch"
   },
   "dependencies": {
     "@xmldom/xmldom": "^0.8.11"

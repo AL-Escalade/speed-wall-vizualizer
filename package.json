@@ -8,10 +8,10 @@
   ],
   "scripts": {
     "lint": "oxlint --type-aware packages/",
-    "build": "npx tsc -b && npm run build -w @voie-vitesse/web",
+    "build": "npx tsgo -b && npm run build:web -w @voie-vitesse/web",
     "build:core": "npm run build -w @voie-vitesse/core",
     "build:cli": "npm run build -w @voie-vitesse/cli",
-    "build:web": "npm run build -w @voie-vitesse/web",
+    "build:web": "npm run build:web -w @voie-vitesse/web",
     "dev:web": "npm run dev -w @voie-vitesse/web",
     "generate": "npm run generate -w @voie-vitesse/cli --",
     "generate:base": "npm run generate -w @voie-vitesse/cli -- -c ../../data/base.json -o ../../output/base.svg",
@@ -21,6 +21,7 @@
     "test:ui": "vitest --ui"
   },
   "devDependencies": {
+    "@typescript/native-preview": "^7.0.0-dev.20251215.1",
     "@vitest/coverage-v8": "^1.2.0",
     "eslint-plugin-react-refresh": "^0.4.24",
     "oxlint": "^1.32.0",

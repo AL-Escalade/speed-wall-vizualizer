@@ -6,7 +6,7 @@
     "voie-vitesse": "./dist/cli.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsgo",
     "generate": "tsx src/cli.ts"
   },
   "dependencies": {

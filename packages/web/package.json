@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run build:ts && npm run build:web",
+    "build:ts": "tsgo -b",
+    "build:web": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {

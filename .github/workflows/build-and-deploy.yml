@@ -30,7 +30,7 @@ jobs:
         run: npm run lint
 
       - name: Build core package
-        run: rm -f packages/core/tsconfig.tsbuildinfo && npm run build:core
+        run: npm run build:core
 
       - name: Run tests with coverage
         run: npm run test:coverage

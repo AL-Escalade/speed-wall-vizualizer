@@ -3,5 +3,5 @@ dist/
 /output/
 .DS_Store
 /coverage
-tsconfig.tsbuildinfo
+*.tsbuildinfo
 .serena/cache
