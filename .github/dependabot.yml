@@ -6,6 +6,12 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+    groups:
+      vite:
+        patterns:
+          - "vite"
+          - "vitest"
+          - "@vitest/*"
     # Align @types/node with Node.js 24 (from .nvmrc)
     ignore:
       - dependency-name: "@types/node"
@@ -37,6 +43,11 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+    groups:
+      vite:
+        patterns:
+          - "vite"
+          - "@vitejs/*"
     ignore:
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
