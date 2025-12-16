@@ -1,6 +1,5 @@
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
 import { resolve } from 'path'
 
 // Plugin to force full page reload when core package files change
@@ -21,9 +20,11 @@ function corePackageReload(): Plugin {
 export default defineConfig(({ command }) => ({
   plugins: [
     react(),
-    tailwindcss(),
     ...(command === 'serve' ? [corePackageReload()] : []),
   ],
+  css: {
+    postcss: './postcss.config.js',
+  },
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
