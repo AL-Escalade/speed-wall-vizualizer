@@ -6,10 +6,6 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
-    groups:
-      all-dependencies:
-        patterns:
-          - "*"
     # Align @types/node with Node.js 24 (from .nvmrc)
     ignore:
       - dependency-name: "@types/node"
@@ -21,14 +17,9 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
-    groups:
-      all-dependencies:
-        patterns:
-          - "*"
     ignore:
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
-        versions: [">=25.0.0"]
 
   # CLI package
   - package-ecosystem: "npm"
@@ -36,14 +27,9 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
-    groups:
-      all-dependencies:
-        patterns:
-          - "*"
     ignore:
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
-        versions: [">=25.0.0"]
 
   # Web package
   - package-ecosystem: "npm"
@@ -51,11 +37,6 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
-    groups:
-      all-dependencies:
-        patterns:
-          - "*"
     ignore:
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
-        versions: [">=25.0.0"]
