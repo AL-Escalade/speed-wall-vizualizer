@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@typescript/native-preview": "^7.0.0-dev.20251216.1",
-    "@vitest/coverage-v8": "^4.0.15",
+    "@vitest/coverage-v8": "^4.0.16",
     "eslint-plugin-react-refresh": "^0.4.25",
     "oxlint": "^1.33.0",
     "oxlint-tsgolint": "^0.9.1",
