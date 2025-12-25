@@ -40,7 +40,7 @@
     "DX9 BIG A2 C4 @M18",
     "DX9 BIG E7 E9 @M19",
     "SN9 BIG M10 DX10:A1 @M20",
-    "DX10 STOP A9 A9 @PAD"
+    "DX10 STOP A8 A8 @PAD"
   ],
   "smearingZones": [{
     "label": "A1",
