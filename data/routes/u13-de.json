@@ -1,0 +1,72 @@
+{
+  "$schema": "../../schemas/route.schema.json",
+  "name": "u13-de",
+  "description": "U13 Speed Route (Germany/Switzerland) - 10m",
+  "columns": "ABCDEFGHILM",
+  "color": "#32CD32",
+  "holds": [
+    "DX1 FOOT F4 G4 @F1",
+    "DX1 FOOT A10 B10 @F2",
+    "DX2 BIG F1 D3 @H1",
+    "DX2 BIG G3 E5 @H2",
+    "DX2 BIG A9 C10 @H3",
+    "SN2 FOOT G3 H3 @F3",
+    "DX3 FOOT C6 C5 @F4",
+    "SN3 BIG G4 G1 @H4",
+    "SN3 BIG M10 I8 @H5",
+    "DX4 BIG B2 D3 @H6",
+    "SN4 BIG M8 L10 @H7",
+    "DX5 FOOT E1 E2 @F5",
+    "DX5 BIG C3 C6 @H8",
+    "DX5 BIG E9 H9 @H9",
+    "SN5 FOOT H1 SN4:H10 @F6",
+    "SN5 FOOT M6 M5 @F7",
+    "SN5 FOOT E7 E6 @F8",
+    "SN6 BIG H2 E2 @H10",
+    "SN6 BIG L7 M9 @H11",
+    "SN6 BIG F9 F6 @H12",
+    "DX1 FOOT C3 C4 @F9",
+    "DX1 BIG E9 G10 @H13",
+    "DX2 FOOT C6 C7 @F10",
+    "SN2 FOOT L5 L6 @F11",
+    "SN3 FOOT I1 I2 @F12",
+    "SN3 FOOT M3 M4 @F13",
+    "SN3 FOOT M7 M8 @F14",
+    "DX4 BIG C10 F10 @H14",
+    "DX6 BIG B1 E1 @H15",
+    "SN7 STOP M3 M3 @PAD"
+  ],
+  "smearingZones": [{
+    "label": "R1",
+    "panel": "SN2",
+    "column": "M",
+    "columnOffset": 1,
+    "row": 4,
+    "width": 3,
+    "height": 3
+  }, {
+    "label": "R2",
+    "panel": "SN3",
+    "column": "I",
+    "columnOffset": 0,
+    "row": 3,
+    "width": 5,
+    "height": 4
+  }, {
+    "label": "R3",
+    "panel": "DX5",
+    "column": "F",
+    "columnOffset": 0,
+    "row": 1,
+    "width": 4,
+    "height": 3
+  }, {
+    "label": "R4",
+    "panel": "SN5",
+    "column": "H",
+    "columnOffset": 0,
+    "row": 9,
+    "width": 3,
+    "height": 3
+  }]
+}

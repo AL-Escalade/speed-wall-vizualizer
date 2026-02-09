@@ -59,7 +59,7 @@
       "description": "List of holds in compact format",
       "items": {
         "type": "string",
-        "pattern": "^(SN|DX)(10|[1-9]) (BIG|FOOT|STOP|PAD) [A-M](10|[1-9]) ((SN|DX)(10|[1-9]):)?[A-M](10|[1-9])( [0-9.]+)?( @[A-Za-z0-9-]+)?$",
+        "pattern": "^(SN|DX)(10|[1-9]) ([A-Z][A-Z0-9]*(-[A-Z][A-Z0-9]*)*) [A-M](10|[1-9]) ((SN|DX)(10|[1-9]):)?[A-M](10|[1-9])( [0-9.]+)?( @[A-Za-z0-9-]+)?$",
         "description": "Hold definition: PANEL TYPE POSITION ORIENTATION [SCALE] [@LABEL]. Column letters must match the declared coordinate system."
       }
     },

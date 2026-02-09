@@ -51,7 +51,7 @@ import type { HoldTypesConfig } from './types.js';
 /** Hold SVG content by type */
 export const HOLD_SVG_CONTENT: Record<string, string> = {
 ${Object.entries(svgContent)
-  .map(([type, content]) => `  ${type}: \`${content.replace(/`/g, '\\`').replace(/\$\{/g, '\\${')}\``)
+  .map(([type, content]) => `  '${type}': \`${content.replace(/`/g, '\\`').replace(/\$\{/g, '\\${')}\``)
   .join(',\n')}
 };
 

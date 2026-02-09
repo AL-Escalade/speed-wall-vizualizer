@@ -23,5 +23,21 @@
     },
     "defaultOrientation": 0,
     "showArrow": false
+  },
+  "BIG-DE15": {
+    "description": "Grande prise de main pour U15 (Allemagne)",
+    "dimensions": {
+      "width": 285,
+      "height": 173
+    },
+  "defaultOrientation": 180
+  },
+  "FOOT-DE15": {
+    "description": "Prise de pied pour U15 (Allemagne)",
+    "dimensions": {
+      "width": 88,
+      "height": 73
+    },
+    "defaultOrientation": 180
   }
 }

@@ -58,9 +58,9 @@ describe('parseHoldSvg', () => {
     expect(() => parseHoldSvg(invalidSvg)).toThrow('Could not determine SVG dimensions');
   });
 
-  it('should throw for SVG without insert circle', () => {
+  it('should throw for SVG without insert element', () => {
     const invalidSvg = `<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M0 0L100 100"/></svg>`;
-    expect(() => parseHoldSvg(invalidSvg)).toThrow('Circle with id or label "insert" not found');
+    expect(() => parseHoldSvg(invalidSvg)).toThrow('Circle or ellipse with id or label "insert" not found in SVG');
   });
 });
 
