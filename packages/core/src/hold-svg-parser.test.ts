@@ -58,9 +58,123 @@ describe('parseHoldSvg', () => {
     expect(() => parseHoldSvg(invalidSvg)).toThrow('Could not determine SVG dimensions');
   });
 
-  it('should throw for SVG without insert circle', () => {
+  it('should throw for SVG without insert element', () => {
     const invalidSvg = `<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M0 0L100 100"/></svg>`;
-    expect(() => parseHoldSvg(invalidSvg)).toThrow('Circle with id or label "insert" not found');
+    expect(() => parseHoldSvg(invalidSvg)).toThrow('Circle or ellipse with id or label "insert" not found in SVG');
+  });
+
+  it('should parse SVG with ellipse insert element', () => {
+    const svgWithEllipse = `<?xml version="1.0"?>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <ellipse id="insert" cx="50" cy="60" rx="5" ry="3"/>
+        <path id="prise" d="M10 10L90 90Z"/>
+      </svg>`;
+    const svgData = parseHoldSvg(svgWithEllipse);
+
+    expect(svgData.insertCenter.x).toBe(50);
+    expect(svgData.insertCenter.y).toBe(60);
+  });
+
+  it('should parse SVG with transformed insert element', () => {
+    const svgWithTransform = `<?xml version="1.0"?>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+        <circle id="insert" cx="10" cy="20" r="5" transform="translate(30, 40)"/>
+        <path id="prise" d="M10 10L90 90Z"/>
+      </svg>`;
+    const svgData = parseHoldSvg(svgWithTransform);
+
+    expect(svgData.insertCenter.x).toBe(40);
+    expect(svgData.insertCenter.y).toBe(60);
+  });
+
+  it('should throw when insert element is missing cx or cy', () => {
+    const svgMissingCy = `<?xml version="1.0"?>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <circle id="insert" cx="50" r="5"/>
+      </svg>`;
+    expect(() => parseHoldSvg(svgMissingCy)).toThrow('missing cx or cy');
+  });
+
+  it('should find insert by inkscape:label when id is not set', () => {
+    const svgWithLabel = `<?xml version="1.0"?>
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 100 100">
+        <circle inkscape:label="insert" cx="25" cy="35" r="5"/>
+        <path id="prise" d="M10 10L90 90Z"/>
+      </svg>`;
+    const svgData = parseHoldSvg(svgWithLabel);
+
+    expect(svgData.insertCenter.x).toBe(25);
+    expect(svgData.insertCenter.y).toBe(35);
+  });
+
+  it('should extract ellipses as additional elements', () => {
+    const svgWithEllipses = `<?xml version="1.0"?>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <circle id="insert" cx="50" cy="50" r="5"/>
+        <path id="prise" d="M10 10L90 90Z"/>
+        <ellipse cx="20" cy="30" rx="3" ry="2"/>
+        <circle cx="70" cy="80" r="4"/>
+      </svg>`;
+    const svgData = parseHoldSvg(svgWithEllipses);
+
+    expect(svgData.additionalElements.length).toBe(3); // insert circle + ellipse + other circle
+  });
+
+  it('should parse BIG-DE15 hold SVG correctly', () => {
+    const svgData = parseHoldSvg(HOLD_SVG_CONTENT['BIG-DE15']);
+
+    expect(svgData.pathElement).toContain('path');
+    expect(svgData.insertCenter).toBeDefined();
+    expect(svgData.insertCenter.x).toBeGreaterThan(0);
+    expect(svgData.insertCenter.y).toBeGreaterThan(0);
+    expect(svgData.viewBox.width).toBeGreaterThan(0);
+    expect(svgData.viewBox.height).toBeGreaterThan(0);
+  });
+
+  it('should parse FOOT-DE15 hold SVG correctly', () => {
+    const svgData = parseHoldSvg(HOLD_SVG_CONTENT['FOOT-DE15']);
+
+    expect(svgData.pathElement).toContain('path');
+    expect(svgData.insertCenter).toBeDefined();
+    expect(svgData.viewBox.width).toBeGreaterThan(0);
+    expect(svgData.viewBox.height).toBeGreaterThan(0);
+  });
+
+  it('should extract rotation from rotate transform with center point', () => {
+    const svgWithRotateCenter = `<?xml version="1.0"?>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <circle id="insert" cx="50" cy="50" r="5"/>
+        <path id="prise" d="M10 10L90 90Z" transform="rotate(45, 50, 50)"/>
+      </svg>`;
+    const svgData = parseHoldSvg(svgWithRotateCenter);
+
+    expect(svgData.svgRotation).toBe(45);
+  });
+
+  it('should simplify compound paths in child elements of prise group', () => {
+    const svgWithGroupPrise = `<?xml version="1.0"?>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <circle id="insert" cx="50" cy="50" r="5"/>
+        <g id="prise">
+          <path d="M10 10L50 50Z M60 60L90 90Z"/>
+        </g>
+      </svg>`;
+    const svgData = parseHoldSvg(svgWithGroupPrise);
+
+    expect(svgData.pathElement).toBeDefined();
+    expect(svgData.pathElement).toContain('M10 10L50 50Z');
+    expect(svgData.pathElement).not.toContain('M60 60');
+  });
+
+  it('should return 0 rotation for unrecognized transform', () => {
+    const svgWithSkew = `<?xml version="1.0"?>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <circle id="insert" cx="50" cy="50" r="5"/>
+        <path id="prise" d="M10 10L90 90Z" transform="skewX(10)"/>
+      </svg>`;
+    const svgData = parseHoldSvg(svgWithSkew);
+
+    expect(svgData.svgRotation).toBe(0);
   });
 });
 

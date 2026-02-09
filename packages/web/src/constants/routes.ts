@@ -3,11 +3,11 @@
  */
 
 import {
-  COLUMN_SYSTEMS as CORE_COLUMN_SYSTEMS,
-  convertColumn as coreConvertColumn,
-  type ColumnSystemId as CoreColumnSystemId,
-  type ColumnSystem,
   type Column,
+  COLUMN_SYSTEMS as CORE_COLUMN_SYSTEMS,
+  type ColumnSystem,
+  type ColumnSystemId as CoreColumnSystemId,
+  convertColumn as coreConvertColumn,
 } from '@voie-vitesse/core';
 
 /** Panel sides */
@@ -25,17 +25,21 @@ export const ROUTE_SOURCES = {
   U11_U13: 'u11-u13',
   U11_U13_COMP: 'u11-u13-comp',
   U15: 'u15',
+  U15_IT: 'u15-it',
+  U13_DE: 'u13-de',
 } as const;
 
 export type RouteSource = typeof ROUTE_SOURCES[keyof typeof ROUTE_SOURCES];
 
 /** Route display names for UI */
 export const ROUTE_DISPLAY_NAMES: Record<string, string> = {
-  [ROUTE_SOURCES.TRAINING]: 'Combinaison voie U15 et IFSC',
+  [ROUTE_SOURCES.TRAINING]: 'IFSC + U15 [FR]',
   [ROUTE_SOURCES.IFSC]: 'IFSC',
-  [ROUTE_SOURCES.U11_U13]: 'U11/U13 (entraînement)',
-  [ROUTE_SOURCES.U11_U13_COMP]: 'U11/U13 (compétition)',
-  [ROUTE_SOURCES.U15]: 'U15',
+  [ROUTE_SOURCES.U11_U13]: 'U11/U13 [FR] (entraînement)',
+  [ROUTE_SOURCES.U11_U13_COMP]: 'U11/U13 [FR] (compétition)',
+  [ROUTE_SOURCES.U15]: 'U15 [FR]',
+  [ROUTE_SOURCES.U15_IT]: 'U15 [IT/DE/CH]',
+  [ROUTE_SOURCES.U13_DE]: 'U13 [DE/CH]',
 };
 
 /**

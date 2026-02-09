@@ -3,7 +3,7 @@
  *
  * Hold SVG files must contain:
  * - A <path> or <g> element with id="prise" for the hold shape
- * - A <circle> element with id="insert" for the anchor point
+ * - A <circle> or <ellipse> element with id="insert" for the anchor point
  */
 
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
@@ -218,6 +218,15 @@ function parseTransformMatrix(transform: string | null): [number, number, number
     return [1, 0, 0, 1, tx, ty];
   }
 
+  // Handle rotate(angle)
+  const rotateMatch = transform.match(/rotate\s*\(\s*([0-9.e+-]+)\s*\)/i);
+  if (rotateMatch) {
+    const angle = (parseFloat(rotateMatch[1]) * Math.PI) / 180;
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    return [cos, sin, -sin, cos, 0, 0];
+  }
+
   return null;
 }
 
@@ -266,20 +275,21 @@ function extractRotation(transform: string | null): number {
 // ============================================================================
 
 /**
- * Extract circle center from SVG document
+ * Extract insert point center from SVG document.
+ * Supports <circle> and <ellipse> elements with the given id/label.
  */
-function extractCircleCenter(doc: Document, circleId: string): Point {
-  const circle = findElementByIdOrLabel(doc, 'circle', circleId);
+function extractInsertCenter(doc: Document, insertId: string): Point {
+  const element = findElementByIdOrLabelMultiTag(doc, ['circle', 'ellipse'], insertId);
 
-  if (!circle) {
-    throw new Error(`Circle with id or label "${circleId}" not found in SVG`);
+  if (!element) {
+    throw new Error(`Circle or ellipse with id or label "${insertId}" not found in SVG`);
   }
 
-  const cx = circle.getAttribute('cx');
-  const cy = circle.getAttribute('cy');
+  const cx = element.getAttribute('cx');
+  const cy = element.getAttribute('cy');
 
   if (!cx || !cy) {
-    throw new Error(`Circle "${circleId}" missing cx or cy attributes`);
+    throw new Error(`Element "${insertId}" missing cx or cy attributes`);
   }
 
   let center: Point = {
@@ -287,8 +297,7 @@ function extractCircleCenter(doc: Document, circleId: string): Point {
     y: parseFloat(cy),
   };
 
-  // Apply transform if present
-  const transform = circle.getAttribute('transform');
+  const transform = element.getAttribute('transform');
   if (transform) {
     const matrix = parseTransformMatrix(transform);
     if (matrix) {
@@ -300,19 +309,21 @@ function extractCircleCenter(doc: Document, circleId: string): Point {
 }
 
 /**
- * Extract all circle elements
+ * Extract all circle and ellipse elements (inserts, screw holes)
  */
-function extractAllCircles(doc: Document): string[] {
-  const circles: string[] = [];
-  const elements = doc.getElementsByTagName('circle');
+function extractAllCirclesAndEllipses(doc: Document): string[] {
+  const result: string[] = [];
 
-  for (let i = 0; i < elements.length; i++) {
-    const circle = elements[i].cloneNode(true) as Element;
-    removeUnwantedAttributes(circle);
-    circles.push(elementToString(circle));
+  for (const tagName of ['circle', 'ellipse']) {
+    const elements = doc.getElementsByTagName(tagName);
+    for (let i = 0; i < elements.length; i++) {
+      const clone = elements[i].cloneNode(true) as Element;
+      removeUnwantedAttributes(clone);
+      result.push(elementToString(clone));
+    }
   }
 
-  return circles;
+  return result;
 }
 
 // ============================================================================
@@ -475,15 +486,15 @@ export function parseHoldSvg(svgContent: string): HoldSvgData {
   const doc = parseSvgDocument(svgContent);
 
   const viewBox = extractViewBox(doc);
-  const insertCenter = extractCircleCenter(doc, 'insert');
+  const insertCenter = extractInsertCenter(doc, 'insert');
   const { element: pathElement, rotation: svgRotation } = extractPathElement(doc, 'prise');
   const labelZones = extractLabelZones(doc);
 
   // If no "prise" element, extract all visual elements (uncolored)
-  // Otherwise, just extract circles (inserts, screw holes)
+  // Otherwise, just extract circles/ellipses (inserts, screw holes)
   const additionalElements = pathElement === null
     ? extractAllVisualElements(doc)
-    : extractAllCircles(doc);
+    : extractAllCirclesAndEllipses(doc);
 
   return {
     pathElement,

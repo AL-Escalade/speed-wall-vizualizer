@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="24.238031mm"
+   height="20.260708mm"
+   viewBox="0 0 24.238031 20.260708"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   sodipodi:docname="FOOT-DE15.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.9504621"
+     inkscape:cx="-6.4087376"
+     inkscape:cy="-19.226213"
+     inkscape:current-layer="layer1"
+     showgrid="false" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-70.080882,-69.960392)">
+    <path
+       id="prise"
+       d="m 70.585137,79.93756 c 0,-3.075143 3.385137,-5.637762 6.026288,-6.212285 2.277425,-3.013144 4.943375,-3.422336 7.200133,-3.219807 4.30272,0.822519 5.943623,2.050096 6.844673,4.716046 1.562371,3.484336 3.157808,3.934861 3.157808,6.972804 0.04133,4.918575 -2.008763,7.522527 -4.877243,7.522527 -3.488468,0 -11.891379,-5.984955 -14.3548,-6.199885 -1.636769,-0.297594 -3.996859,-0.913449 -3.996859,-3.5794 z"
+       style="display:inline;fill:none;stroke:#005900;stroke-width:1.00851;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:label="prise" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:12.7px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke-width:1.265"
+       x="112.95802"
+       y="46.67683"
+       id="label-left-9-0"
+       transform="rotate(29.651415)"
+       inkscape:label="label-left"><tspan
+         sodipodi:role="line"
+         id="tspan2-3-6"
+         style="font-size:12.7px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="112.95802"
+         y="46.67683">M1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:12.7px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke-width:1.265"
+       x="-1.2768949"
+       y="-93.60305"
+       id="label-down"
+       transform="rotate(136.05576)"
+       inkscape:label="label-down"><tspan
+         sodipodi:role="line"
+         id="tspan2-3-6-6"
+         style="font-size:12.7px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-1.2768954"
+         y="-93.60305">M1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:12.7px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke-width:1.265"
+       x="-110.08392"
+       y="-9.4190969"
+       id="label-right"
+       transform="rotate(-150.95293)"
+       inkscape:label="label-right"><tspan
+         sodipodi:role="line"
+         id="tspan2-3-6-5"
+         style="font-size:12.7px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-110.08392"
+         y="-9.4190969">M1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:12.7px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke-width:1.265"
+       x="-44.596691"
+       y="128.03397"
+       id="label-up"
+       transform="rotate(-69.317122)"
+       inkscape:label="label-up"><tspan
+         sodipodi:role="line"
+         id="tspan2-3-6-9"
+         style="font-size:12.7px;text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="-44.596691"
+         y="128.03397">M1</tspan></text>
+    <ellipse
+       style="opacity:0.899576;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:1"
+       id="insert"
+       cx="83.786766"
+       cy="78.877777"
+       rx="1.881"
+       ry="1.8812009"
+       inkscape:label="insert" />
+    <ellipse
+       style="opacity:0.899576;fill:#c1c1c1;fill-opacity:1;stroke:#000000;stroke-width:1"
+       id="insert-4"
+       cx="72.262672"
+       cy="79.000351"
+       inkscape:label="trou vis"
+       rx="0.85500002"
+       ry="0.85489041" />
+  </g>
+</svg>
