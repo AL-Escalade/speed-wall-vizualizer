@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { screen, fireEvent, act } from '@testing-library/react';
 import { PrintPage } from './PrintPage';
 import type { SavedConfiguration } from '@/store';
 import { generateSvg } from '@voie-vitesse/core';
 import { generateAndDownloadPdf } from '@/utils/pdfGenerator';
+import { renderWithIntl } from '@/test/intlWrapper';
 
 // Mock react-router-dom
 const mockNavigate = vi.fn();
@@ -118,7 +119,7 @@ describe('PrintPage', () => {
 
   describe('rendering states', () => {
     it('should render header with back button', async () => {
-      render(<PrintPage />);
+      renderWithIntl(<PrintPage />);
 
       // Wait for async effect to complete
       await act(async () => {
@@ -140,7 +141,7 @@ describe('PrintPage', () => {
           })
       );
 
-      render(<PrintPage />);
+      renderWithIntl(<PrintPage />);
 
       // Initially shows loading spinner (uses DaisyUI loading class)
       expect(document.querySelector('.loading-spinner')).toBeInTheDocument();
@@ -157,7 +158,7 @@ describe('PrintPage', () => {
 
       generateSvgMock.mockRejectedValueOnce(new Error('Generation failed'));
 
-      render(<PrintPage />);
+      renderWithIntl(<PrintPage />);
 
       // Wait for the rejected promise to be processed
       await act(async () => {
@@ -178,7 +179,7 @@ describe('PrintPage', () => {
         activeConfigId: null,
       };
 
-      render(<PrintPage />);
+      renderWithIntl(<PrintPage />);
 
       // PrintPage renders text directly when no config
       expect(screen.getByText('Aucune configuration sélectionnée')).toBeInTheDocument();
@@ -191,7 +192,7 @@ describe('PrintPage', () => {
         activeConfigId: emptyConfig.id,
       };
 
-      render(<PrintPage />);
+      renderWithIntl(<PrintPage />);
 
       // Wait for effect to run (even though it returns early)
       await act(async () => {
@@ -205,7 +206,7 @@ describe('PrintPage', () => {
     });
 
     it('should render preview content after successful SVG generation', async () => {
-      render(<PrintPage />);
+      renderWithIntl(<PrintPage />);
 
       // Wait for SVG generation to complete
       await act(async () => {
@@ -217,7 +218,7 @@ describe('PrintPage', () => {
     });
 
     it('should display config name in header', async () => {
-      render(<PrintPage />);
+      renderWithIntl(<PrintPage />);
 
       await act(async () => {
         await Promise.resolve();
@@ -230,7 +231,7 @@ describe('PrintPage', () => {
 
   describe('navigation', () => {
     it('should navigate back when back button is clicked', async () => {
-      render(<PrintPage />);
+      renderWithIntl(<PrintPage />);
 
       await act(async () => {
         await Promise.resolve();
@@ -245,7 +246,7 @@ describe('PrintPage', () => {
 
   describe('export functionality', () => {
     it('should trigger PDF export when export button is clicked', async () => {
-      render(<PrintPage />);
+      renderWithIntl(<PrintPage />);
 
       // Wait for SVG generation
       await act(async () => {
@@ -268,7 +269,7 @@ describe('PrintPage', () => {
       const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
       generatePdfMock.mockRejectedValueOnce(new Error('Export failed'));
 
-      render(<PrintPage />);
+      renderWithIntl(<PrintPage />);
 
       // Wait for SVG generation
       await act(async () => {
@@ -291,7 +292,7 @@ describe('PrintPage', () => {
 
   describe('SVG generation effect', () => {
     it('should regenerate SVG when config changes', async () => {
-      const { rerender } = render(<PrintPage />);
+      const { rerender } = renderWithIntl(<PrintPage />);
 
       await act(async () => {
         await Promise.resolve();
@@ -328,7 +329,7 @@ describe('PrintPage', () => {
           })
       );
 
-      const { unmount } = render(<PrintPage />);
+      const { unmount } = renderWithIntl(<PrintPage />);
 
       // Unmount while generation is pending
       unmount();
@@ -344,7 +345,7 @@ describe('PrintPage', () => {
 
   describe('print config component integration', () => {
     it('should render PrintConfig component', async () => {
-      render(<PrintPage />);
+      renderWithIntl(<PrintPage />);
 
       await act(async () => {
         await Promise.resolve();
@@ -360,7 +361,7 @@ describe('PrintPage', () => {
       const { useIsMobile } = await import('@/hooks/useMediaQuery');
       vi.mocked(useIsMobile).mockReturnValue(true);
 
-      render(<PrintPage />);
+      renderWithIntl(<PrintPage />);
 
       await act(async () => {
         await Promise.resolve();

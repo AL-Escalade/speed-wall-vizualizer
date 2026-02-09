@@ -3,6 +3,7 @@
  */
 
 import { memo } from 'react';
+import { useIntl } from 'react-intl';
 
 interface LaneSelectorProps {
   value: number;
@@ -15,10 +16,11 @@ export const LaneSelector = memo(function LaneSelector({
   lanesCount,
   onChange,
 }: LaneSelectorProps) {
+  const intl = useIntl();
   return (
     <div className="form-control">
       <label className="label py-1">
-        <span className="label-text text-sm">Couloir</span>
+        <span className="label-text text-sm">{intl.formatMessage({ id: 'section.lane' })}</span>
       </label>
       <select
         className="select select-bordered select-sm w-full"
@@ -27,7 +29,7 @@ export const LaneSelector = memo(function LaneSelector({
       >
         {Array.from({ length: lanesCount }, (_, i) => (
           <option key={i} value={i}>
-            Couloir {i + 1}
+            {intl.formatMessage({ id: 'section.laneNumber' }, { number: i + 1 })}
           </option>
         ))}
       </select>

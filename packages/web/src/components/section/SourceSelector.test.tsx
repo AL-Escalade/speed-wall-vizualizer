@@ -1,13 +1,14 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { SourceSelector } from './SourceSelector';
 import { ROUTE_DISPLAY_NAMES } from '@/constants/routes';
+import { renderWithIntl } from '@/test/intlWrapper';
 
 const ROUTE_NAMES = ['ifsc', 'u15', 'training'];
 
 describe('SourceSelector', () => {
   it('should render with the label "Voie source"', () => {
-    render(
+    renderWithIntl(
       <SourceSelector
         value="ifsc"
         routeNames={ROUTE_NAMES}
@@ -19,7 +20,7 @@ describe('SourceSelector', () => {
   });
 
   it('should render all route names as options', () => {
-    render(
+    renderWithIntl(
       <SourceSelector
         value="ifsc"
         routeNames={ROUTE_NAMES}
@@ -34,7 +35,7 @@ describe('SourceSelector', () => {
   });
 
   it('should display route display names from ROUTE_DISPLAY_NAMES', () => {
-    render(
+    renderWithIntl(
       <SourceSelector
         value="ifsc"
         routeNames={ROUTE_NAMES}
@@ -49,7 +50,7 @@ describe('SourceSelector', () => {
   });
 
   it('should have correct value selected', () => {
-    render(
+    renderWithIntl(
       <SourceSelector
         value="u15"
         routeNames={ROUTE_NAMES}
@@ -63,7 +64,7 @@ describe('SourceSelector', () => {
 
   it('should call onChange when selection changes', () => {
     const handleChange = vi.fn();
-    render(
+    renderWithIntl(
       <SourceSelector
         value="ifsc"
         routeNames={ROUTE_NAMES}
@@ -79,7 +80,7 @@ describe('SourceSelector', () => {
   });
 
   it('should fallback to uppercase name if no display name exists', () => {
-    render(
+    renderWithIntl(
       <SourceSelector
         value="custom"
         routeNames={['custom']}
@@ -92,7 +93,7 @@ describe('SourceSelector', () => {
   });
 
   it('should use route name as option value', () => {
-    render(
+    renderWithIntl(
       <SourceSelector
         value="ifsc"
         routeNames={ROUTE_NAMES}

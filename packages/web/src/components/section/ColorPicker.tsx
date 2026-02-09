@@ -3,6 +3,7 @@
  */
 
 import { memo } from 'react';
+import { useIntl } from 'react-intl';
 
 interface ColorPickerProps {
   value: string;
@@ -13,10 +14,11 @@ export const ColorPicker = memo(function ColorPicker({
   value,
   onChange,
 }: ColorPickerProps) {
+  const intl = useIntl();
   return (
     <div className="form-control">
       <label className="label py-1">
-        <span className="label-text text-sm">Couleur</span>
+        <span className="label-text text-sm">{intl.formatMessage({ id: 'section.color' })}</span>
       </label>
       <input
         type="color"

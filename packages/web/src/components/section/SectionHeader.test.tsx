@@ -1,7 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { SectionHeader } from './SectionHeader';
 import type { Section } from '@/store';
+import { renderWithIntl } from '@/test/intlWrapper';
 
 const mockSection: Section = {
   id: 'section-1',
@@ -16,7 +17,7 @@ const mockSection: Section = {
 describe('SectionHeader', () => {
   describe('rendering', () => {
     it('should render section name', () => {
-      render(
+      renderWithIntl(
         <SectionHeader
           section={mockSection}
           isExpanded={false}
@@ -30,7 +31,7 @@ describe('SectionHeader', () => {
     });
 
     it('should render color indicator with section color', () => {
-      const { container } = render(
+      const { container } = renderWithIntl(
         <SectionHeader
           section={mockSection}
           isExpanded={false}
@@ -45,7 +46,7 @@ describe('SectionHeader', () => {
     });
 
     it('should render displayColor when provided', () => {
-      const { container } = render(
+      const { container } = renderWithIntl(
         <SectionHeader
           section={mockSection}
           isExpanded={false}
@@ -61,7 +62,7 @@ describe('SectionHeader', () => {
     });
 
     it('should render rename button', () => {
-      render(
+      renderWithIntl(
         <SectionHeader
           section={mockSection}
           isExpanded={false}
@@ -75,7 +76,7 @@ describe('SectionHeader', () => {
     });
 
     it('should render delete button', () => {
-      render(
+      renderWithIntl(
         <SectionHeader
           section={mockSection}
           isExpanded={false}
@@ -91,7 +92,7 @@ describe('SectionHeader', () => {
 
   describe('expand/collapse', () => {
     it('should show ChevronRight when collapsed', () => {
-      const { container } = render(
+      const { container } = renderWithIntl(
         <SectionHeader
           section={mockSection}
           isExpanded={false}
@@ -105,7 +106,7 @@ describe('SectionHeader', () => {
     });
 
     it('should show ChevronDown when expanded', () => {
-      const { container } = render(
+      const { container } = renderWithIntl(
         <SectionHeader
           section={mockSection}
           isExpanded={true}
@@ -120,7 +121,7 @@ describe('SectionHeader', () => {
 
     it('should call onToggle when header is clicked', () => {
       const handleToggle = vi.fn();
-      render(
+      renderWithIntl(
         <SectionHeader
           section={mockSection}
           isExpanded={false}
@@ -138,7 +139,7 @@ describe('SectionHeader', () => {
 
   describe('renaming', () => {
     it('should show edit input when rename button is clicked', () => {
-      render(
+      renderWithIntl(
         <SectionHeader
           section={mockSection}
           isExpanded={false}
@@ -157,7 +158,7 @@ describe('SectionHeader', () => {
 
     it('should call onRename when Enter is pressed', () => {
       const handleRename = vi.fn();
-      render(
+      renderWithIntl(
         <SectionHeader
           section={mockSection}
           isExpanded={false}
@@ -176,7 +177,7 @@ describe('SectionHeader', () => {
     });
 
     it('should cancel edit when Escape is pressed', () => {
-      render(
+      renderWithIntl(
         <SectionHeader
           section={mockSection}
           isExpanded={false}
@@ -197,7 +198,7 @@ describe('SectionHeader', () => {
     });
 
     it('should show save and cancel buttons during edit', () => {
-      const { container } = render(
+      const { container } = renderWithIntl(
         <SectionHeader
           section={mockSection}
           isExpanded={false}
@@ -216,7 +217,7 @@ describe('SectionHeader', () => {
 
     it('should save when clicking save button', () => {
       const handleRename = vi.fn();
-      const { container } = render(
+      const { container } = renderWithIntl(
         <SectionHeader
           section={mockSection}
           isExpanded={false}
@@ -239,7 +240,7 @@ describe('SectionHeader', () => {
 
     it('should not rename with empty name', () => {
       const handleRename = vi.fn();
-      render(
+      renderWithIntl(
         <SectionHeader
           section={mockSection}
           isExpanded={false}
@@ -259,7 +260,7 @@ describe('SectionHeader', () => {
 
     it('should trim whitespace when renaming', () => {
       const handleRename = vi.fn();
-      render(
+      renderWithIntl(
         <SectionHeader
           section={mockSection}
           isExpanded={false}
@@ -283,7 +284,7 @@ describe('SectionHeader', () => {
       const handleRemove = vi.fn();
       vi.spyOn(window, 'confirm').mockReturnValue(true);
 
-      render(
+      renderWithIntl(
         <SectionHeader
           section={mockSection}
           isExpanded={false}
@@ -303,7 +304,7 @@ describe('SectionHeader', () => {
       const handleRemove = vi.fn();
       vi.spyOn(window, 'confirm').mockReturnValue(false);
 
-      render(
+      renderWithIntl(
         <SectionHeader
           section={mockSection}
           isExpanded={false}

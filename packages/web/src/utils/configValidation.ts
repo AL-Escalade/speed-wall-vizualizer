@@ -30,7 +30,7 @@ const WallConfigSchema = type({
   panelsHeight: 'number',
 });
 
-/** Saved configuration schema - timestamps optional for backward compatibility */
+/** Saved configuration schema - timestamps and language optional for backward compatibility */
 const ImportedConfigurationSchema = type({
   id: 'string',
   name: 'string',
@@ -38,6 +38,7 @@ const ImportedConfigurationSchema = type({
   sections: SectionSchema.array(),
   'createdAt?': 'number',
   'updatedAt?': 'number',
+  'language?': "'auto' | 'fr' | 'de' | 'it' | 'en'",
 });
 
 type ImportedConfiguration = typeof ImportedConfigurationSchema.infer;

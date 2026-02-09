@@ -3,6 +3,7 @@
  */
 
 import { useCallback, useRef, useState, useEffect } from 'react';
+import { useIntl } from 'react-intl';
 import { useConfigStore } from '@/store';
 import { validateConfiguration } from '@/utils/configValidation';
 
@@ -20,6 +21,7 @@ interface UseJsonImportResult {
 }
 
 export function useJsonImport(): UseJsonImportResult {
+  const intl = useIntl();
   const importConfiguration = useConfigStore((s) => s.importConfiguration);
   const inputRef = useRef<HTMLInputElement>(null);
   const isMountedRef = useRef(true);
@@ -56,7 +58,7 @@ export function useJsonImport(): UseJsonImportResult {
         } catch (err) {
           console.error('JSON parse error:', err);
           setError({
-            message: "Le fichier n'est pas un fichier JSON valide.",
+            message: intl.formatMessage({ id: 'error.invalidJson' }),
             details: err instanceof Error ? err.message : String(err),
           });
           return;
@@ -66,7 +68,7 @@ export function useJsonImport(): UseJsonImportResult {
 
         if (!result.success) {
           setError({
-            message: 'Le fichier ne correspond pas au format attendu.',
+            message: intl.formatMessage({ id: 'error.invalidFormat' }),
             details: result.error,
           });
           return;
@@ -77,7 +79,7 @@ export function useJsonImport(): UseJsonImportResult {
         } catch (err) {
           console.error('Import configuration error:', err);
           setError({
-            message: "Une erreur est survenue lors de l'import de la configuration.",
+            message: intl.formatMessage({ id: 'error.importFailed' }),
             details: err instanceof Error ? err.message : String(err),
           });
         }
@@ -87,8 +89,8 @@ export function useJsonImport(): UseJsonImportResult {
         if (!isMountedRef.current) return;
         console.error('File read error:', reader.error);
         setError({
-          message: 'Impossible de lire le fichier.',
-          details: reader.error?.message ?? 'Erreur inconnue',
+          message: intl.formatMessage({ id: 'error.fileReadFailed' }),
+          details: reader.error?.message ?? intl.formatMessage({ id: 'error.unknownError' }),
         });
       };
 
@@ -97,7 +99,7 @@ export function useJsonImport(): UseJsonImportResult {
       // Reset input so same file can be selected again
       e.target.value = '';
     },
-    [importConfiguration]
+    [importConfiguration, intl]
   );
 
   return { triggerImport, handleFileChange, inputRef, error, clearError };

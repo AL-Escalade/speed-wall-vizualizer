@@ -1,14 +1,16 @@
-import { useEffect, useState, useRef } from 'react';
-import { BrowserRouter, Routes, Route, useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useMemo } from 'react';
+import { IntlProvider } from 'react-intl';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ErrorBoundary, Header, Sidebar, Viewer } from '@/components';
 import { MobileNav } from '@/components/MobileNav';
+import { SharedConfigLoader } from '@/components/layouts/SharedConfigLoader';
 import { PrintPage } from '@/pages';
 import { useConfigStore } from '@/store';
-import { decodeConfig, hydrateShareableConfig } from '@/utils/urlConfig';
 import { ROUTES } from '@/utils/routes';
 import { useUrlSync } from '@/hooks/useUrlSync';
 import { useIsMobile } from '@/hooks/useMediaQuery';
 import { useMobileTab } from '@/hooks/useMobileTab';
+import { resolveLocale, getMessages } from '@/i18n';
 
 function DesktopLayout() {
   return (
@@ -51,79 +53,34 @@ function MainView() {
   return isMobile ? <MobileLayout /> : <DesktopLayout />;
 }
 
-/**
- * Component that loads a shared configuration from URL
- */
-function SharedConfigLoader() {
-  const { encoded } = useParams<{ encoded: string }>();
-  const navigate = useNavigate();
-  const importConfiguration = useConfigStore((s) => s.importConfiguration);
-  const [error, setError] = useState<string | null>(null);
-  const hasImportedRef = useRef(false);
-
-  useEffect(() => {
-    // Prevent double import on rapid navigation
-    if (hasImportedRef.current) return;
-
-    if (!encoded) {
-      void navigate(ROUTES.HOME, { replace: true });
-      return;
-    }
-
-    const config = decodeConfig(encoded);
-    if (!config) {
-      setError('Le lien de partage est invalide ou corrompu.');
-      return;
-    }
-
-    // Mark as imported to prevent race conditions
-    hasImportedRef.current = true;
-
-    importConfiguration(hydrateShareableConfig(config));
-    void navigate(ROUTES.HOME, { replace: true });
-  }, [encoded, navigate, importConfiguration]);
-
-  if (error) {
-    return (
-      <div className="h-screen flex flex-col items-center justify-center gap-4 p-4">
-        <div className="alert alert-error max-w-md">
-          <span>{error}</span>
-        </div>
-        <button
-          className="btn btn-primary"
-          onClick={() => navigate(ROUTES.HOME, { replace: true })}
-        >
-          Retour à l'accueil
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="h-screen flex items-center justify-center">
-      <span className="loading loading-spinner loading-lg"></span>
-    </div>
-  );
-}
-
 function App() {
   const deduplicateConfigurations = useConfigStore((s) => s.deduplicateConfigurations);
+  const language = useConfigStore((s) => {
+    const config = s.configurations.find((c) => c.id === s.activeConfigId);
+    return config?.language ?? 'auto';
+  });
 
   // Run deduplication once on mount to clean up any existing duplicates
   useEffect(() => {
     deduplicateConfigurations();
   }, [deduplicateConfigurations]);
 
+  // Resolve effective locale from language setting
+  const locale = useMemo(() => resolveLocale(language), [language]);
+  const messages = useMemo(() => getMessages(locale), [locale]);
+
   return (
-    <ErrorBoundary>
-      <BrowserRouter>
-        <Routes>
-          <Route path={ROUTES.HOME} element={<MainView />} />
-          <Route path={ROUTES.PRINT} element={<PrintPage />} />
-          <Route path={ROUTES.SHARE_PATTERN} element={<SharedConfigLoader />} />
-        </Routes>
-      </BrowserRouter>
-    </ErrorBoundary>
+    <IntlProvider locale={locale} messages={messages} defaultLocale="fr">
+      <ErrorBoundary>
+        <BrowserRouter>
+          <Routes>
+            <Route path={ROUTES.HOME} element={<MainView />} />
+            <Route path={ROUTES.PRINT} element={<PrintPage />} />
+            <Route path={ROUTES.SHARE_PATTERN} element={<SharedConfigLoader />} />
+          </Routes>
+        </BrowserRouter>
+      </ErrorBoundary>
+    </IntlProvider>
   );
 }
 

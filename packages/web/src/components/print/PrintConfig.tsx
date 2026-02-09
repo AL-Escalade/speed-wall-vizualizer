@@ -3,6 +3,7 @@
  * Allows setting print mode, orientation, pages count, and overlap
  */
 
+import { useIntl } from 'react-intl';
 import type { PrintConfig as PrintConfigType, PrintMode, PrintOrientation } from '@/hooks/usePrintLayout';
 
 interface PrintConfigProps {
@@ -22,6 +23,7 @@ export function PrintConfig({
   exportProgress,
   totalPages,
 }: PrintConfigProps) {
+  const intl = useIntl();
   const handleModeChange = (mode: PrintMode) => {
     onChange({ ...config, mode });
   };
@@ -40,25 +42,25 @@ export function PrintConfig({
 
   return (
     <div className="bg-base-200 p-3 md:p-4 rounded-lg space-y-3 md:space-y-4">
-      <h2 className="font-semibold text-base md:text-lg">Configuration</h2>
+      <h2 className="font-semibold text-base md:text-lg">{intl.formatMessage({ id: 'print.configuration' })}</h2>
 
       {/* Print mode */}
       <div className="form-control">
         <label className="label">
-          <span className="label-text">Mode d'impression</span>
+          <span className="label-text">{intl.formatMessage({ id: 'print.printMode' })}</span>
         </label>
         <div className="flex gap-2">
           <button
             className={`btn btn-sm flex-1 ${config.mode === 'full-wall' ? 'btn-primary' : 'btn-outline'}`}
             onClick={() => handleModeChange('full-wall')}
           >
-            Mur complet
+            {intl.formatMessage({ id: 'print.fullWall' })}
           </button>
           <button
             className={`btn btn-sm flex-1 ${config.mode === 'lane-by-lane' ? 'btn-primary' : 'btn-outline'}`}
             onClick={() => handleModeChange('lane-by-lane')}
           >
-            Couloir par couloir
+            {intl.formatMessage({ id: 'print.laneByLane' })}
           </button>
         </div>
       </div>
@@ -66,20 +68,20 @@ export function PrintConfig({
       {/* Orientation */}
       <div className="form-control">
         <label className="label">
-          <span className="label-text">Orientation</span>
+          <span className="label-text">{intl.formatMessage({ id: 'print.orientation' })}</span>
         </label>
         <div className="flex gap-2">
           <button
             className={`btn btn-sm flex-1 ${config.orientation === 'portrait' ? 'btn-primary' : 'btn-outline'}`}
             onClick={() => handleOrientationChange('portrait')}
           >
-            Portrait
+            {intl.formatMessage({ id: 'print.portrait' })}
           </button>
           <button
             className={`btn btn-sm flex-1 ${config.orientation === 'landscape' ? 'btn-primary' : 'btn-outline'}`}
             onClick={() => handleOrientationChange('landscape')}
           >
-            Paysage
+            {intl.formatMessage({ id: 'print.landscape' })}
           </button>
         </div>
       </div>
@@ -87,7 +89,7 @@ export function PrintConfig({
       {/* Pages in height */}
       <div className="form-control">
         <label className="label">
-          <span className="label-text">Nombre de pages en hauteur</span>
+          <span className="label-text">{intl.formatMessage({ id: 'print.pagesInHeight' })}</span>
         </label>
         <div className="flex items-center gap-2">
           <button
@@ -118,7 +120,7 @@ export function PrintConfig({
       {/* Overlap */}
       <div className="form-control">
         <label className="label">
-          <span className="label-text">Chevauchement (cm)</span>
+          <span className="label-text">{intl.formatMessage({ id: 'print.overlap' })}</span>
         </label>
         <div className="flex items-center gap-2">
           <input
@@ -137,7 +139,7 @@ export function PrintConfig({
       {/* Summary */}
       <div className="divider"></div>
       <div className="text-sm text-base-content/70">
-        <p>Total : {totalPages} page{totalPages > 1 ? 's' : ''}</p>
+        <p>{intl.formatMessage({ id: 'print.totalPages' }, { count: totalPages })}</p>
       </div>
 
       {/* Export button */}
@@ -151,12 +153,12 @@ export function PrintConfig({
             <span className="loading loading-spinner loading-sm"></span>
             {exportProgress && (
               <span>
-                Export {exportProgress.current}/{exportProgress.total}
+                {intl.formatMessage({ id: 'print.exportProgress' }, { current: exportProgress.current, total: exportProgress.total })}
               </span>
             )}
           </>
         ) : (
-          'Exporter PDF'
+          intl.formatMessage({ id: 'print.exportPdf' })
         )}
       </button>
     </div>

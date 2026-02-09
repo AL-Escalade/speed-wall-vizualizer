@@ -4,6 +4,7 @@
 
 import { useState } from 'react';
 import { AlertTriangle, ChevronDown, ChevronUp, X } from 'lucide-react';
+import { useIntl } from 'react-intl';
 
 interface ImportErrorModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export function ImportErrorModal({
   errorMessage,
   technicalDetails,
 }: ImportErrorModalProps) {
+  const intl = useIntl();
   const [showDetails, setShowDetails] = useState(false);
 
   if (!isOpen) return null;
@@ -35,7 +37,7 @@ export function ImportErrorModal({
         <div className="flex items-start gap-3">
           <AlertTriangle className="text-error shrink-0 mt-1" size={24} />
           <div className="flex-1">
-            <h3 className="font-bold text-lg">Erreur d'importation</h3>
+            <h3 className="font-bold text-lg">{intl.formatMessage({ id: 'error.importTitle' })}</h3>
             <p className="py-2 text-base-content/80">{errorMessage}</p>
           </div>
         </div>
@@ -47,7 +49,7 @@ export function ImportErrorModal({
               onClick={() => setShowDetails(!showDetails)}
             >
               {showDetails ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-              {showDetails ? 'Masquer les détails' : 'Voir les détails techniques'}
+              {showDetails ? intl.formatMessage({ id: 'error.hideDetails' }) : intl.formatMessage({ id: 'error.showDetails' })}
             </button>
 
             {showDetails && (
@@ -60,7 +62,7 @@ export function ImportErrorModal({
 
         <div className="modal-action">
           <button className="btn btn-primary" onClick={onClose}>
-            Fermer
+            {intl.formatMessage({ id: 'error.close' })}
           </button>
         </div>
       </div>

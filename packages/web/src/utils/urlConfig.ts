@@ -34,6 +34,7 @@ export interface ShareableConfig {
     labelFontSize?: number;
     holdLabelFontSize?: number;
   };
+  language?: 'auto' | 'fr' | 'de' | 'it' | 'en';
 }
 
 /**
@@ -53,6 +54,7 @@ export function extractShareableConfig(config: SavedConfiguration): ShareableCon
     })),
     showArrow: config.showArrow,
     displayOptions: config.displayOptions,
+    language: config.language,
   };
 }
 
@@ -147,6 +149,7 @@ export function hydrateShareableConfig(config: ShareableConfig): SavedConfigurat
     })),
     showArrow: config.showArrow,
     displayOptions: config.displayOptions,
+    language: config.language,
     createdAt: Date.now(),
     updatedAt: Date.now(),
   };

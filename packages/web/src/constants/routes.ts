@@ -31,7 +31,7 @@ export const ROUTE_SOURCES = {
 
 export type RouteSource = typeof ROUTE_SOURCES[keyof typeof ROUTE_SOURCES];
 
-/** Route display names for UI */
+/** Route display names for UI (deprecated - use ROUTE_INTL_KEYS with intl instead) */
 export const ROUTE_DISPLAY_NAMES: Record<string, string> = {
   [ROUTE_SOURCES.TRAINING]: 'IFSC + U15 [FR]',
   [ROUTE_SOURCES.IFSC]: 'IFSC',
@@ -40,6 +40,17 @@ export const ROUTE_DISPLAY_NAMES: Record<string, string> = {
   [ROUTE_SOURCES.U15]: 'U15 [FR]',
   [ROUTE_SOURCES.U15_IT]: 'U15 [IT/DE/CH]',
   [ROUTE_SOURCES.U13_DE]: 'U13 [DE/CH]',
+};
+
+/** Route intl message keys for i18n */
+export const ROUTE_INTL_KEYS: Record<string, string> = {
+  [ROUTE_SOURCES.TRAINING]: 'route.training',
+  [ROUTE_SOURCES.IFSC]: 'route.ifsc',
+  [ROUTE_SOURCES.U11_U13]: 'route.u11u13',
+  [ROUTE_SOURCES.U11_U13_COMP]: 'route.u11u13comp',
+  [ROUTE_SOURCES.U15]: 'route.u15',
+  [ROUTE_SOURCES.U15_IT]: 'route.u15it',
+  [ROUTE_SOURCES.U13_DE]: 'route.u13de',
 };
 
 /**
@@ -70,11 +81,18 @@ export const COORDINATE_SYSTEM_COLUMNS: Record<CoordinateSystemId, readonly stri
   [COORDINATE_SYSTEMS.IFSC]: CORE_COLUMN_SYSTEMS.IFSC.split(''),
 } as const;
 
-/** Display names for coordinate systems */
+/** Display names for coordinate systems (deprecated - use COORDINATE_SYSTEM_INTL_KEYS with intl instead) */
 export const COORDINATE_SYSTEM_NAMES: Record<CoordinateSystemId, string> = {
   [COORDINATE_SYSTEMS.ABC]: 'ABC (A-K)',
   [COORDINATE_SYSTEMS.FFME]: 'FFME (A-L, sans J)',
   [COORDINATE_SYSTEMS.IFSC]: 'IFSC (A-M, sans J/K)',
+};
+
+/** Coordinate system intl message keys for i18n */
+export const COORDINATE_SYSTEM_INTL_KEYS: Record<CoordinateSystemId, string> = {
+  [COORDINATE_SYSTEMS.ABC]: 'coordinate.abc',
+  [COORDINATE_SYSTEMS.FFME]: 'coordinate.ffme',
+  [COORDINATE_SYSTEMS.IFSC]: 'coordinate.ifsc',
 };
 
 /** Default coordinate display system for the UI */

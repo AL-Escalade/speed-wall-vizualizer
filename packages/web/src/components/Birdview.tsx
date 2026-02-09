@@ -4,6 +4,7 @@
 
 import { useRef, useCallback, useMemo, useState, useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
+import { useIntl } from 'react-intl';
 import { useViewerStore } from '@/store';
 
 interface BirdviewProps {
@@ -25,6 +26,7 @@ export function Birdview({
   containerWidth,
   containerHeight,
 }: BirdviewProps) {
+  const intl = useIntl();
   const { zoom, panX, panY, setPan } = useViewerStore(
     useShallow((s) => ({
       zoom: s.zoom,
@@ -300,7 +302,7 @@ export function Birdview({
         </>
       ) : (
         <div className="absolute inset-0 flex items-center justify-center text-xs text-base-content/40">
-          Vue d'ensemble
+          {intl.formatMessage({ id: 'viewer.overview' })}
         </div>
       )}
     </div>

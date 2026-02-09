@@ -4,6 +4,7 @@
 
 import { useState, useCallback, memo } from 'react';
 import { Trash2, Pencil, Check, X, ChevronDown, ChevronRight } from 'lucide-react';
+import { useIntl } from 'react-intl';
 import type { Section } from '@/store';
 
 interface SectionHeaderProps {
@@ -24,6 +25,7 @@ export const SectionHeader = memo(function SectionHeader({
   onRemove,
   displayColor,
 }: SectionHeaderProps) {
+  const intl = useIntl();
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState('');
 
@@ -46,7 +48,7 @@ export const SectionHeader = memo(function SectionHeader({
 
   const handleRemoveClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    if (confirm('Supprimer cette section ?')) {
+    if (confirm(intl.formatMessage({ id: 'section.deleteSectionConfirm' }))) {
       onRemove();
     }
   }, [onRemove]);
@@ -89,7 +91,7 @@ export const SectionHeader = memo(function SectionHeader({
           <button
             className="btn btn-sm btn-ghost btn-square"
             onClick={handleStartEdit}
-            title="Renommer"
+            title={intl.formatMessage({ id: 'section.rename' })}
           >
             <Pencil size={14} />
           </button>
@@ -98,7 +100,7 @@ export const SectionHeader = memo(function SectionHeader({
       <button
         className="btn btn-sm btn-ghost btn-square"
         onClick={handleRemoveClick}
-        title="Supprimer"
+        title={intl.formatMessage({ id: 'section.delete' })}
       >
         <Trash2 size={16} />
       </button>

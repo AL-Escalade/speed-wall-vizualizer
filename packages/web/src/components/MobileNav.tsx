@@ -3,6 +3,7 @@
  */
 
 import { Settings, Eye } from 'lucide-react';
+import { useIntl } from 'react-intl';
 import { useMobileTab, type MobileTab } from '@/hooks/useMobileTab';
 
 interface TabButtonProps {
@@ -30,6 +31,7 @@ function TabButton({ icon, label, isActive, onClick }: TabButtonProps) {
 }
 
 export function MobileNav() {
+  const intl = useIntl();
   const { activeTab, setActiveTab } = useMobileTab();
 
   return (
@@ -37,14 +39,14 @@ export function MobileNav() {
       <TabButton
         tab="config"
         icon={<Settings size={20} />}
-        label="Configuration"
+        label={intl.formatMessage({ id: 'mobile.configuration' })}
         isActive={activeTab === 'config'}
         onClick={() => setActiveTab('config')}
       />
       <TabButton
         tab="viewer"
         icon={<Eye size={20} />}
-        label="Mur"
+        label={intl.formatMessage({ id: 'mobile.wall' })}
         isActive={activeTab === 'viewer'}
         onClick={() => setActiveTab('viewer')}
       />

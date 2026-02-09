@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { SharedConfigLoader } from './SharedConfigLoader';
 import { useConfigStore } from '@/store';
 import * as urlConfig from '@/utils/urlConfig';
+import { renderWithIntl } from '@/test/intlWrapper';
 
 // Mock dependencies
 vi.mock('@/utils/urlConfig');
@@ -31,7 +32,7 @@ describe('SharedConfigLoader', () => {
 
   function renderWithRouter(encodedParam?: string) {
     const path = encodedParam ? `/share/${encodedParam}` : '/share';
-    return render(
+    return renderWithIntl(
       <MemoryRouter initialEntries={[path]}>
         <Routes>
           <Route path="/share/:encoded?" element={<SharedConfigLoader />} />

@@ -5,6 +5,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useIntl } from 'react-intl';
 import { ArrowLeft } from 'lucide-react';
 import { generateSvg, composeAllRoutes, composeAllSmearingZones, type Config } from '@voie-vitesse/core';
 import { useConfigStore, useRoutesStore, useViewerStore, DEFAULT_DISPLAY_OPTIONS } from '@/store';
@@ -15,6 +16,7 @@ import { PrintConfig, PageGrid, PageDetail } from '@/components/print';
 import { useIsMobile } from '@/hooks/useMediaQuery';
 
 export function PrintPage() {
+  const intl = useIntl();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const config = useConfigStore((s) =>
@@ -141,7 +143,7 @@ export function PrintPage() {
       } catch (err) {
         if (!isCancelled) {
           console.error('SVG generation error:', err);
-          setError(err instanceof Error ? err.message : 'Erreur de génération');
+          setError(err instanceof Error ? err.message : intl.formatMessage({ id: 'print.generationError' }));
         }
       } finally {
         if (!isCancelled) {
@@ -181,7 +183,10 @@ export function PrintPage() {
     setExportProgress(undefined);
 
     try {
-      const filename = `${config.name.replace(/\s+/g, '_')}_${printConfig.mode === 'lane-by-lane' ? 'couloirs' : 'mur'}.pdf`;
+      const filenameSuffix = printConfig.mode === 'lane-by-lane'
+        ? intl.formatMessage({ id: 'print.filenameLanes' })
+        : intl.formatMessage({ id: 'print.filenameWall' });
+      const filename = `${config.name.replace(/\s+/g, '_')}_${filenameSuffix}.pdf`;
 
       await generateAndDownloadPdf(
         {
@@ -195,7 +200,7 @@ export function PrintPage() {
       );
     } catch (err) {
       console.error('PDF export error:', err);
-      alert(err instanceof Error ? err.message : 'Erreur lors de l\'export PDF');
+      alert(err instanceof Error ? err.message : intl.formatMessage({ id: 'print.pdfExportError' }));
     } finally {
       setIsExporting(false);
       setExportProgress(undefined);
@@ -218,10 +223,10 @@ export function PrintPage() {
             onClick={handleBack}
           >
             <ArrowLeft size={16} />
-            <span className="hidden sm:inline">Retour</span>
+            <span className="hidden sm:inline">{intl.formatMessage({ id: 'print.back' })}</span>
           </button>
           <span className="text-base md:text-xl font-bold truncate">
-            {isMobile ? 'Impression' : 'Impression multi-pages'}
+            {isMobile ? intl.formatMessage({ id: 'print.title' }) : intl.formatMessage({ id: 'print.titleMultipage' })}
           </span>
         </div>
         {config && !isMobile && (
@@ -265,7 +270,7 @@ export function PrintPage() {
           {!config && (
             <div data-testid="empty" className={`${isMobile ? 'py-8' : 'flex-1'} flex items-center justify-center`}>
               <div className="text-base-content/40 text-lg text-center">
-                <p>Aucune configuration sélectionnée</p>
+                <p>{intl.formatMessage({ id: 'print.noConfig' })}</p>
               </div>
             </div>
           )}
@@ -273,7 +278,7 @@ export function PrintPage() {
           {config && config.sections.length === 0 && !isGenerating && (
             <div data-testid="empty" className={`${isMobile ? 'py-8' : 'flex-1'} flex items-center justify-center`}>
               <div className="text-base-content/40 text-lg text-center">
-                <p>La configuration ne contient aucune section</p>
+                <p>{intl.formatMessage({ id: 'print.noSections' })}</p>
               </div>
             </div>
           )}

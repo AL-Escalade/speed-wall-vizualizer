@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { Viewer } from './Viewer';
+import { renderWithIntl } from '@/test/intlWrapper';
 
 // Mock the viewer store to track zoom function calls
 const mockZoomIn = vi.fn();
@@ -76,14 +77,14 @@ describe('Viewer', () => {
 
   describe('structure', () => {
     it('should render as main element', () => {
-      const { container } = render(<Viewer />);
+      const { container } = renderWithIntl(<Viewer />);
       expect(container.querySelector('main')).toBeInTheDocument();
     });
   });
 
   describe('zoom controls', () => {
     it('should render zoom buttons and percentage display', () => {
-      render(<Viewer />);
+      renderWithIntl(<Viewer />);
       expect(screen.getByTitle('Zoom +')).toBeInTheDocument();
       expect(screen.getByTitle('Zoom -')).toBeInTheDocument();
       expect(screen.getByTitle("Vue d'ensemble")).toBeInTheDocument();
@@ -91,20 +92,20 @@ describe('Viewer', () => {
     });
 
     it('should call zoomIn when zoom in button is clicked', () => {
-      render(<Viewer />);
+      renderWithIntl(<Viewer />);
       fireEvent.click(screen.getByTitle('Zoom +'));
       expect(mockZoomIn).toHaveBeenCalledTimes(1);
     });
 
     it('should call zoomOut when zoom out button is clicked', () => {
-      render(<Viewer />);
+      renderWithIntl(<Viewer />);
       fireEvent.click(screen.getByTitle('Zoom -'));
       expect(mockZoomOut).toHaveBeenCalledTimes(1);
     });
 
     it('should not call resetToFit when dimensions are zero', () => {
       // When there's no SVG content, dimensions are 0, so resetToFit should not be called
-      render(<Viewer />);
+      renderWithIntl(<Viewer />);
       fireEvent.click(screen.getByTitle("Vue d'ensemble"));
       expect(mockResetToFit).not.toHaveBeenCalled();
     });
@@ -112,7 +113,7 @@ describe('Viewer', () => {
 
   describe('empty states', () => {
     it('should show message when no config', () => {
-      render(<Viewer />);
+      renderWithIntl(<Viewer />);
       // The Viewer may show different messages depending on store state
       // At minimum it should render without crashing
       expect(screen.queryByRole('main')).toBeInTheDocument();
@@ -123,20 +124,20 @@ describe('Viewer', () => {
         configurations: [mockConfig],
         activeConfigId: mockConfig.id,
       };
-      render(<Viewer />);
+      renderWithIntl(<Viewer />);
       expect(screen.getByText('Ajoutez des sections pour visualiser le mur')).toBeInTheDocument();
     });
   });
 
   describe('container', () => {
     it('should render SVG container div', () => {
-      const { container } = render(<Viewer />);
+      const { container } = renderWithIntl(<Viewer />);
       const svgContainer = container.querySelector('[class*="cursor-grab"]');
       expect(svgContainer).toBeInTheDocument();
     });
 
     it('should have touch-none class for gesture handling', () => {
-      const { container } = render(<Viewer />);
+      const { container } = renderWithIntl(<Viewer />);
       const svgContainer = container.querySelector('[class*="cursor-grab"]');
       expect(svgContainer).toHaveClass('touch-none');
     });
@@ -145,7 +146,7 @@ describe('Viewer', () => {
   describe('smearing zones', () => {
     it('should use showSmearingZones from store', () => {
       // Render with default mock that includes showSmearingZones: true
-      const { container } = render(<Viewer />);
+      const { container } = renderWithIntl(<Viewer />);
       // Component should render without errors
       expect(container.querySelector('main')).toBeInTheDocument();
     });
@@ -153,7 +154,7 @@ describe('Viewer', () => {
 
   describe('mouse interactions', () => {
     it('should handle mouse down on container', () => {
-      const { container } = render(<Viewer />);
+      const { container } = renderWithIntl(<Viewer />);
       const svgContainer = container.querySelector('[class*="cursor-grab"]');
       expect(svgContainer).toBeInTheDocument();
 
@@ -165,7 +166,7 @@ describe('Viewer', () => {
     });
 
     it('should handle mouse up after panning', () => {
-      const { container } = render(<Viewer />);
+      const { container } = renderWithIntl(<Viewer />);
       const svgContainer = container.querySelector('[class*="cursor-grab"]');
 
       // Start panning

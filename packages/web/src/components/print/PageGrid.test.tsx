@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { screen, fireEvent, act } from '@testing-library/react';
 import { PageGrid } from './PageGrid';
 import type { PrintLayoutResult, PageLayout, Lane } from '@/hooks/usePrintLayout';
+import { renderWithIntl } from '@/test/intlWrapper';
 
 // Mock the svgViewBox utilities
 vi.mock('@/utils/svgViewBox', () => ({
@@ -62,7 +63,7 @@ describe('PageGrid', () => {
   });
 
   it('should show empty message when no layout', () => {
-    render(
+    renderWithIntl(
       <PageGrid
         layout={null}
         selectedPageIndex={null}
@@ -75,7 +76,7 @@ describe('PageGrid', () => {
   });
 
   it('should show empty message when no SVG content', () => {
-    render(
+    renderWithIntl(
       <PageGrid
         layout={createMockLayout()}
         selectedPageIndex={null}
@@ -88,7 +89,7 @@ describe('PageGrid', () => {
   });
 
   it('should render page thumbnails for full-wall mode', async () => {
-    render(
+    renderWithIntl(
       <PageGrid
         layout={createMockLayout()}
         selectedPageIndex={0}
@@ -107,7 +108,7 @@ describe('PageGrid', () => {
 
   it('should call onSelectPage when thumbnail clicked', async () => {
     const onSelectPage = vi.fn();
-    render(
+    renderWithIntl(
       <PageGrid
         layout={createMockLayout()}
         selectedPageIndex={0}
@@ -127,7 +128,7 @@ describe('PageGrid', () => {
   });
 
   it('should highlight selected page', async () => {
-    render(
+    renderWithIntl(
       <PageGrid
         layout={createMockLayout()}
         selectedPageIndex={0}
@@ -163,7 +164,7 @@ describe('PageGrid', () => {
       ],
     });
 
-    render(
+    renderWithIntl(
       <PageGrid
         layout={layoutWithLanes}
         selectedPageIndex={0}
@@ -181,7 +182,7 @@ describe('PageGrid', () => {
   });
 
   it('should display page numbers on thumbnails', async () => {
-    render(
+    renderWithIntl(
       <PageGrid
         layout={createMockLayout()}
         selectedPageIndex={0}
