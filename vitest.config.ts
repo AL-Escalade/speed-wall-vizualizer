@@ -84,6 +84,8 @@ export default defineConfig({
         // Exclude browser API integration code (clipboard, PDF generation)
         'packages/web/src/utils/clipboard.ts',
         'packages/web/src/utils/pdfGenerator.ts',
+        // Exclude JSON data files
+        '**/*.json',
       ],
     },
   },
