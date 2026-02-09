@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { Birdview } from './Birdview';
+import { renderWithIntl } from '@/test/intlWrapper';
 
 // Track setPan calls
 const mockSetPan = vi.fn();
@@ -32,14 +33,14 @@ describe('Birdview', () => {
 
   describe('rendering', () => {
     it('should render the minimap container', () => {
-      const { container } = render(<Birdview {...defaultProps} />);
+      const { container } = renderWithIntl(<Birdview {...defaultProps} />);
 
       const minimap = container.querySelector('.absolute.bottom-4.right-4');
       expect(minimap).toBeInTheDocument();
     });
 
     it('should show placeholder text when no SVG content', () => {
-      render(
+      renderWithIntl(
         <Birdview
           {...defaultProps}
           svgContent={null}
@@ -50,7 +51,7 @@ describe('Birdview', () => {
     });
 
     it('should render SVG content when provided', () => {
-      const { container } = render(<Birdview {...defaultProps} />);
+      const { container } = renderWithIntl(<Birdview {...defaultProps} />);
 
       // Should have an element with dangerouslySetInnerHTML containing SVG
       const svgContainer = container.querySelector('[style*="pointer-events: none"]');
@@ -58,7 +59,7 @@ describe('Birdview', () => {
     });
 
     it('should render viewport indicator', () => {
-      const { container } = render(<Birdview {...defaultProps} />);
+      const { container } = renderWithIntl(<Birdview {...defaultProps} />);
 
       const viewport = container.querySelector('.border-primary.bg-primary\\/20');
       expect(viewport).toBeInTheDocument();
@@ -67,7 +68,7 @@ describe('Birdview', () => {
 
   describe('dimensions', () => {
     it('should render with correct max dimensions', () => {
-      const { container } = render(
+      const { container } = renderWithIntl(
         <Birdview
           {...defaultProps}
           svgWidth={1000}
@@ -84,7 +85,7 @@ describe('Birdview', () => {
     });
 
     it('should handle zero dimensions gracefully', () => {
-      const { container } = render(
+      const { container } = renderWithIntl(
         <Birdview
           {...defaultProps}
           svgWidth={0}
@@ -98,7 +99,7 @@ describe('Birdview', () => {
 
   describe('interactions', () => {
     it('should toggle cursor between grab and grabbing during drag', () => {
-      const { container } = render(<Birdview {...defaultProps} />);
+      const { container } = renderWithIntl(<Birdview {...defaultProps} />);
 
       const minimap = container.firstChild as HTMLElement;
 
@@ -115,7 +116,7 @@ describe('Birdview', () => {
     });
 
     it('should stop dragging on mouse leave', () => {
-      const { container } = render(<Birdview {...defaultProps} />);
+      const { container } = renderWithIntl(<Birdview {...defaultProps} />);
 
       const minimap = container.firstChild as HTMLElement;
       fireEvent.mouseDown(minimap);
@@ -126,7 +127,7 @@ describe('Birdview', () => {
     });
 
     it('should call setPan when clicking on minimap', () => {
-      const { container } = render(<Birdview {...defaultProps} />);
+      const { container } = renderWithIntl(<Birdview {...defaultProps} />);
 
       const minimap = container.firstChild as HTMLElement;
 

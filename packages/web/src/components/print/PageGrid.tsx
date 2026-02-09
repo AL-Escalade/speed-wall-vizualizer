@@ -4,6 +4,7 @@
  */
 
 import { useMemo, memo, useState, useEffect, useCallback } from 'react';
+import { useIntl } from 'react-intl';
 import type { PrintLayoutResult, PageLayout, Lane } from '@/hooks/usePrintLayout';
 import { calculateViewBox, applyViewBoxToSvg, serializeSvgToDataUrl, calculatePagesInWidth } from '@/utils/svgViewBox';
 
@@ -140,10 +141,11 @@ const LaneGroup = memo(function LaneGroup({
   onSelectPage,
   svgContent,
 }: LaneGroupProps) {
+  const intl = useIntl();
   return (
     <div className="space-y-2">
       <h3 className="text-sm font-medium text-base-content/70">
-        Couloir {lane.number}
+        {intl.formatMessage({ id: 'print.laneNumber' }, { number: lane.number })}
       </h3>
       <div className="flex flex-wrap gap-2">
         {pages.map((page) => (
@@ -170,10 +172,12 @@ export function PageGrid({
   onSelectPage,
   svgContent,
 }: PageGridProps) {
+  const intl = useIntl();
+
   if (!layout || !svgContent) {
     return (
       <div className="flex items-center justify-center h-32 text-base-content/50">
-        Aucune page à afficher
+        {intl.formatMessage({ id: 'print.noPages' })}
       </div>
     );
   }
@@ -203,7 +207,7 @@ export function PageGrid({
   if (lanes && lanes.length > 0) {
     return (
       <div className="space-y-3 md:space-y-4">
-        <h2 className="font-semibold text-sm md:text-base">Aperçu des pages</h2>
+        <h2 className="font-semibold text-sm md:text-base">{intl.formatMessage({ id: 'print.pagePreview' })}</h2>
         <div className="space-y-4 max-h-48 md:max-h-64 overflow-y-auto">
           {lanes.map(({ lane, pages: lanePages }) => {
             const lanePagesInWidth = calculatePagesInWidth(lanePages);

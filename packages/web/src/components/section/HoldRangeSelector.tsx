@@ -3,6 +3,7 @@
  */
 
 import { memo } from 'react';
+import { useIntl } from 'react-intl';
 
 interface HoldSelectorProps {
   label: string;
@@ -52,16 +53,17 @@ export const HoldRangeSelector = memo(function HoldRangeSelector({
   onFromChange,
   onToChange,
 }: HoldRangeSelectorProps) {
+  const intl = useIntl();
   return (
     <div className="grid grid-cols-2 gap-2">
       <HoldSelector
-        label="Première prise"
+        label={intl.formatMessage({ id: 'section.firstHold' })}
         value={fromHold}
         holdLabels={holdLabels}
         onValueChange={onFromChange}
       />
       <HoldSelector
-        label="Dernière prise"
+        label={intl.formatMessage({ id: 'section.lastHold' })}
         value={toHold}
         holdLabels={holdLabels}
         onValueChange={onToChange}

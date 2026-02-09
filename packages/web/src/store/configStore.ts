@@ -5,7 +5,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { WallConfig } from '@voie-vitesse/core';
-import type { Section, SavedConfiguration, DisplayOptions } from './types';
+import type { Section, SavedConfiguration, DisplayOptions, LanguageSetting } from './types';
 import type { CoordinateSystemId } from '@/constants/routes';
 import { getConfigFingerprint } from '@/utils/urlConfig';
 
@@ -112,6 +112,8 @@ interface ConfigState {
   updateDisplayOptions: (options: Partial<DisplayOptions>) => void;
   /** Set coordinate display system for current configuration */
   setCoordinateDisplaySystem: (system: CoordinateSystemId) => void;
+  /** Set language for current configuration */
+  setLanguage: (language: LanguageSetting) => void;
   /** Remove duplicate configurations (keeps oldest of each) */
   deduplicateConfigurations: () => void;
 }
@@ -308,6 +310,16 @@ export const useConfigStore = create<ConfigState>()(
           configurations: state.configurations.map((c) =>
             c.id === state.activeConfigId
               ? { ...c, coordinateDisplaySystem: system, updatedAt: Date.now() }
+              : c
+          ),
+        }));
+      },
+
+      setLanguage: (language: LanguageSetting) => {
+        set((state) => ({
+          configurations: state.configurations.map((c) =>
+            c.id === state.activeConfigId
+              ? { ...c, language, updatedAt: Date.now() }
               : c
           ),
         }));

@@ -4,6 +4,7 @@
  */
 
 import { useMemo, useState, useEffect } from 'react';
+import { useIntl } from 'react-intl';
 import type { PrintLayoutResult } from '@/hooks/usePrintLayout';
 import { calculateViewBox, applyViewBoxToSvg, serializeSvgToDataUrl } from '@/utils/svgViewBox';
 
@@ -20,6 +21,8 @@ export function PageDetail({
   svgContent,
   configName,
 }: PageDetailProps) {
+  const intl = useIntl();
+
   // Find the selected page
   const selectedPage = useMemo(() => {
     if (!layout || selectedPageIndex === null) return null;
@@ -68,20 +71,20 @@ export function PageDetail({
     return () => clearTimeout(timeoutId);
   }, [svgContent, selectedPage, layout]);
 
-  // Format current date
+  // Format current date using current locale
   const dateStr = useMemo(() => {
-    return new Date().toLocaleDateString('fr-FR', {
+    return intl.formatDate(new Date(), {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
     });
-  }, []);
+  }, [intl]);
 
   if (!layout || selectedPageIndex === null || !selectedPage) {
     return (
       <div className="h-full flex items-center justify-center bg-base-200 rounded-lg p-4">
         <p className="text-base-content/50 text-sm md:text-base text-center">
-          Sélectionnez une page pour voir l'aperçu
+          {intl.formatMessage({ id: 'print.selectPage' })}
         </p>
       </div>
     );
@@ -92,7 +95,7 @@ export function PageDetail({
   return (
     <div className="h-full flex flex-col bg-base-200 rounded-lg p-3 md:p-4 overflow-hidden">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="font-semibold text-sm md:text-base">Page {selectedPageIndex + 1}</h2>
+        <h2 className="font-semibold text-sm md:text-base">{intl.formatMessage({ id: 'print.pageNumber' }, { number: selectedPageIndex + 1 })}</h2>
         <span className="text-xs md:text-sm text-base-content/70">
           {page.width} × {page.height} mm
         </span>
@@ -157,9 +160,12 @@ export function PageDetail({
 
       {/* Page coordinates info - hidden on mobile for space */}
       <div className="hidden md:block mt-2 text-xs text-base-content/50 text-center">
-        Contenu : {Math.round(selectedPage.contentX)} - {Math.round(selectedPage.contentX + selectedPage.contentWidth)} mm (x)
-        {' | '}
-        {Math.round(selectedPage.contentY)} - {Math.round(selectedPage.contentY + selectedPage.contentHeight)} mm (y)
+        {intl.formatMessage({ id: 'print.contentCoordinates' }, {
+          x1: Math.round(selectedPage.contentX),
+          x2: Math.round(selectedPage.contentX + selectedPage.contentWidth),
+          y1: Math.round(selectedPage.contentY),
+          y2: Math.round(selectedPage.contentY + selectedPage.contentHeight),
+        })}
       </div>
     </div>
   );

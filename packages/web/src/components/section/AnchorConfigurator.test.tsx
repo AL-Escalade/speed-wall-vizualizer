@@ -1,7 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { AnchorConfigurator } from './AnchorConfigurator';
 import type { AnchorPosition } from './types';
+import { renderWithIntl } from '@/test/intlWrapper';
 
 const DEFAULT_ANCHOR: AnchorPosition = {
   side: 'SN',
@@ -11,7 +12,7 @@ const DEFAULT_ANCHOR: AnchorPosition = {
 
 describe('AnchorConfigurator', () => {
   it('should render all three selectors (side, column, row)', () => {
-    render(
+    renderWithIntl(
       <AnchorConfigurator
         anchor={undefined}
         defaultAnchor={DEFAULT_ANCHOR}
@@ -26,7 +27,7 @@ describe('AnchorConfigurator', () => {
   });
 
   it('should render the header label', () => {
-    render(
+    renderWithIntl(
       <AnchorConfigurator
         anchor={undefined}
         defaultAnchor={DEFAULT_ANCHOR}
@@ -39,7 +40,7 @@ describe('AnchorConfigurator', () => {
   });
 
   it('should render reset button', () => {
-    render(
+    renderWithIntl(
       <AnchorConfigurator
         anchor={undefined}
         defaultAnchor={DEFAULT_ANCHOR}
@@ -52,7 +53,7 @@ describe('AnchorConfigurator', () => {
   });
 
   it('should use defaultAnchor values when anchor is undefined', () => {
-    render(
+    renderWithIntl(
       <AnchorConfigurator
         anchor={undefined}
         defaultAnchor={DEFAULT_ANCHOR}
@@ -74,7 +75,7 @@ describe('AnchorConfigurator', () => {
       row: 5,
     };
 
-    render(
+    renderWithIntl(
       <AnchorConfigurator
         anchor={customAnchor}
         defaultAnchor={DEFAULT_ANCHOR}
@@ -91,7 +92,7 @@ describe('AnchorConfigurator', () => {
 
   it('should call onUpdate when side changes', () => {
     const handleUpdate = vi.fn();
-    render(
+    renderWithIntl(
       <AnchorConfigurator
         anchor={DEFAULT_ANCHOR}
         defaultAnchor={DEFAULT_ANCHOR}
@@ -111,7 +112,7 @@ describe('AnchorConfigurator', () => {
 
   it('should call onUpdate when column changes', () => {
     const handleUpdate = vi.fn();
-    render(
+    renderWithIntl(
       <AnchorConfigurator
         anchor={DEFAULT_ANCHOR}
         defaultAnchor={DEFAULT_ANCHOR}
@@ -131,7 +132,7 @@ describe('AnchorConfigurator', () => {
 
   it('should call onUpdate with parsed integer when row changes', () => {
     const handleUpdate = vi.fn();
-    render(
+    renderWithIntl(
       <AnchorConfigurator
         anchor={DEFAULT_ANCHOR}
         defaultAnchor={DEFAULT_ANCHOR}
@@ -151,7 +152,7 @@ describe('AnchorConfigurator', () => {
 
   it('should call onReset when reset button is clicked', () => {
     const handleReset = vi.fn();
-    render(
+    renderWithIntl(
       <AnchorConfigurator
         anchor={{ side: 'DX', column: 'K', row: 10 }}
         defaultAnchor={DEFAULT_ANCHOR}
@@ -166,7 +167,7 @@ describe('AnchorConfigurator', () => {
   });
 
   it('should render side options (Gauche/Droite)', () => {
-    render(
+    renderWithIntl(
       <AnchorConfigurator
         anchor={undefined}
         defaultAnchor={DEFAULT_ANCHOR}
@@ -184,7 +185,7 @@ describe('AnchorConfigurator', () => {
   });
 
   it('should render row options 1-10', () => {
-    render(
+    renderWithIntl(
       <AnchorConfigurator
         anchor={undefined}
         defaultAnchor={DEFAULT_ANCHOR}
@@ -202,7 +203,7 @@ describe('AnchorConfigurator', () => {
   });
 
   it('should render column options A-K by default', () => {
-    render(
+    renderWithIntl(
       <AnchorConfigurator
         anchor={undefined}
         defaultAnchor={DEFAULT_ANCHOR}

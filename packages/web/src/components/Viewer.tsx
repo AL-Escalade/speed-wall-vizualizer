@@ -6,6 +6,7 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { generateSvg, composeAllRoutes, composeAllSmearingZones, type Config } from '@voie-vitesse/core';
 import { useShallow } from 'zustand/react/shallow';
+import { useIntl } from 'react-intl';
 import { useConfigStore, useRoutesStore, useViewerStore, DEFAULT_DISPLAY_OPTIONS } from '@/store';
 import { sectionToSegment, normalizeSvgForWeb } from '@/utils/sectionMapper';
 import { useTouchGestures } from '@/hooks/useTouchGestures';
@@ -15,6 +16,7 @@ import { COORDINATE_SYSTEM_COLUMNS, DEFAULT_COORDINATE_SYSTEM } from '@/constant
 import { ZoomIn, ZoomOut, Home } from 'lucide-react';
 
 export function Viewer() {
+  const intl = useIntl();
   const config = useConfigStore((s) =>
     s.configurations.find((c) => c.id === s.activeConfigId) ?? null
   );
@@ -136,7 +138,7 @@ export function Viewer() {
       } catch (err) {
         if (!isCancelled) {
           console.error('SVG generation error:', err);
-          setError(err instanceof Error ? err.message : 'Erreur de génération');
+          setError(err instanceof Error ? err.message : intl.formatMessage({ id: 'viewer.generationError' }));
         }
       } finally {
         if (!isCancelled) {
@@ -361,21 +363,21 @@ export function Viewer() {
       <div className="absolute right-2 md:right-4 top-2 md:top-4 z-10 flex flex-col gap-2">
         <button
           className="btn btn-sm btn-square btn-neutral"
-          title="Zoom +"
+          title={intl.formatMessage({ id: 'viewer.zoomIn' })}
           onClick={zoomIn}
         >
           <ZoomIn size={18} />
         </button>
         <button
           className="btn btn-sm btn-square btn-neutral"
-          title="Zoom -"
+          title={intl.formatMessage({ id: 'viewer.zoomOut' })}
           onClick={zoomOut}
         >
           <ZoomOut size={18} />
         </button>
         <button
           className="btn btn-sm btn-square btn-neutral"
-          title="Vue d'ensemble"
+          title={intl.formatMessage({ id: 'viewer.overview' })}
           onClick={handleZoomToFit}
         >
           <Home size={18} />
@@ -409,9 +411,9 @@ export function Viewer() {
         {!config && (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-base-content/40 text-lg text-center px-4">
-              <p>Créez une configuration pour commencer</p>
+              <p>{intl.formatMessage({ id: 'viewer.createConfig' })}</p>
               <p className="text-sm mt-2">
-                {isMobile ? 'Allez dans l\'onglet Configuration' : 'Cliquez sur + dans la sidebar'}
+                {isMobile ? intl.formatMessage({ id: 'viewer.goToConfigTab' }) : intl.formatMessage({ id: 'viewer.clickPlusInSidebar' })}
               </p>
             </div>
           </div>
@@ -420,9 +422,9 @@ export function Viewer() {
         {config && config.sections.length === 0 && !isGenerating && (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-base-content/40 text-lg text-center px-4">
-              <p>Ajoutez des sections pour visualiser le mur</p>
+              <p>{intl.formatMessage({ id: 'viewer.addSections' })}</p>
               <p className="text-sm mt-2">
-                {isMobile ? 'Allez dans l\'onglet Configuration' : 'Cliquez sur "Ajouter" dans la sidebar'}
+                {isMobile ? intl.formatMessage({ id: 'viewer.goToConfigTab' }) : intl.formatMessage({ id: 'viewer.clickAddInSidebar' })}
               </p>
             </div>
           </div>

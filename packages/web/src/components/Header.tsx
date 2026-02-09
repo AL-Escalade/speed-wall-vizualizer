@@ -6,6 +6,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Download, Upload, FileImage, Printer, Share2, Check, MoreVertical, ChevronDown } from 'lucide-react';
+import { useIntl } from 'react-intl';
 
 /** GitHub icon - inline SVG to avoid lucide deprecation warning */
 function GitHubIcon({ size = 24 }: { size?: number }) {
@@ -39,6 +40,7 @@ function ImageExportDropdown({
   exportSvg: () => void;
   exportPng: () => void;
 }) {
+  const intl = useIntl();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -65,22 +67,22 @@ function ImageExportDropdown({
       <button
         className="btn btn-sm btn-outline gap-1"
         onClick={() => setIsOpen(!isOpen)}
-        title="Télécharger l'image"
+        title={intl.formatMessage({ id: 'header.downloadImage' })}
       >
         <FileImage size={16} />
-        <span className="hidden xl:inline">Image</span>
+        <span className="hidden xl:inline">{intl.formatMessage({ id: 'header.image' })}</span>
         <ChevronDown size={14} />
       </button>
       {isOpen && (
         <ul className="dropdown-content z-[100] menu p-2 shadow-lg bg-base-100 rounded-box w-40 border border-base-300">
           <li>
             <button onClick={() => handleAction(exportSvg)} className="flex gap-2">
-              SVG (vectoriel)
+              {intl.formatMessage({ id: 'header.svgVector' })}
             </button>
           </li>
           <li>
             <button onClick={() => handleAction(exportPng)} className="flex gap-2">
-              PNG (image)
+              {intl.formatMessage({ id: 'header.pngImage' })}
             </button>
           </li>
         </ul>
@@ -106,35 +108,36 @@ function DesktopActions({
   exportPng: () => void;
   onPrint: () => void;
 }) {
+  const intl = useIntl();
   return (
     <div className="flex-none flex gap-1 lg:gap-2">
       <button
         className={`btn btn-sm gap-2 ${shareSuccess ? 'btn-success' : 'btn-outline'}`}
         onClick={share}
-        title="Partager"
+        title={intl.formatMessage({ id: 'header.share' })}
       >
         {shareSuccess ? <Check size={16} /> : <Share2 size={16} />}
-        <span className="hidden xl:inline">{shareSuccess ? 'Lien copié !' : 'Partager'}</span>
+        <span className="hidden xl:inline">{shareSuccess ? intl.formatMessage({ id: 'header.linkCopied' }) : intl.formatMessage({ id: 'header.share' })}</span>
       </button>
-      <button className="btn btn-sm btn-outline gap-2" onClick={exportJson} title="Exporter JSON">
+      <button className="btn btn-sm btn-outline gap-2" onClick={exportJson} title={intl.formatMessage({ id: 'header.exportJson' })}>
         <Download size={16} />
-        <span className="hidden xl:inline">Exporter</span>
+        <span className="hidden xl:inline">{intl.formatMessage({ id: 'header.export' })}</span>
       </button>
-      <button className="btn btn-sm btn-outline gap-2" onClick={triggerImport} title="Importer JSON">
+      <button className="btn btn-sm btn-outline gap-2" onClick={triggerImport} title={intl.formatMessage({ id: 'header.importJson' })}>
         <Upload size={16} />
-        <span className="hidden xl:inline">Importer</span>
+        <span className="hidden xl:inline">{intl.formatMessage({ id: 'header.import' })}</span>
       </button>
       <ImageExportDropdown exportSvg={exportSvg} exportPng={exportPng} />
-      <button className="btn btn-sm btn-primary gap-2" onClick={onPrint} title="Imprimer">
+      <button className="btn btn-sm btn-primary gap-2" onClick={onPrint} title={intl.formatMessage({ id: 'header.print' })}>
         <Printer size={16} />
-        <span className="hidden xl:inline">Imprimer</span>
+        <span className="hidden xl:inline">{intl.formatMessage({ id: 'header.print' })}</span>
       </button>
       <a
         href={GITHUB_URL}
         target="_blank"
         rel="noopener noreferrer"
         className="btn btn-sm btn-ghost btn-square"
-        title="Code source sur GitHub"
+        title={intl.formatMessage({ id: 'header.sourceCode' })}
       >
         <GitHubIcon size={18} />
       </a>
@@ -159,6 +162,7 @@ function MobileActions({
   exportPng: () => void;
   onPrint: () => void;
 }) {
+  const intl = useIntl();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -195,37 +199,37 @@ function MobileActions({
           <li>
             <button onClick={() => handleAction(share)} className="flex gap-2">
               {shareSuccess ? <Check size={16} /> : <Share2 size={16} />}
-              {shareSuccess ? 'Lien copié !' : 'Partager'}
+              {shareSuccess ? intl.formatMessage({ id: 'header.linkCopied' }) : intl.formatMessage({ id: 'header.share' })}
             </button>
           </li>
           <li>
             <button onClick={() => handleAction(exportJson)} className="flex gap-2">
               <Download size={16} />
-              Exporter JSON
+              {intl.formatMessage({ id: 'header.exportJson' })}
             </button>
           </li>
           <li>
             <button onClick={() => handleAction(triggerImport)} className="flex gap-2">
               <Upload size={16} />
-              Importer JSON
+              {intl.formatMessage({ id: 'header.importJson' })}
             </button>
           </li>
           <li>
             <button onClick={() => handleAction(exportSvg)} className="flex gap-2">
               <FileImage size={16} />
-              Télécharger SVG
+              {intl.formatMessage({ id: 'header.downloadSvg' })}
             </button>
           </li>
           <li>
             <button onClick={() => handleAction(exportPng)} className="flex gap-2">
               <FileImage size={16} />
-              Télécharger PNG
+              {intl.formatMessage({ id: 'header.downloadPng' })}
             </button>
           </li>
           <li>
             <button onClick={() => handleAction(onPrint)} className="flex gap-2">
               <Printer size={16} />
-              Imprimer
+              {intl.formatMessage({ id: 'header.print' })}
             </button>
           </li>
           <li className="border-t border-base-300 mt-1 pt-1">
@@ -237,7 +241,7 @@ function MobileActions({
               onClick={() => setIsOpen(false)}
             >
               <GitHubIcon size={16} />
-              Code source
+              {intl.formatMessage({ id: 'header.sourceCodeShort' })}
             </a>
           </li>
         </ul>
@@ -247,6 +251,7 @@ function MobileActions({
 }
 
 export function Header() {
+  const intl = useIntl();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { exportJson } = useJsonExport();
@@ -261,10 +266,10 @@ export function Header() {
       <header className="navbar bg-base-200 border-b border-base-300 min-h-12 px-2 md:px-4">
         <div className="flex-1 min-w-0">
           <span className="text-base md:text-xl font-bold px-2 md:px-4 truncate block">
-            {isMobile ? 'Voie Vitesse' : (
+            {isMobile ? intl.formatMessage({ id: 'header.appName' }) : (
               <>
-                <span className="hidden xl:inline">Configurateur de couloirs d'escalade de vitesse</span>
-                <span className="xl:hidden">Voie Vitesse</span>
+                <span className="hidden xl:inline">{intl.formatMessage({ id: 'header.appTitle' })}</span>
+                <span className="xl:hidden">{intl.formatMessage({ id: 'header.appName' })}</span>
               </>
             )}
           </span>

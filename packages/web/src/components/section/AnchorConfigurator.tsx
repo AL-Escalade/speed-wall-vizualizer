@@ -3,6 +3,7 @@
  */
 
 import { memo, useCallback, useMemo } from 'react';
+import { useIntl } from 'react-intl';
 import {
   PANEL_SIDES,
   ROW_COUNT,
@@ -34,6 +35,7 @@ export const AnchorConfigurator = memo(function AnchorConfigurator({
   onReset,
   coordinateDisplaySystem = DEFAULT_COORDINATE_SYSTEM,
 }: AnchorConfiguratorProps) {
+  const intl = useIntl();
   const currentAnchor: AnchorPosition = anchor ?? defaultAnchor;
 
   // Get column labels for the display coordinate system
@@ -71,26 +73,26 @@ export const AnchorConfigurator = memo(function AnchorConfigurator({
     <>
       <div className="form-control">
         <label className="label py-1">
-          <span className="label-text text-sm">Position de la première prise</span>
+          <span className="label-text text-sm">{intl.formatMessage({ id: 'section.anchorPosition' })}</span>
         </label>
       </div>
       <div className="grid grid-cols-3 gap-2">
         <div className="form-control">
           <label className="label py-1">
-            <span className="label-text text-sm">Côté</span>
+            <span className="label-text text-sm">{intl.formatMessage({ id: 'section.side' })}</span>
           </label>
           <select
             className="select select-bordered select-sm w-full"
             value={currentAnchor.side}
             onChange={(e) => updateField('side', e.target.value as PanelSide)}
           >
-            <option value={PANEL_SIDES.LEFT}>Gauche</option>
-            <option value={PANEL_SIDES.RIGHT}>Droite</option>
+            <option value={PANEL_SIDES.LEFT}>{intl.formatMessage({ id: 'section.left' })}</option>
+            <option value={PANEL_SIDES.RIGHT}>{intl.formatMessage({ id: 'section.right' })}</option>
           </select>
         </div>
         <div className="form-control">
           <label className="label py-1">
-            <span className="label-text text-sm">Colonne</span>
+            <span className="label-text text-sm">{intl.formatMessage({ id: 'section.column' })}</span>
           </label>
           <select
             className="select select-bordered select-sm w-full"
@@ -106,7 +108,7 @@ export const AnchorConfigurator = memo(function AnchorConfigurator({
         </div>
         <div className="form-control">
           <label className="label py-1">
-            <span className="label-text text-sm">Ligne</span>
+            <span className="label-text text-sm">{intl.formatMessage({ id: 'section.row' })}</span>
           </label>
           <select
             className="select select-bordered select-sm w-full"
@@ -124,9 +126,9 @@ export const AnchorConfigurator = memo(function AnchorConfigurator({
       <button
         className="btn btn-sm btn-ghost mt-2"
         onClick={onReset}
-        title="Réinitialiser à la position d'origine"
+        title={intl.formatMessage({ id: 'section.resetAnchor' })}
       >
-        Réinitialiser
+        {intl.formatMessage({ id: 'section.reset' })}
       </button>
     </>
   );

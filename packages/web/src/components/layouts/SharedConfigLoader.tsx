@@ -5,11 +5,13 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useIntl } from 'react-intl';
 import { useConfigStore } from '@/store';
 import { decodeConfig, hydrateShareableConfig } from '@/utils/urlConfig';
 import { ROUTES } from '@/utils/routes';
 
 export function SharedConfigLoader() {
+  const intl = useIntl();
   const { encoded } = useParams<{ encoded: string }>();
   const navigate = useNavigate();
   const importConfiguration = useConfigStore((s) => s.importConfiguration);
@@ -27,7 +29,7 @@ export function SharedConfigLoader() {
 
     const config = decodeConfig(encoded);
     if (!config) {
-      setError('Le lien de partage est invalide ou corrompu.');
+      setError(intl.formatMessage({ id: 'error.invalidShareLink' }));
       return;
     }
 
@@ -48,7 +50,7 @@ export function SharedConfigLoader() {
           className="btn btn-primary"
           onClick={() => navigate(ROUTES.HOME, { replace: true })}
         >
-          Retour à l'accueil
+          {intl.formatMessage({ id: 'error.backToHome' })}
         </button>
       </div>
     );

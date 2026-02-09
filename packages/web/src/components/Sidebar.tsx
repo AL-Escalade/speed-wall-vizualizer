@@ -5,8 +5,9 @@
 import { useState, memo, useCallback, useRef, useEffect } from 'react';
 import { Plus, Trash2, Pencil, Check, X, ChevronDown } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
+import { useIntl } from 'react-intl';
 import { useConfigStore, useRoutesStore, useViewerStore, DEFAULT_DISPLAY_OPTIONS } from '@/store';
-import type { Section } from '@/store';
+import type { Section, LanguageSetting } from '@/store';
 import {
   SectionHeader,
   SourceSelector,
@@ -24,12 +25,14 @@ import {
   DEFAULT_SECTION_COLOR,
   isCompetitionRoute,
   COORDINATE_SYSTEM_NAMES,
+  COORDINATE_SYSTEM_INTL_KEYS,
   DEFAULT_COORDINATE_SYSTEM,
   type CoordinateSystemId,
 } from '@/constants/routes';
 
 /** Configuration selector component */
 function ConfigSelector() {
+  const intl = useIntl();
   const { configurations, activeConfigId, setActiveConfiguration, createConfiguration, deleteConfiguration, renameConfiguration } =
     useConfigStore(
       useShallow((s) => ({
@@ -47,12 +50,12 @@ function ConfigSelector() {
   const activeConfig = configurations.find((c) => c.id === activeConfigId);
 
   const handleNew = () => {
-    const name = `Configuration ${configurations.length + 1}`;
+    const name = intl.formatMessage({ id: 'sidebar.configName' }, { number: configurations.length + 1 });
     createConfiguration(name);
   };
 
   const handleDelete = () => {
-    if (activeConfigId && confirm('Supprimer cette configuration ?')) {
+    if (activeConfigId && confirm(intl.formatMessage({ id: 'sidebar.deleteConfigConfirm' }))) {
       deleteConfiguration(activeConfigId);
     }
   };
@@ -78,7 +81,7 @@ function ConfigSelector() {
   return (
     <div className="p-4 border-b border-base-300">
       <label className="label">
-        <span className="label-text font-semibold">Configuration</span>
+        <span className="label-text font-semibold">{intl.formatMessage({ id: 'sidebar.configuration' })}</span>
       </label>
       {isEditing ? (
         <div className="flex gap-2">
@@ -93,10 +96,10 @@ function ConfigSelector() {
               if (e.key === 'Escape') handleCancelEdit();
             }}
           />
-          <button className="btn btn-sm btn-square btn-ghost text-success" title="Valider" onClick={handleSaveEdit}>
+          <button className="btn btn-sm btn-square btn-ghost text-success" title={intl.formatMessage({ id: 'sidebar.validate' })} onClick={handleSaveEdit}>
             <Check size={16} />
           </button>
-          <button className="btn btn-sm btn-square btn-ghost text-error" title="Annuler" onClick={handleCancelEdit}>
+          <button className="btn btn-sm btn-square btn-ghost text-error" title={intl.formatMessage({ id: 'sidebar.cancel' })} onClick={handleCancelEdit}>
             <X size={16} />
           </button>
         </div>
@@ -107,22 +110,22 @@ function ConfigSelector() {
             value={activeConfigId ?? ''}
             onChange={(e) => setActiveConfiguration(e.target.value || null)}
           >
-            {configurations.length === 0 && <option value="">Aucune configuration</option>}
+            {configurations.length === 0 && <option value="">{intl.formatMessage({ id: 'sidebar.noConfiguration' })}</option>}
             {configurations.map((config) => (
               <option key={config.id} value={config.id}>
                 {config.name}
               </option>
             ))}
           </select>
-          <button className="btn btn-sm btn-square btn-ghost" title="Renommer" onClick={handleStartEdit} disabled={!activeConfigId}>
+          <button className="btn btn-sm btn-square btn-ghost" title={intl.formatMessage({ id: 'sidebar.rename' })} onClick={handleStartEdit} disabled={!activeConfigId}>
             <Pencil size={16} />
           </button>
-          <button className="btn btn-sm btn-square btn-ghost" title="Nouvelle" onClick={handleNew}>
+          <button className="btn btn-sm btn-square btn-ghost" title={intl.formatMessage({ id: 'sidebar.new' })} onClick={handleNew}>
             <Plus size={16} />
           </button>
           <button
             className="btn btn-sm btn-square btn-ghost"
-            title="Supprimer"
+            title={intl.formatMessage({ id: 'sidebar.delete' })}
             onClick={handleDelete}
             disabled={!activeConfigId}
           >
@@ -136,6 +139,7 @@ function ConfigSelector() {
 
 /** Wall configuration component */
 function WallConfig() {
+  const intl = useIntl();
   const config = useConfigStore((s) =>
     s.configurations.find((c) => c.id === s.activeConfigId) ?? null
   );
@@ -145,11 +149,11 @@ function WallConfig() {
 
   return (
     <div className="p-4 border-b border-base-300">
-      <h3 className="font-semibold mb-3">Dimensions du mur</h3>
+      <h3 className="font-semibold mb-3">{intl.formatMessage({ id: 'sidebar.wallDimensions' })}</h3>
       <div className="grid grid-cols-2 gap-4">
         <div className="form-control">
           <label className="label py-1">
-            <span className="label-text text-sm">Largeur (couloirs)</span>
+            <span className="label-text text-sm">{intl.formatMessage({ id: 'sidebar.wallWidth' })}</span>
           </label>
           <input
             type="number"
@@ -162,7 +166,7 @@ function WallConfig() {
         </div>
         <div className="form-control">
           <label className="label py-1">
-            <span className="label-text text-sm">Hauteur (panneaux)</span>
+            <span className="label-text text-sm">{intl.formatMessage({ id: 'sidebar.wallHeight' })}</span>
           </label>
           <input
             type="number"
@@ -357,6 +361,7 @@ const SectionItem = memo(function SectionItem({
 
 /** Section list component */
 function SectionList() {
+  const intl = useIntl();
   const config = useConfigStore((s) =>
     s.configurations.find((c) => c.id === s.activeConfigId) ?? null
   );
@@ -384,7 +389,7 @@ function SectionList() {
     const sectionNumber = config.sections.length + 1;
 
     const newId = addSection({
-      name: `Section ${sectionNumber}`,
+      name: intl.formatMessage({ id: 'sidebar.sectionName' }, { number: sectionNumber }),
       source: defaultSource,
       lane: 0,
       fromHold: firstLabel ?? DEFAULT_HOLDS.FIRST,
@@ -404,16 +409,16 @@ function SectionList() {
   return (
     <div className="p-4 md:flex-1 md:flex md:flex-col md:min-h-0">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-semibold">Sections</h3>
+        <h3 className="font-semibold">{intl.formatMessage({ id: 'sidebar.sections' })}</h3>
         <button className="btn btn-sm btn-primary" onClick={handleAddSection}>
-          Ajouter
+          {intl.formatMessage({ id: 'sidebar.addSection' })}
         </button>
       </div>
 
       <div className="space-y-3 md:flex-1 md:overflow-y-auto">
         {config.sections.length === 0 ? (
           <div className="text-center text-base-content/50 py-8">
-            Aucune section. Cliquez sur "Ajouter" pour commencer.
+            {intl.formatMessage({ id: 'sidebar.noSection' })}
           </div>
         ) : (
           config.sections.map((section) => (
@@ -434,14 +439,16 @@ function SectionList() {
 
 /** Display options component */
 function DisplayOptions() {
+  const intl = useIntl();
   const config = useConfigStore((s) =>
     s.configurations.find((c) => c.id === s.activeConfigId) ?? null
   );
-  const { updateDisplayOptions, setShowArrow, setCoordinateDisplaySystem } = useConfigStore(
+  const { updateDisplayOptions, setShowArrow, setCoordinateDisplaySystem, setLanguage } = useConfigStore(
     useShallow((s) => ({
       updateDisplayOptions: s.updateDisplayOptions,
       setShowArrow: s.setShowArrow,
       setCoordinateDisplaySystem: s.setCoordinateDisplaySystem,
+      setLanguage: s.setLanguage,
     }))
   );
   const { showSmearingZones, setShowSmearingZones } = useViewerStore(
@@ -490,7 +497,7 @@ function DisplayOptions() {
         className="w-full p-4 flex items-center justify-between hover:bg-base-200 transition-colors"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <h3 className="font-semibold">Options d'affichage</h3>
+        <h3 className="font-semibold">{intl.formatMessage({ id: 'sidebar.displayOptions' })}</h3>
         <ChevronDown
           size={16}
           className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`}
@@ -500,16 +507,16 @@ function DisplayOptions() {
         <div className="px-4 pb-4 space-y-3">
           <div className="form-control">
             <label className="label py-1">
-              <span className="label-text text-sm">Système de coordonnées</span>
+              <span className="label-text text-sm">{intl.formatMessage({ id: 'sidebar.coordinateSystem' })}</span>
             </label>
             <select
               className="select select-bordered select-sm w-full"
               value={config.coordinateDisplaySystem ?? DEFAULT_COORDINATE_SYSTEM}
               onChange={(e) => setCoordinateDisplaySystem(e.target.value as CoordinateSystemId)}
             >
-              {Object.entries(COORDINATE_SYSTEM_NAMES).map(([id, name]) => (
+              {Object.entries(COORDINATE_SYSTEM_INTL_KEYS).map(([id, intlKey]) => (
                 <option key={id} value={id}>
-                  {name}
+                  {intl.formatMessage({ id: intlKey })}
                 </option>
               ))}
             </select>
@@ -522,7 +529,7 @@ function DisplayOptions() {
                 checked={config.showArrow ?? false}
                 onChange={(e) => setShowArrow(e.target.checked)}
               />
-              <span className="label-text text-sm">Afficher les flèches d'orientation</span>
+              <span className="label-text text-sm">{intl.formatMessage({ id: 'sidebar.showArrows' })}</span>
             </label>
           </div>
           <div className="form-control">
@@ -533,12 +540,12 @@ function DisplayOptions() {
                 checked={showSmearingZones}
                 onChange={(e) => setShowSmearingZones(e.target.checked)}
               />
-              <span className="label-text text-sm">Zones d'adhérence</span>
+              <span className="label-text text-sm">{intl.formatMessage({ id: 'sidebar.smearingZones' })}</span>
             </label>
           </div>
           <div className="form-control">
             <label className="label py-1">
-              <span className="label-text text-sm">Couleur de la grille</span>
+              <span className="label-text text-sm">{intl.formatMessage({ id: 'sidebar.gridColor' })}</span>
             </label>
             <input
               type="color"
@@ -550,7 +557,7 @@ function DisplayOptions() {
 
           <div className="form-control">
             <label className="label py-1">
-              <span className="label-text text-sm">Taille des coordonnées</span>
+              <span className="label-text text-sm">{intl.formatMessage({ id: 'sidebar.coordinateSize' })}</span>
             </label>
             <input
               type="range"
@@ -568,7 +575,7 @@ function DisplayOptions() {
 
           <div className="form-control">
             <label className="label py-1">
-              <span className="label-text text-sm">Taille des noms de prises</span>
+              <span className="label-text text-sm">{intl.formatMessage({ id: 'sidebar.holdLabelSize' })}</span>
             </label>
             <input
               type="range"
@@ -582,6 +589,23 @@ function DisplayOptions() {
             <div className="text-xs text-base-content/50 text-right mt-1">
               {displayOptions.holdLabelFontSize ?? DEFAULT_DISPLAY_OPTIONS.holdLabelFontSize}px
             </div>
+          </div>
+
+          <div className="form-control">
+            <label className="label py-1">
+              <span className="label-text text-sm">{intl.formatMessage({ id: 'sidebar.language' })}</span>
+            </label>
+            <select
+              className="select select-bordered select-sm w-full"
+              value={config.language ?? 'auto'}
+              onChange={(e) => setLanguage(e.target.value as LanguageSetting)}
+            >
+              {(['auto', 'fr', 'en', 'de', 'it'] as const).map((lang) => (
+                <option key={lang} value={lang}>
+                  {intl.formatMessage({ id: `language.${lang}` })}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       )}

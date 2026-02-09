@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, act } from '@testing-library/react';
+import { screen, act } from '@testing-library/react';
 import { PageDetail } from './PageDetail';
 import type { PrintLayoutResult, PageLayout } from '@/hooks/usePrintLayout';
+import { renderWithIntl } from '@/test/intlWrapper';
 
 // Mock the svgViewBox utilities
 vi.mock('@/utils/svgViewBox', () => ({
@@ -55,7 +56,7 @@ describe('PageDetail', () => {
   });
 
   it('should show empty state when no layout', () => {
-    render(
+    renderWithIntl(
       <PageDetail
         layout={null}
         selectedPageIndex={null}
@@ -68,7 +69,7 @@ describe('PageDetail', () => {
   });
 
   it('should show empty state when no page selected', () => {
-    render(
+    renderWithIntl(
       <PageDetail
         layout={createMockLayout()}
         selectedPageIndex={null}
@@ -81,7 +82,7 @@ describe('PageDetail', () => {
   });
 
   it('should render page title with correct number', async () => {
-    render(
+    renderWithIntl(
       <PageDetail
         layout={createMockLayout()}
         selectedPageIndex={0}
@@ -98,7 +99,7 @@ describe('PageDetail', () => {
   });
 
   it('should render page dimensions', async () => {
-    render(
+    renderWithIntl(
       <PageDetail
         layout={createMockLayout()}
         selectedPageIndex={0}
@@ -115,7 +116,7 @@ describe('PageDetail', () => {
   });
 
   it('should display config name', async () => {
-    render(
+    renderWithIntl(
       <PageDetail
         layout={createMockLayout()}
         selectedPageIndex={0}
@@ -132,7 +133,7 @@ describe('PageDetail', () => {
   });
 
   it('should show loading spinner initially', async () => {
-    const { container } = render(
+    const { container } = renderWithIntl(
       <PageDetail
         layout={createMockLayout()}
         selectedPageIndex={0}
@@ -146,7 +147,7 @@ describe('PageDetail', () => {
   });
 
   it('should display image after loading', async () => {
-    render(
+    renderWithIntl(
       <PageDetail
         layout={createMockLayout()}
         selectedPageIndex={0}
@@ -165,7 +166,7 @@ describe('PageDetail', () => {
   });
 
   it('should display content coordinates on desktop', async () => {
-    render(
+    renderWithIntl(
       <PageDetail
         layout={createMockLayout()}
         selectedPageIndex={0}
@@ -186,7 +187,7 @@ describe('PageDetail', () => {
       pages: [{ ...mockPage, index: 99 }],
     });
 
-    render(
+    renderWithIntl(
       <PageDetail
         layout={layoutWithMissingPage}
         selectedPageIndex={0}
@@ -199,7 +200,7 @@ describe('PageDetail', () => {
   });
 
   it('should not generate SVG when content is null', async () => {
-    const { container } = render(
+    const { container } = renderWithIntl(
       <PageDetail
         layout={createMockLayout()}
         selectedPageIndex={0}

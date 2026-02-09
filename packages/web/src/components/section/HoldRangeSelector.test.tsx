@@ -1,12 +1,13 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { HoldRangeSelector } from './HoldRangeSelector';
+import { renderWithIntl } from '@/test/intlWrapper';
 
 const HOLD_LABELS = ['P1', 'M1', 'M2', 'M3', 'TOP'];
 
 describe('HoldRangeSelector', () => {
   it('should render both from and to selectors', () => {
-    render(
+    renderWithIntl(
       <HoldRangeSelector
         fromHold="P1"
         toHold="TOP"
@@ -21,7 +22,7 @@ describe('HoldRangeSelector', () => {
   });
 
   it('should render all hold labels as options', () => {
-    render(
+    renderWithIntl(
       <HoldRangeSelector
         fromHold="P1"
         toHold="TOP"
@@ -43,7 +44,7 @@ describe('HoldRangeSelector', () => {
   });
 
   it('should have correct initial values selected', () => {
-    render(
+    renderWithIntl(
       <HoldRangeSelector
         fromHold="M1"
         toHold="M3"
@@ -60,7 +61,7 @@ describe('HoldRangeSelector', () => {
 
   it('should call onFromChange when from hold changes', () => {
     const handleFromChange = vi.fn();
-    render(
+    renderWithIntl(
       <HoldRangeSelector
         fromHold="P1"
         toHold="TOP"
@@ -79,7 +80,7 @@ describe('HoldRangeSelector', () => {
 
   it('should call onToChange when to hold changes', () => {
     const handleToChange = vi.fn();
-    render(
+    renderWithIntl(
       <HoldRangeSelector
         fromHold="P1"
         toHold="TOP"
@@ -97,7 +98,7 @@ describe('HoldRangeSelector', () => {
   });
 
   it('should handle numeric hold values', () => {
-    render(
+    renderWithIntl(
       <HoldRangeSelector
         fromHold={1}
         toHold={5}
@@ -114,7 +115,7 @@ describe('HoldRangeSelector', () => {
   });
 
   it('should render with empty hold labels', () => {
-    render(
+    renderWithIntl(
       <HoldRangeSelector
         fromHold=""
         toHold=""

@@ -3,7 +3,8 @@
  */
 
 import { memo } from 'react';
-import { ROUTE_DISPLAY_NAMES } from '@/constants/routes';
+import { useIntl } from 'react-intl';
+import { ROUTE_INTL_KEYS } from '@/constants/routes';
 
 interface SourceSelectorProps {
   value: string;
@@ -16,10 +17,11 @@ export const SourceSelector = memo(function SourceSelector({
   routeNames,
   onChange,
 }: SourceSelectorProps) {
+  const intl = useIntl();
   return (
     <div className="form-control">
       <label className="label py-1">
-        <span className="label-text text-sm">Voie source</span>
+        <span className="label-text text-sm">{intl.formatMessage({ id: 'section.sourceRoute' })}</span>
       </label>
       <select
         className="select select-bordered select-sm w-full"
@@ -28,7 +30,7 @@ export const SourceSelector = memo(function SourceSelector({
       >
         {routeNames.map((name) => (
           <option key={name} value={name}>
-            {ROUTE_DISPLAY_NAMES[name] ?? name.toUpperCase()}
+            {ROUTE_INTL_KEYS[name] ? intl.formatMessage({ id: ROUTE_INTL_KEYS[name] }) : name.toUpperCase()}
           </option>
         ))}
       </select>

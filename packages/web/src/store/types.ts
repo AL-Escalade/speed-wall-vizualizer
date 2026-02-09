@@ -51,6 +51,9 @@ export const DEFAULT_DISPLAY_OPTIONS: DisplayOptions = {
   holdLabelFontSize: 40,
 };
 
+/** Language setting type */
+export type LanguageSetting = 'auto' | 'fr' | 'de' | 'it' | 'en';
+
 /** A saved configuration */
 export interface SavedConfiguration {
   id: string;
@@ -63,6 +66,8 @@ export interface SavedConfiguration {
   coordinateDisplaySystem?: CoordinateSystemId;
   /** Display options for rendering */
   displayOptions?: Partial<DisplayOptions>;
+  /** Language preference: 'auto' detects from browser, or explicit locale */
+  language?: LanguageSetting;
   createdAt: number;
   updatedAt: number;
 }
