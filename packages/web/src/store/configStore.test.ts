@@ -788,4 +788,50 @@ describe('configStore', () => {
       expect(state.configurations[0].coordinateDisplaySystem).toBe('FFME');
     });
   });
+
+  describe('setLanguage', () => {
+    it('should set language on active configuration', () => {
+      const config: SavedConfiguration = {
+        id: 'config-1',
+        name: 'Config',
+        wall: { lanes: 2, panelsHeight: 10 },
+        sections: [],
+        createdAt: 1000,
+        updatedAt: 1000,
+      };
+
+      useConfigStore.setState({
+        configurations: [config],
+        activeConfigId: 'config-1',
+      });
+
+      useConfigStore.getState().setLanguage('de');
+      const state = useConfigStore.getState();
+
+      expect(state.configurations[0].language).toBe('de');
+      expect(state.configurations[0].updatedAt).toBeGreaterThanOrEqual(1000);
+    });
+
+    it('should set language to auto', () => {
+      const config: SavedConfiguration = {
+        id: 'config-1',
+        name: 'Config',
+        wall: { lanes: 2, panelsHeight: 10 },
+        sections: [],
+        language: 'fr',
+        createdAt: 1000,
+        updatedAt: 1000,
+      };
+
+      useConfigStore.setState({
+        configurations: [config],
+        activeConfigId: 'config-1',
+      });
+
+      useConfigStore.getState().setLanguage('auto');
+      const state = useConfigStore.getState();
+
+      expect(state.configurations[0].language).toBe('auto');
+    });
+  });
 });
