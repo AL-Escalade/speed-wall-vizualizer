@@ -42,37 +42,37 @@ Outil de visualisation et de configuration pour murs de vitesse d'escalade. Perm
 
 Visualisation des flèches indiquant l'orientation des prises.
 
-![Flèches d'orientation](docs/images/arrows-demo.svg)
+<img src="docs/images/arrows-demo.svg" alt="Flèches d'orientation" width="600">
 
 ### Configuration 2 voies complètes + section de fin
 
 Les 2 voies complètes U15 sont sur le mur, ainsi que 2 voies complètes U11/U13. Entre les 2 couloirs, la section de fin de la voie U15 et plus est ajoutée.
 
-![Configuration base](docs/images/base.svg)
+<img src="docs/images/base.svg" alt="Configuration base" width="300">
 
 ### Voie IFSC officielle
 
-![Voie IFSC](docs/images/ifsc.svg)
+<img src="docs/images/ifsc.svg" alt="Voie IFSC" width="150">
 
 ### Voie U15 (FFME)
 
-![Voie U15](docs/images/u15.svg)
+<img src="docs/images/u15.svg" alt="Voie U15" width="150">
 
 ### Voie U15 (Italie/Allemagne/Suisse)
 
-![Voie U15 IT](docs/images/u15-it.svg)
+<img src="docs/images/u15-it.svg" alt="Voie U15 IT" width="150">
 
 ### Voie U11-U13 (FFME - entraînement)
 
-![Voie U11-U13 entraînement](docs/images/u11-u13-training.svg)
+<img src="docs/images/u11-u13-training.svg" alt="Voie U11-U13 entraînement" width="150">
 
 ### Voie U11-U13 (FFME - compétition)
 
-![Voie U11-U13 compétition](docs/images/u11-u13-comp.svg)
+<img src="docs/images/u11-u13-comp.svg" alt="Voie U11-U13 compétition" width="150">
 
 ### Voie U13 (Allemagne/Suisse) - 10m
 
-![Voie U13 DE](docs/images/u13-de.svg)
+<img src="docs/images/u13-de.svg" alt="Voie U13 DE" width="150">
 
 ## Voies de référence disponibles
 
