@@ -77,23 +77,4 @@ Three systems exist (letters differ after I):
 
 Routes declare their system via `columns` field.
 
-<!-- OPENSPEC:START -->
-## OpenSpec Instructions
-
-These instructions are for AI assistants working in this project.
-
-Always open `@/openspec/AGENTS.md` when the request:
-- Mentions planning or proposals (words like proposal, spec, change, plan)
-- Introduces new capabilities, breaking changes, architecture shifts, or big performance/security work
-- Sounds ambiguous and you need the authoritative spec before coding
-
-Use `@/openspec/AGENTS.md` to learn:
-- How to create and apply change proposals
-- Spec format and conventions
-- Project structure and guidelines
-
-Keep this managed block so 'openspec update' can refresh the instructions.
-
-<!-- OPENSPEC:END -->
-
 - Tous les changements liés à la configuration doivent pouvoir être rétro compatibles (ou on doit s'assurer de la migration) car des utilisateurs ont sur leur navigateur des configs dans leur localstorage, ils peuvent importer d'anciens fichiers exportés, ou peuvent suivre des liens qui contiennent une configuration.
