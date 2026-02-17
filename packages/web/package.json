@@ -14,7 +14,7 @@
     "@voie-vitesse/core": "*",
     "arktype": "^2.1.29",
     "jspdf": "^4.1.0",
-    "lucide-react": "^0.563.0",
+    "lucide-react": "^0.564.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-intl": "^8.1.3",
