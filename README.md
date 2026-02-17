@@ -52,27 +52,27 @@ Les 2 voies complètes U15 sont sur le mur, ainsi que 2 voies complètes U11/U13
 
 ### Voie IFSC officielle
 
-<img src="docs/images/ifsc.svg" alt="Voie IFSC" width="300">
+<img src="docs/images/ifsc.svg" alt="Voie IFSC" width="150">
 
 ### Voie U15 (FFME)
 
-<img src="docs/images/u15.svg" alt="Voie U15" width="300">
+<img src="docs/images/u15.svg" alt="Voie U15" width="150">
 
 ### Voie U15 (Italie/Allemagne/Suisse)
 
-<img src="docs/images/u15-it.svg" alt="Voie U15 IT" width="300">
+<img src="docs/images/u15-it.svg" alt="Voie U15 IT" width="150">
 
 ### Voie U11-U13 (FFME - entraînement)
 
-<img src="docs/images/u11-u13-training.svg" alt="Voie U11-U13 entraînement" width="300">
+<img src="docs/images/u11-u13-training.svg" alt="Voie U11-U13 entraînement" width="150">
 
 ### Voie U11-U13 (FFME - compétition)
 
-<img src="docs/images/u11-u13-comp.svg" alt="Voie U11-U13 compétition" width="300">
+<img src="docs/images/u11-u13-comp.svg" alt="Voie U11-U13 compétition" width="150">
 
 ### Voie U13 (Allemagne/Suisse) - 10m
 
-<img src="docs/images/u13-de.svg" alt="Voie U13 DE" width="300">
+<img src="docs/images/u13-de.svg" alt="Voie U13 DE" width="150">
 
 ## Voies de référence disponibles
 
