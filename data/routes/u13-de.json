@@ -36,37 +36,15 @@
     "DX6 BIG B1 E1 @I3",
     "SN7 STOP M3 M3 @PAD"
   ],
-  "smearingZones": [{
-    "label": "R1",
-    "panel": "SN2",
-    "column": "M",
-    "columnOffset": 1,
-    "row": 4,
-    "width": 3,
-    "height": 3
-  }, {
-    "label": "R2",
-    "panel": "SN3",
-    "column": "I",
-    "columnOffset": 0,
-    "row": 3,
-    "width": 5,
-    "height": 4
-  }, {
-    "label": "R3",
-    "panel": "DX5",
-    "column": "F",
-    "columnOffset": 0,
-    "row": 1,
-    "width": 4,
-    "height": 3
-  }, {
-    "label": "R4",
-    "panel": "SN5",
-    "column": "H",
-    "columnOffset": 0,
-    "row": 9,
-    "width": 3,
-    "height": 3
-  }]
+  "smearingZones": [
+    {
+      "label": "R4",
+      "panel": "SN5",
+      "column": "F",
+      "columnOffset": 0,
+      "row": 9,
+      "width": 5,
+      "height": 3
+    }
+  ]
 }

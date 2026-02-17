@@ -42,53 +42,60 @@
     "SN9 BIG M10 DX10:A1 @M20",
     "DX10 STOP A8 A8 @PAD"
   ],
-  "smearingZones": [{
-    "label": "A1",
-    "panel": "SN2",
-    "column": "M",
-    "columnOffset": 1,
-    "row": 4,
-    "width": 3,
-    "height": 3
-  }, {
-    "label": "A2",
-    "panel": "SN3",
-    "column": "I",
-    "columnOffset": 0,
-    "row": 3,
-    "width": 5,
-    "height": 4
-  }, {
-    "label": "A3",
-    "panel": "DX5",
-    "column": "F",
-    "columnOffset": 0,
-    "row": 1,
-    "width": 4,
-    "height": 3
-  }, {
-    "label": "A4",
-    "panel": "SN5",
-    "column": "H",
-    "columnOffset": 0,
-    "row": 9,
-    "width": 3,
-    "height": 3
-  }, {
-    "label": "A5",
-    "panel": "SN8",
-    "column": "H",
-    "columnOffset": 0,
-    "row": 7,
-    "width": 10,
-    "height": 4.5
-  }, {
-    "label": "A6",
-    "panel": "SN9",
-    "column": "I",
-    "columnOffset": 0,
-    "row": 4,
-    "width": 3,
-    "height": 3
-  }]
+  "smearingZones": [
+    {
+      "label": "A1",
+      "panel": "SN2",
+      "column": "M",
+      "columnOffset": 0,
+      "row": 4,
+      "width": 4,
+      "height": 3
+    },
+    {
+      "label": "A2",
+      "panel": "SN3",
+      "column": "I",
+      "columnOffset": 0,
+      "row": 3,
+      "width": 5,
+      "height": 4
+    },
+    {
+      "label": "A3",
+      "panel": "DX5",
+      "column": "F",
+      "columnOffset": 0,
+      "row": 1,
+      "width": 4,
+      "height": 3
+    },
+    {
+      "label": "A4",
+      "panel": "SN5",
+      "column": "F",
+      "columnOffset": 0,
+      "row": 9,
+      "width": 5,
+      "height": 3
+    },
+    {
+      "label": "A5",
+      "panel": "SN8",
+      "column": "H",
+      "columnOffset": 0,
+      "row": 7,
+      "width": 8,
+      "height": 4.5
+    },
+    {
+      "label": "A6",
+      "panel": "SN9",
+      "column": "I",
+      "columnOffset": 0,
+      "row": 4,
+      "width": 3,
+      "height": 3
+    }
+  ]
 }
