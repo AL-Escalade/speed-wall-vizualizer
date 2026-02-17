@@ -42,7 +42,7 @@ Outil de visualisation et de configuration pour murs de vitesse d'escalade. Perm
 
 Visualisation des flèches indiquant l'orientation des prises.
 
-<img src="docs/images/arrows-demo.svg" alt="Flèches d'orientation" width="300">
+<img src="docs/images/arrows-demo.svg" alt="Flèches d'orientation" width="600">
 
 ### Configuration 2 voies complètes + section de fin
 
