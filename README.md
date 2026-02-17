@@ -1,90 +1,92 @@
+🇬🇧 English | [🇫🇷 Français](docs/README.fr.md)
+
 # Speed Wall Visualizer
 
-Outil de visualisation et de configuration pour murs de vitesse d'escalade. Permet de générer des SVG représentant le placement des prises sur un mur selon différentes voies de référence (IFSC, catégories jeunes, etc.).
+A visualization and configuration tool for speed climbing walls. Generates SVG representations of hold placements on a wall according to various reference routes (IFSC, youth categories, etc.).
 
-**[Accéder à l'application](https://configurateur-voies-vitesse.al-escalade.fr/)**
+**[Open the app](https://configurateur-voies-vitesse.al-escalade.fr/)**
 
-## Fonctionnalités
+## Features
 
-### Application web
+### Web application
 
-- **Configurateur visuel** : Interface intuitive pour créer et modifier des configurations de mur
-- **Gestion des configurations** : Créer, renommer, supprimer des configurations multiples
-- **Sections personnalisables** :
-  - Choix de la voie source (IFSC, U15, U11-U13, etc.)
-  - Sélection du couloir (0 à n)
-  - Plage de prises personnalisable (de/à)
-  - Couleur personnalisée par section
-  - Point d'ancrage ajustable
-- **Options d'affichage** : Couleur de grille, taille des labels, flèches d'orientation
+- **Visual configurator**: Intuitive interface to create and edit wall configurations
+- **Configuration management**: Create, rename, delete multiple configurations
+- **Customizable sections**:
+  - Source route selection (IFSC, U15, U11-U13, etc.)
+  - Lane selection (0 to n)
+  - Customizable hold range (from/to)
+  - Custom color per section
+  - Adjustable anchor point
+- **Display options**: Grid color, label size, orientation arrows
 
-### Export et partage
+### Export and sharing
 
-- **Export JSON** : Sauvegarde/restauration des configurations
-- **Export SVG** : Téléchargement du rendu vectoriel
-- **Export PDF multi-pages** : Impression grand format avec chevauchement configurable
-  - Mode mur complet ou couloir par couloir
-  - Orientation portrait/paysage
-  - Aperçu des pages avant export
-- **Partage par URL** : Génération de liens partageables
+- **JSON export**: Save/restore configurations
+- **SVG export**: Download vector rendering
+- **Multi-page PDF export**: Large format printing with configurable overlap
+  - Full wall or lane-by-lane mode
+  - Portrait/landscape orientation
+  - Page preview before export
+- **URL sharing**: Generate shareable links
 
-### Support mobile
+### Mobile support
 
-- **Interface responsive** : Navigation par onglets sur mobile
-- **Gestes tactiles** :
-  - Glisser à un doigt pour naviguer
-  - Pinch pour zoomer
-  - Double-tap pour réinitialiser la vue
+- **Responsive interface**: Tab navigation on mobile
+- **Touch gestures**:
+  - Single-finger drag to navigate
+  - Pinch to zoom
+  - Double-tap to reset view
 
-## Exemples de rendus
+## Rendering examples
 
-### Flèches d'orientation
+### Orientation arrows
 
-Visualisation des flèches indiquant l'orientation des prises.
+Visualization of arrows indicating hold orientation.
 
-<img src="docs/images/arrows-demo.svg" alt="Flèches d'orientation" width="600">
+<img src="docs/images/arrows-demo.svg" alt="Orientation arrows" width="600">
 
-### Configuration 2 voies complètes + section de fin
+### Configuration with 2 full routes + end section
 
-Les 2 voies complètes U15 sont sur le mur, ainsi que 2 voies complètes U11/U13. Entre les 2 couloirs, la section de fin de la voie U15 et plus est ajoutée.
+Both full U15 routes are on the wall, along with 2 full U11/U13 routes. Between the 2 lanes, the end section of the U15+ route is added.
 
-<img src="docs/images/base.svg" alt="Configuration base" width="300">
+<img src="docs/images/base.svg" alt="Base configuration" width="300">
 
-### Voie IFSC officielle
+### Official IFSC route
 
-<img src="docs/images/ifsc.svg" alt="Voie IFSC" width="150">
+<img src="docs/images/ifsc.svg" alt="IFSC route" width="150">
 
-### Voie U15 (FFME)
+### U15 route (FFME)
 
-<img src="docs/images/u15.svg" alt="Voie U15" width="150">
+<img src="docs/images/u15.svg" alt="U15 route" width="150">
 
-### Voie U15 (Italie/Allemagne/Suisse)
+### U15 route (Italy/Germany/Switzerland)
 
-<img src="docs/images/u15-it.svg" alt="Voie U15 IT" width="150">
+<img src="docs/images/u15-it.svg" alt="U15 IT route" width="150">
 
-### Voie U11-U13 (FFME - entraînement)
+### U11-U13 route (FFME - training)
 
-<img src="docs/images/u11-u13-training.svg" alt="Voie U11-U13 entraînement" width="150">
+<img src="docs/images/u11-u13-training.svg" alt="U11-U13 training route" width="150">
 
-### Voie U11-U13 (FFME - compétition)
+### U11-U13 route (FFME - competition)
 
-<img src="docs/images/u11-u13-comp.svg" alt="Voie U11-U13 compétition" width="150">
+<img src="docs/images/u11-u13-comp.svg" alt="U11-U13 competition route" width="150">
 
-### Voie U13 (Allemagne/Suisse) - 10m
+### U13 route (Germany/Switzerland) - 10m
 
-<img src="docs/images/u13-de.svg" alt="Voie U13 DE" width="150">
+<img src="docs/images/u13-de.svg" alt="U13 DE route" width="150">
 
-## Voies de référence disponibles
+## Available reference routes
 
-- `ifsc` : Voie officielle IFSC
-- `u15` : Catégorie U15 (FFME)
-- `u11-u13` : Catégorie U11-U13 (FFME - entraînement)
-- `u11-u13-comp` : Catégorie U11-U13 (FFME - compétition)
-- `u15-it` : Catégorie U15 (Italie/Allemagne/Suisse)
-- `u13-de` : Catégorie U13 (Allemagne/Suisse) - 10m
-- `training` : Combinaison voie U15 et IFSC
+- `ifsc`: Official IFSC route
+- `u15`: U15 category (FFME)
+- `u11-u13`: U11-U13 category (FFME - training)
+- `u11-u13-comp`: U11-U13 category (FFME - competition)
+- `u15-it`: U15 category (Italy/Germany/Switzerland)
+- `u13-de`: U13 category (Germany/Switzerland) - 10m
+- `training`: Combined U15 and IFSC route
 
-## Développement
+## Development
 
 ### Installation
 
@@ -93,29 +95,29 @@ npm install
 npm run build
 ```
 
-### Lancer l'application web en développement
+### Run the web app in development mode
 
 ```bash
 npm run dev
 ```
 
-### Générer un SVG via CLI
+### Generate an SVG via CLI
 
 ```bash
 npm run generate -- -c data/base.json -o output/wall.svg
 ```
 
-Options :
-- `-c, --config <path>` : Fichier de configuration JSON
-- `-o, --output <path>` : Fichier SVG de sortie
+Options:
+- `-c, --config <path>`: JSON configuration file
+- `-o, --output <path>`: Output SVG file
 
-### Configuration JSON
+### JSON configuration
 
-Le fichier de configuration définit :
-- Les dimensions du mur (nombre de couloirs, hauteur en panneaux)
-- Les voies à afficher avec leurs segments
+The configuration file defines:
+- Wall dimensions (number of lanes, height in panels)
+- Routes to display with their segments
 
-Exemple :
+Example:
 ```json
 {
   "wall": {
@@ -132,32 +134,32 @@ Exemple :
 }
 ```
 
-## Structure du projet
+## Project structure
 
 ```
 ├── packages/
-│   ├── core/               # Logique métier (génération SVG, composition)
-│   └── cli/                # Interface ligne de commande
-├── web/                    # Application web React
+│   ├── core/               # Core logic (SVG generation, composition)
+│   └── cli/                # Command-line interface
+├── web/                    # React web application
 │   ├── src/
-│   │   ├── components/     # Composants React
-│   │   ├── hooks/          # Hooks personnalisés
+│   │   ├── components/     # React components
+│   │   ├── hooks/          # Custom hooks
 │   │   ├── store/          # State management (Zustand)
-│   │   └── utils/          # Utilitaires
-├── assets/holds/           # SVG des différents types de prises
-└── data/routes/            # Définitions des voies de référence
+│   │   └── utils/          # Utilities
+├── assets/holds/           # SVG files for different hold types
+└── data/routes/            # Reference route definitions
 ```
 
-## Format des prises
+## Hold format
 
-Chaque prise est définie par :
-- **Panel** : Identifiant du panneau (ex: `SN1`, `DX5`)
-- **Type** : Type de prise (`BIG`, `FOOT`, `STOP`, `PAD`)
-- **Position** : Coordonnées sur la grille (ex: `F10`, `C2`)
-- **Orientation** : Direction de la flèche (ex: `E2`, `DX2:C2`)
+Each hold is defined by:
+- **Panel**: Panel identifier (e.g., `SN1`, `DX5`)
+- **Type**: Hold type (`BIG`, `FOOT`, `STOP`, `PAD`)
+- **Position**: Grid coordinates (e.g., `F10`, `C2`)
+- **Orientation**: Arrow direction (e.g., `E2`, `DX2:C2`)
 
-Exemple : `"DX1 BIG F10 DX2:C2 @N1"` place une prise BIG en F10 sur DX1, orientée vers C2 sur DX2, avec le label "N1".
+Example: `"DX1 BIG F10 DX2:C2 @N1"` places a BIG hold at F10 on DX1, oriented toward C2 on DX2, with label "N1".
 
-## Licence
+## License
 
 GPL-3.0
