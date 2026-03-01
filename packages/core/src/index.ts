@@ -7,7 +7,11 @@ export type {
   PanelSide,
   PanelNumber,
   Column,
+  VirtualColumn,
+  AnchorColumn,
   Row,
+  VirtualRow,
+  AnchorRow,
   PanelId,
   InsertPosition,
   Insert,
@@ -37,7 +41,7 @@ export type {
 } from './types.js';
 
 // Column coordinate systems
-export { COLUMN_SYSTEMS, DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM } from './types.js';
+export { COLUMN_SYSTEMS, DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM, VIRTUAL_COLUMNS, VIRTUAL_ROWS } from './types.js';
 
 // SVG Generation
 export { generateSvg } from './svg-generator.js';
@@ -78,6 +82,8 @@ export {
   convertColumn,
   getColumnsForSystem,
   validateColumn,
+  getAnchorColumnIndex,
+  getAnchorMmPosition,
 } from './plate-grid.js';
 
 // Rotation utilities

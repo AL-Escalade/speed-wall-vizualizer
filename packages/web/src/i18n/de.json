@@ -60,6 +60,12 @@
   "section.row": "Reihe",
   "section.resetAnchor": "Auf Originalposition zurücksetzen",
   "section.reset": "Zurücksetzen",
+  "section.moveUp": "Eine Reihe nach oben",
+  "section.moveDown": "Eine Reihe nach unten",
+  "section.moveLeft": "Eine Spalte nach links",
+  "section.moveRight": "Eine Spalte nach rechts",
+  "section.previousPanel": "Vorheriges Paneel",
+  "section.nextPanel": "Nächstes Paneel",
 
   "viewer.generationError": "Generierungsfehler",
   "viewer.zoomIn": "Vergrößern",

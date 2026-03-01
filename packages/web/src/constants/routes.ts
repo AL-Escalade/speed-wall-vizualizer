@@ -8,6 +8,7 @@ import {
   type ColumnSystem,
   type ColumnSystemId as CoreColumnSystemId,
   convertColumn as coreConvertColumn,
+  VIRTUAL_COLUMNS,
 } from '@voie-vitesse/core';
 
 /** Panel sides */
@@ -105,6 +106,44 @@ export type ColumnLabel = string;
 
 /** Row numbers (1-10) */
 export const ROW_COUNT = 10;
+
+/** Extended row options for anchor positioning (0-11, where 0 and 11 are virtual) */
+export const ANCHOR_ROW_OPTIONS = Array.from({ length: ROW_COUNT + 2 }, (_, i) => i);
+
+/**
+ * Get extended column labels for anchor positioning, including virtual positions.
+ * Returns: ['A-1', ...physicalColumns..., lastCol+1 display label]
+ */
+export function getAnchorColumnOptions(system: CoordinateSystemId): string[] {
+  const physical = [...COORDINATE_SYSTEM_COLUMNS[system]];
+  return [VIRTUAL_COLUMNS.BEFORE_FIRST, ...physical, VIRTUAL_COLUMNS.AFTER_LAST];
+}
+
+/**
+ * Get the display label for an anchor column, including virtual positions.
+ * Virtual positions are shown in parentheses and adapt to the coordinate system.
+ * - 'A-1' → '(A-1)' in all systems
+ * - 'K+1' → '(K+1)' in ABC, '(L+1)' in FFME, '(M+1)' in IFSC
+ * - Physical columns are displayed as-is
+ */
+export function getAnchorColumnDisplayLabel(storedColumn: string, system: CoordinateSystemId): string {
+  if (storedColumn === VIRTUAL_COLUMNS.BEFORE_FIRST) return '(A-1)';
+  if (storedColumn === VIRTUAL_COLUMNS.AFTER_LAST) {
+    const columns = COORDINATE_SYSTEM_COLUMNS[system];
+    const lastCol = columns[columns.length - 1];
+    return `(${lastCol}+1)`;
+  }
+  return convertColumn(storedColumn, INTERNAL_STORAGE_SYSTEM, system);
+}
+
+/**
+ * Get the display label for an anchor row.
+ * Virtual rows (0, 11) are shown in parentheses.
+ */
+export function getAnchorRowDisplayLabel(row: number): string {
+  if (row === 0 || row === 11) return `(${row})`;
+  return String(row);
+}
 
 /** Default anchor position */
 export const DEFAULT_ANCHOR = {

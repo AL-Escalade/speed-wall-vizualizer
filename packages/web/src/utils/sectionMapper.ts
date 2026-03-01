@@ -2,7 +2,7 @@
  * Section mapping utilities for converting between web app and core formats
  */
 
-import type { RouteSegment } from '@voie-vitesse/core';
+import type { RouteSegment, AnchorColumn, AnchorRow } from '@voie-vitesse/core';
 import type { AnchorPosition } from '@/store/types';
 
 /** Web app section format */
@@ -15,12 +15,6 @@ export interface WebSection {
   anchor?: AnchorPosition;
 }
 
-/** Core column type */
-type CoreColumn = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'K' | 'L';
-
-/** Core row type */
-type CoreRow = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
-
 /**
  * Convert web app section to core RouteSegment format.
  * Panel number is always 1 (bottom panel) since first hold starts at the bottom.
@@ -32,8 +26,8 @@ export function sectionToSegment(section: WebSection): RouteSegment {
   const anchor = section.anchor
     ? {
         panel: `${section.anchor.side}1`,
-        column: section.anchor.column as CoreColumn,
-        row: section.anchor.row as CoreRow,
+        column: section.anchor.column as AnchorColumn,
+        row: section.anchor.row as AnchorRow,
       }
     : undefined;
 

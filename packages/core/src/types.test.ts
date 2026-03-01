@@ -3,6 +3,8 @@ import {
   COLUMN_SYSTEMS,
   CANONICAL_COLUMN_SYSTEM,
   DEFAULT_COLUMN_SYSTEM,
+  VIRTUAL_COLUMNS,
+  VIRTUAL_ROWS,
 } from './types.js';
 
 describe('COLUMN_SYSTEMS', () => {
@@ -34,5 +36,25 @@ describe('CANONICAL_COLUMN_SYSTEM', () => {
 describe('DEFAULT_COLUMN_SYSTEM', () => {
   it('should be FFME system for backwards compatibility', () => {
     expect(DEFAULT_COLUMN_SYSTEM).toBe(COLUMN_SYSTEMS.FFME);
+  });
+});
+
+describe('VIRTUAL_COLUMNS', () => {
+  it('should define before-first as A-1', () => {
+    expect(VIRTUAL_COLUMNS.BEFORE_FIRST).toBe('A-1');
+  });
+
+  it('should define after-last as K+1', () => {
+    expect(VIRTUAL_COLUMNS.AFTER_LAST).toBe('K+1');
+  });
+});
+
+describe('VIRTUAL_ROWS', () => {
+  it('should define below-first as 0', () => {
+    expect(VIRTUAL_ROWS.BELOW_FIRST).toBe(0);
+  });
+
+  it('should define above-last as 11', () => {
+    expect(VIRTUAL_ROWS.ABOVE_LAST).toBe(11);
   });
 });

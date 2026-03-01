@@ -2,8 +2,8 @@
  * IFSC speed climbing wall grid constants and position calculations
  */
 
-import type { PanelSide, PanelNumber, Column, Row, Point, PanelId, InsertPosition, ColumnSystem } from './types.js';
-import { DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM } from './types.js';
+import type { PanelSide, PanelNumber, Column, Row, Point, PanelId, InsertPosition, ColumnSystem, AnchorColumn, AnchorRow } from './types.js';
+import { DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM, VIRTUAL_COLUMNS } from './types.js';
 
 /** IFSC grid constants (all dimensions in mm) */
 export const GRID = {
@@ -167,6 +167,37 @@ export function getInsertPosition(
     x: getColumnX(position.column, panel.side, laneOffset),
     y: getRowY(position.row, panel.number),
   };
+}
+
+/**
+ * Resolves an anchor column (including virtual positions) to a grid index.
+ * Returns -1 for BEFORE_FIRST ('A-1'), COLUMNS_PER_PANEL for AFTER_LAST ('K+1'),
+ * and delegates to getColumnIndex for physical columns.
+ */
+export function getAnchorColumnIndex(column: AnchorColumn): number {
+  if (column === VIRTUAL_COLUMNS.BEFORE_FIRST) return -1;
+  if (column === VIRTUAL_COLUMNS.AFTER_LAST) return GRID.COLUMNS_PER_PANEL;
+  return getColumnIndex(column, CANONICAL_COLUMN_SYSTEM);
+}
+
+/**
+ * Computes the mm position for an anchor, supporting virtual columns and rows.
+ */
+export function getAnchorMmPosition(
+  panel: PanelId,
+  anchor: { column: AnchorColumn; row: AnchorRow },
+  laneOffset: number = 0
+): Point {
+  const laneOffsetMm = getLaneOffsetByIndex(laneOffset);
+  const columnIndex = getAnchorColumnIndex(anchor.column);
+  const panelOffset = panel.side === 'DX' ? PANEL.WIDTH : 0;
+  const x = laneOffsetMm + panelOffset + GRID.PANEL_MARGIN_HORIZONTAL + columnIndex * GRID.COLUMN_SPACING;
+
+  const panelYOffset = (panel.number - 1) * PANEL.HEIGHT;
+  const rowOffset = GRID.PANEL_MARGIN_VERTICAL + (anchor.row - 1) * GRID.ROW_SPACING;
+  const y = panelYOffset + rowOffset;
+
+  return { x, y };
 }
 
 /**

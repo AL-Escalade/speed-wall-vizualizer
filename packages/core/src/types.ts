@@ -11,6 +11,12 @@ export type PanelNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 /** Column letter - any letter used in coordinate systems (A-M, varies by system) */
 export type Column = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M';
 
+/** Virtual column positions for anchors (not physical inserts) */
+export const VIRTUAL_COLUMNS = { BEFORE_FIRST: 'A-1', AFTER_LAST: 'K+1' } as const;
+export type VirtualColumn = typeof VIRTUAL_COLUMNS[keyof typeof VIRTUAL_COLUMNS];
+/** Column type extended with virtual positions, for use in anchor positions only */
+export type AnchorColumn = Column | VirtualColumn;
+
 /**
  * Column coordinate system identifier
  * - ABC: ABCDEFGHIJK (11 columns, no L) - default/simple system
@@ -37,6 +43,12 @@ export const DEFAULT_COLUMN_SYSTEM: ColumnSystem = COLUMN_SYSTEMS.FFME;
 
 /** Row number within a panel (1-10, 1 = bottom) */
 export type Row = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+
+/** Virtual row positions for anchors (not physical inserts) */
+export const VIRTUAL_ROWS = { BELOW_FIRST: 0, ABOVE_LAST: 11 } as const;
+export type VirtualRow = typeof VIRTUAL_ROWS[keyof typeof VIRTUAL_ROWS];
+/** Row type extended with virtual positions, for use in anchor positions only */
+export type AnchorRow = Row | VirtualRow;
 
 /** Panel identifier (e.g., "SN1", "DX5") */
 export interface PanelId {
@@ -137,10 +149,10 @@ export type ReferenceRoutes = Record<string, ReferenceRoute>;
 export interface AnchorPosition {
   /** Panel (e.g., "DX1", "SN3") */
   panel: string;
-  /** Column (A-L) */
-  column: Column;
-  /** Row (1-10) */
-  row: Row;
+  /** Column (A-L, or virtual: A-1, K+1) */
+  column: AnchorColumn;
+  /** Row (1-10, or virtual: 0, 11) */
+  row: AnchorRow;
 }
 
 /** A segment of a route taken from a reference route */
