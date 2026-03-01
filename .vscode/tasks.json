@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "dev:web",
+      "problemMatcher": [],
+      "label": "dev:web",
+      "detail": "npm run dev -w @voie-vitesse/web",
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+    }
+  ]
+}
