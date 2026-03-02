@@ -131,6 +131,20 @@ describe('sectionToSegment', () => {
     expect(segment.anchor!.row).toBe(11);
   });
 
+  it('should default multi-character column substrings like AB to A', () => {
+    const section: WebSection = {
+      source: 'ifsc',
+      lane: 0,
+      fromHold: 1,
+      toHold: 10,
+      color: '#FF0000',
+      anchor: { side: 'SN', column: 'AB' as never, row: 5 },
+    };
+
+    const segment = sectionToSegment(section);
+    expect(segment.anchor!.column).toBe('A');
+  });
+
   it('should handle string hold references', () => {
     const section: WebSection = {
       source: 'ifsc',

@@ -8,7 +8,7 @@ import type { AnchorPosition } from '@/store/types';
 
 function isValidAnchorColumn(value: string): value is AnchorColumn {
   if (value === VIRTUAL_COLUMNS.BEFORE_FIRST || value === VIRTUAL_COLUMNS.AFTER_LAST) return true;
-  return CANONICAL_COLUMN_SYSTEM.includes(value);
+  return value.length === 1 && CANONICAL_COLUMN_SYSTEM.includes(value);
 }
 
 function isValidAnchorRow(value: number): value is AnchorRow {
