@@ -145,6 +145,34 @@ describe('sectionToSegment', () => {
     expect(segment.anchor!.column).toBe('A');
   });
 
+  it('should default invalid row (e.g. -1) to 1', () => {
+    const section: WebSection = {
+      source: 'ifsc',
+      lane: 0,
+      fromHold: 1,
+      toHold: 10,
+      color: '#FF0000',
+      anchor: { side: 'SN', column: 'A', row: -1 as never },
+    };
+
+    const segment = sectionToSegment(section);
+    expect(segment.anchor!.row).toBe(1);
+  });
+
+  it('should default invalid row (e.g. 99) to 1', () => {
+    const section: WebSection = {
+      source: 'ifsc',
+      lane: 0,
+      fromHold: 1,
+      toHold: 10,
+      color: '#FF0000',
+      anchor: { side: 'SN', column: 'A', row: 99 as never },
+    };
+
+    const segment = sectionToSegment(section);
+    expect(segment.anchor!.row).toBe(1);
+  });
+
   it('should handle string hold references', () => {
     const section: WebSection = {
       source: 'ifsc',

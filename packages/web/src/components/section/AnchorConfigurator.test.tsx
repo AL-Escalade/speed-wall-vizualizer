@@ -235,6 +235,26 @@ describe("AnchorConfigurator", () => {
     expect(columnOptions[12]).toHaveTextContent("(K+1)");
   });
 
+  it("should fallback to first physical column when anchor has unrecognized column", () => {
+    const handleUpdate = vi.fn();
+    renderWithIntl(
+      <AnchorConfigurator
+        anchor={{ side: "SN", column: "ZZ" as never, row: 5 }}
+        defaultAnchor={DEFAULT_ANCHOR}
+        onUpdate={handleUpdate}
+        onReset={() => {}}
+      />,
+    );
+
+    // Click move right — the fallback index is 1 (column 'A'), so right should go to index 2 ('B')
+    fireEvent.click(screen.getByLabelText("Décaler d'une colonne à droite"));
+    expect(handleUpdate).toHaveBeenCalledWith({
+      side: "SN",
+      column: "B",
+      row: 5,
+    });
+  });
+
   describe("Arrow pad", () => {
     it("should render all four arrow buttons", () => {
       renderWithIntl(
