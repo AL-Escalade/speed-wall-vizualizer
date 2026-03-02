@@ -8,6 +8,8 @@ import {
   type ColumnSystem,
   type ColumnSystemId as CoreColumnSystemId,
   convertColumn as coreConvertColumn,
+  VIRTUAL_COLUMNS,
+  VIRTUAL_ROWS,
 } from '@voie-vitesse/core';
 
 /** Panel sides */
@@ -106,6 +108,57 @@ export type ColumnLabel = string;
 /** Row numbers (1-10) */
 export const ROW_COUNT = 10;
 
+/** Extended row options for anchor positioning (0-11, where 0 and 11 are virtual) */
+export const ANCHOR_ROW_OPTIONS = Array.from({ length: ROW_COUNT + 2 }, (_, i) => i);
+
+/** Minimum anchor row (virtual row below first physical row) */
+export const ANCHOR_ROW_MIN = VIRTUAL_ROWS.BELOW_FIRST;
+
+/** Maximum anchor row (virtual row above last physical row) */
+export const ANCHOR_ROW_MAX = VIRTUAL_ROWS.ABOVE_LAST;
+
+/**
+ * Get extended column identifiers for anchor positioning, including virtual positions,
+ * in the internal storage coordinate system.
+ *
+ * Returns stored values:
+ *   ['A-1', ...physicalColumns..., VIRTUAL_COLUMNS.AFTER_LAST ('K+1' in the internal ABC system)]
+ *
+ * Note: The AFTER_LAST entry is the fixed stored sentinel and is not adapted per coordinate system.
+ * The `storageSystem` argument should refer to the storage/internal system
+ * (e.g. INTERNAL_STORAGE_SYSTEM), not an arbitrary display system.
+ */
+export function getAnchorColumnOptions(storageSystem: CoordinateSystemId): string[] {
+  const physical = [...COORDINATE_SYSTEM_COLUMNS[storageSystem]];
+  return [VIRTUAL_COLUMNS.BEFORE_FIRST, ...physical, VIRTUAL_COLUMNS.AFTER_LAST];
+}
+
+/**
+ * Get the display label for an anchor column, including virtual positions.
+ * Virtual positions are shown in parentheses and adapt to the coordinate system.
+ * - 'A-1' → '(A-1)' in all systems
+ * - 'K+1' → '(K+1)' in ABC, '(L+1)' in FFME, '(M+1)' in IFSC
+ * - Physical columns are displayed as-is
+ */
+export function getAnchorColumnDisplayLabel(storedColumn: string, system: CoordinateSystemId): string {
+  if (storedColumn === VIRTUAL_COLUMNS.BEFORE_FIRST) return '(A-1)';
+  if (storedColumn === VIRTUAL_COLUMNS.AFTER_LAST) {
+    const columns = COORDINATE_SYSTEM_COLUMNS[system];
+    const lastCol = columns[columns.length - 1];
+    return `(${lastCol}+1)`;
+  }
+  return convertColumn(storedColumn, INTERNAL_STORAGE_SYSTEM, system);
+}
+
+/**
+ * Get the display label for an anchor row.
+ * Virtual rows (0, 11) are shown in parentheses.
+ */
+export function getAnchorRowDisplayLabel(row: number): string {
+  if (row === VIRTUAL_ROWS.BELOW_FIRST || row === VIRTUAL_ROWS.ABOVE_LAST) return `(${row})`;
+  return String(row);
+}
+
 /** Default anchor position */
 export const DEFAULT_ANCHOR = {
   side: PANEL_SIDES.LEFT as PanelSide,
@@ -158,8 +211,8 @@ export function convertColumn(
 
   try {
     return coreConvertColumn(column as Column, toColumnSystem(fromSystem), toColumnSystem(toSystem));
-  } catch {
-    // Column not found in source system, return as-is (graceful degradation for UI)
+  } catch (error) {
+    console.warn(`Column conversion failed for "${column}" (${fromSystem} → ${toSystem}):`, error instanceof Error ? error.message : error);
     return column;
   }
 }

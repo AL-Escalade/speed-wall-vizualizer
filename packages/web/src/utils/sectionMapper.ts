@@ -2,8 +2,30 @@
  * Section mapping utilities for converting between web app and core formats
  */
 
-import type { RouteSegment } from '@voie-vitesse/core';
+import type { RouteSegment, AnchorColumn, AnchorRow } from '@voie-vitesse/core';
+import { VIRTUAL_COLUMNS, VIRTUAL_ROWS, CANONICAL_COLUMN_SYSTEM } from '@voie-vitesse/core';
 import type { AnchorPosition } from '@/store/types';
+
+function isValidAnchorColumn(value: string): value is AnchorColumn {
+  if (value === VIRTUAL_COLUMNS.BEFORE_FIRST || value === VIRTUAL_COLUMNS.AFTER_LAST) return true;
+  return value.length === 1 && CANONICAL_COLUMN_SYSTEM.includes(value);
+}
+
+function isValidAnchorRow(value: number): value is AnchorRow {
+  return Number.isInteger(value) && value >= VIRTUAL_ROWS.BELOW_FIRST && value <= VIRTUAL_ROWS.ABOVE_LAST;
+}
+
+function validateAnchorColumn(column: string): AnchorColumn {
+  if (isValidAnchorColumn(column)) return column;
+  console.warn(`Invalid anchor column "${column}", defaulting to "A"`);
+  return 'A' as AnchorColumn;
+}
+
+function validateAnchorRow(row: number): AnchorRow {
+  if (isValidAnchorRow(row)) return row;
+  console.warn(`Invalid anchor row ${row}, defaulting to 1`);
+  return 1 as AnchorRow;
+}
 
 /** Web app section format */
 export interface WebSection {
@@ -14,12 +36,6 @@ export interface WebSection {
   color: string;
   anchor?: AnchorPosition;
 }
-
-/** Core column type */
-type CoreColumn = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'K' | 'L';
-
-/** Core row type */
-type CoreRow = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 
 /**
  * Convert web app section to core RouteSegment format.
@@ -32,8 +48,8 @@ export function sectionToSegment(section: WebSection): RouteSegment {
   const anchor = section.anchor
     ? {
         panel: `${section.anchor.side}1`,
-        column: section.anchor.column as CoreColumn,
-        row: section.anchor.row as CoreRow,
+        column: validateAnchorColumn(section.anchor.column),
+        row: validateAnchorRow(section.anchor.row),
       }
     : undefined;
 
