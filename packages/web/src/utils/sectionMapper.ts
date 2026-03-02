@@ -3,7 +3,29 @@
  */
 
 import type { RouteSegment, AnchorColumn, AnchorRow } from '@voie-vitesse/core';
+import { VIRTUAL_COLUMNS, VIRTUAL_ROWS, CANONICAL_COLUMN_SYSTEM } from '@voie-vitesse/core';
 import type { AnchorPosition } from '@/store/types';
+
+function isValidAnchorColumn(value: string): value is AnchorColumn {
+  if (value === VIRTUAL_COLUMNS.BEFORE_FIRST || value === VIRTUAL_COLUMNS.AFTER_LAST) return true;
+  return CANONICAL_COLUMN_SYSTEM.includes(value);
+}
+
+function isValidAnchorRow(value: number): value is AnchorRow {
+  return Number.isInteger(value) && value >= VIRTUAL_ROWS.BELOW_FIRST && value <= VIRTUAL_ROWS.ABOVE_LAST;
+}
+
+function validateAnchorColumn(column: string): AnchorColumn {
+  if (isValidAnchorColumn(column)) return column;
+  console.warn(`Invalid anchor column "${column}", defaulting to "A"`);
+  return 'A' as AnchorColumn;
+}
+
+function validateAnchorRow(row: number): AnchorRow {
+  if (isValidAnchorRow(row)) return row;
+  console.warn(`Invalid anchor row ${row}, defaulting to 1`);
+  return 1 as AnchorRow;
+}
 
 /** Web app section format */
 export interface WebSection {
@@ -26,8 +48,8 @@ export function sectionToSegment(section: WebSection): RouteSegment {
   const anchor = section.anchor
     ? {
         panel: `${section.anchor.side}1`,
-        column: section.anchor.column as AnchorColumn,
-        row: section.anchor.row as AnchorRow,
+        column: validateAnchorColumn(section.anchor.column),
+        row: validateAnchorRow(section.anchor.row),
       }
     : undefined;
 

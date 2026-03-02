@@ -52,9 +52,16 @@ export const AnchorConfigurator = memo(function AnchorConfigurator({
     []
   );
 
-  // Current column index in the extended options array
+  // Current column index in the extended options array (fallback to 'A' = index 1 if unrecognized)
   const currentColumnIndex = useMemo(
-    () => anchorColumnOptions.indexOf(currentAnchor.column),
+    () => {
+      const index = anchorColumnOptions.indexOf(currentAnchor.column);
+      if (index === -1) {
+        console.warn(`Anchor column "${currentAnchor.column}" not found in options. Defaulting to first physical column.`);
+        return 1;
+      }
+      return index;
+    },
     [anchorColumnOptions, currentAnchor.column]
   );
 
@@ -78,12 +85,14 @@ export const AnchorConfigurator = memo(function AnchorConfigurator({
 
   const lastColumnIndex = anchorColumnOptions.length - 1;
 
-  // Arrow navigation handlers
+  // Arrow navigation handlers (with bounds clamping as defense in depth)
   const moveUp = useCallback(() => {
+    if (currentAnchor.row >= 11) return;
     updateField('row', currentAnchor.row + 1);
   }, [currentAnchor.row, updateField]);
 
   const moveDown = useCallback(() => {
+    if (currentAnchor.row <= 0) return;
     updateField('row', currentAnchor.row - 1);
   }, [currentAnchor.row, updateField]);
 

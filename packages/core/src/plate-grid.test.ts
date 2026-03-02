@@ -331,4 +331,16 @@ describe('getAnchorMmPosition', () => {
     const dxVirtual = getAnchorMmPosition(dxPanel, { column: 'K+1', row: 1 });
     expect(dxVirtual.x - snVirtual.x).toBe(PANEL.WIDTH);
   });
+
+  it('should handle combined virtual column and virtual row', () => {
+    const atA1 = getAnchorMmPosition(snPanel, { column: 'A', row: 1 });
+    const atCorner = getAnchorMmPosition(snPanel, { column: 'A-1', row: 0 });
+    expect(atA1.x - atCorner.x).toBe(GRID.COLUMN_SPACING);
+    expect(atA1.y - atCorner.y).toBe(GRID.ROW_SPACING);
+  });
+
+  it('should throw for out-of-range row', () => {
+    expect(() => getAnchorMmPosition(snPanel, { column: 'A', row: -1 as any })).toThrow('out of valid range');
+    expect(() => getAnchorMmPosition(snPanel, { column: 'A', row: 12 as any })).toThrow('out of valid range');
+  });
 });

@@ -111,9 +111,10 @@ export const SectionItem = memo(function SectionItem({
     });
   }, [section.id, section.color, getFirstHoldLabel, getLastHoldLabel, getRouteColor, getFirstHoldPosition, updateSection]);
 
-  const handleLaneChange = useCallback((lane: number) => {
-    updateSection(section.id, { lane });
-  }, [section.id, updateSection]);
+  const handleLaneChange = useCallback((newLane: number) => {
+    const clamped = Math.max(0, Math.min(newLane, lanesCount - 1));
+    updateSection(section.id, { lane: clamped });
+  }, [section.id, lanesCount, updateSection]);
 
   const handleFromChange = useCallback((value: string) => {
     updateSection(section.id, { fromHold: value });

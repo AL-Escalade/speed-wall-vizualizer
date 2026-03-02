@@ -3,7 +3,7 @@
  */
 
 import type { PanelSide, PanelNumber, Column, Row, Point, PanelId, InsertPosition, ColumnSystem, AnchorColumn, AnchorRow } from './types.js';
-import { DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM, VIRTUAL_COLUMNS } from './types.js';
+import { DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM, VIRTUAL_COLUMNS, VIRTUAL_ROWS } from './types.js';
 
 /** IFSC grid constants (all dimensions in mm) */
 export const GRID = {
@@ -188,6 +188,9 @@ export function getAnchorMmPosition(
   anchor: { column: AnchorColumn; row: AnchorRow },
   laneOffset: number = 0
 ): Point {
+  if (anchor.row < VIRTUAL_ROWS.BELOW_FIRST || anchor.row > VIRTUAL_ROWS.ABOVE_LAST) {
+    throw new Error(`Anchor row ${anchor.row} out of valid range (${VIRTUAL_ROWS.BELOW_FIRST}-${VIRTUAL_ROWS.ABOVE_LAST})`);
+  }
   const laneOffsetMm = getLaneOffsetByIndex(laneOffset);
   const columnIndex = getAnchorColumnIndex(anchor.column);
   const panelOffset = panel.side === 'DX' ? PANEL.WIDTH : 0;

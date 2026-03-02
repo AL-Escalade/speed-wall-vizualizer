@@ -222,6 +222,9 @@ describe('extractHolds', () => {
     expect(holds[0].holdScale).toBe(0.5);
   });
 
+  // First hold is SN1 A1 → position x=125, y=187.5 (COLUMN_SPACING=125, PANEL_MARGIN_H=125, PANEL_MARGIN_V=187.5)
+  // Anchor offset = anchorPosition - holdPosition
+
   it('should compute anchor offset with virtual column A-1', () => {
     const segment: RouteSegment = {
       source: 'test',
@@ -229,7 +232,8 @@ describe('extractHolds', () => {
     };
     const holds = extractHolds(segment, routes);
     expect(holds[0].anchorOffset).toBeDefined();
-    expect(holds[0].anchorOffset!.x).not.toBe(0);
+    expect(holds[0].anchorOffset!.x).toBe(-125); // A-1 is one column left of A
+    expect(holds[0].anchorOffset!.y).toBe(0);     // Same row
   });
 
   it('should compute anchor offset with virtual column K+1', () => {
@@ -239,7 +243,8 @@ describe('extractHolds', () => {
     };
     const holds = extractHolds(segment, routes);
     expect(holds[0].anchorOffset).toBeDefined();
-    expect(holds[0].anchorOffset!.x).not.toBe(0);
+    expect(holds[0].anchorOffset!.x).toBe(1375);  // 11 columns right of A (11*125)
+    expect(holds[0].anchorOffset!.y).toBe(0);
   });
 
   it('should compute anchor offset with virtual row 0', () => {
@@ -249,7 +254,8 @@ describe('extractHolds', () => {
     };
     const holds = extractHolds(segment, routes);
     expect(holds[0].anchorOffset).toBeDefined();
-    expect(holds[0].anchorOffset!.y).not.toBe(0);
+    expect(holds[0].anchorOffset!.x).toBe(0);     // Same column
+    expect(holds[0].anchorOffset!.y).toBe(-125);   // One row below row 1
   });
 
   it('should compute anchor offset with virtual row 11', () => {
@@ -259,20 +265,30 @@ describe('extractHolds', () => {
     };
     const holds = extractHolds(segment, routes);
     expect(holds[0].anchorOffset).toBeDefined();
-    expect(holds[0].anchorOffset!.y).not.toBe(0);
+    expect(holds[0].anchorOffset!.x).toBe(0);
+    expect(holds[0].anchorOffset!.y).toBe(1250);   // 10 rows above row 1 (10*125)
   });
 
-  it('should produce same result for physical anchor as before', () => {
+  it('should compute anchor offset with combined virtual column and row', () => {
+    const segment: RouteSegment = {
+      source: 'test',
+      anchor: { panel: 'SN1', column: 'A-1', row: 0 },
+    };
+    const holds = extractHolds(segment, routes);
+    expect(holds[0].anchorOffset).toBeDefined();
+    expect(holds[0].anchorOffset!.x).toBe(-125);
+    expect(holds[0].anchorOffset!.y).toBe(-125);
+  });
+
+  it('should produce exact offset for physical anchor', () => {
     const segment: RouteSegment = {
       source: 'test',
       anchor: { panel: 'SN1', column: 'F', row: 5 },
     };
     const holds = extractHolds(segment, routes);
     expect(holds[0].anchorOffset).toBeDefined();
-    // The first hold is at SN1 A1, anchor at SN1 F5
-    // offset = anchor - hold position
-    expect(typeof holds[0].anchorOffset!.x).toBe('number');
-    expect(typeof holds[0].anchorOffset!.y).toBe('number');
+    expect(holds[0].anchorOffset!.x).toBe(625);   // 5 columns right of A (5*125)
+    expect(holds[0].anchorOffset!.y).toBe(500);    // 4 rows above row 1 (4*125)
   });
 });
 

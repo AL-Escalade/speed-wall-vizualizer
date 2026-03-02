@@ -9,6 +9,7 @@ import {
   type ColumnSystemId as CoreColumnSystemId,
   convertColumn as coreConvertColumn,
   VIRTUAL_COLUMNS,
+  VIRTUAL_ROWS,
 } from '@voie-vitesse/core';
 
 /** Panel sides */
@@ -141,7 +142,7 @@ export function getAnchorColumnDisplayLabel(storedColumn: string, system: Coordi
  * Virtual rows (0, 11) are shown in parentheses.
  */
 export function getAnchorRowDisplayLabel(row: number): string {
-  if (row === 0 || row === 11) return `(${row})`;
+  if (row === VIRTUAL_ROWS.BELOW_FIRST || row === VIRTUAL_ROWS.ABOVE_LAST) return `(${row})`;
   return String(row);
 }
 
@@ -197,8 +198,8 @@ export function convertColumn(
 
   try {
     return coreConvertColumn(column as Column, toColumnSystem(fromSystem), toColumnSystem(toSystem));
-  } catch {
-    // Column not found in source system, return as-is (graceful degradation for UI)
+  } catch (error) {
+    console.warn(`Column conversion failed for "${column}" (${fromSystem} → ${toSystem}):`, error instanceof Error ? error.message : error);
     return column;
   }
 }
