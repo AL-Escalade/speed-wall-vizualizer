@@ -60,6 +60,12 @@
   "section.row": "Ligne",
   "section.resetAnchor": "Réinitialiser à la position d'origine",
   "section.reset": "Réinitialiser",
+  "section.moveUp": "Monter d'une ligne",
+  "section.moveDown": "Descendre d'une ligne",
+  "section.moveLeft": "Décaler d'une colonne à gauche",
+  "section.moveRight": "Décaler d'une colonne à droite",
+  "section.previousPanel": "Panneau précédent",
+  "section.nextPanel": "Panneau suivant",
 
   "viewer.generationError": "Erreur de génération",
   "viewer.zoomIn": "Zoom +",

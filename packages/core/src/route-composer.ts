@@ -4,7 +4,7 @@
 
 import type { Hold, ReferenceRoute, ReferenceRoutes, RouteSegment, GeneratedRoute, AnchorPosition, PanelId, InsertPosition, ColumnSystem, SmearingZone, ComposedSmearingZone, Column, Row } from './types.js';
 import { DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM } from './types.js';
-import { parsePanelId, getInsertPosition, parseInsertPosition as parseInsertPositionCore, convertColumn, GRID } from './plate-grid.js';
+import { parsePanelId, getInsertPosition, getAnchorMmPosition, parseInsertPosition as parseInsertPositionCore, convertColumn, GRID } from './plate-grid.js';
 
 /** Offset in mm for anchor-based positioning */
 interface MmOffset {
@@ -108,7 +108,7 @@ function calculateMmOffset(
 ): MmOffset {
   const anchorPanel = parsePanelId(anchor.panel);
   const holdMm = getInsertPosition(holdPanel, holdPosition, laneOffset);
-  const anchorMm = getInsertPosition(anchorPanel, { column: anchor.column, row: anchor.row }, laneOffset);
+  const anchorMm = getAnchorMmPosition(anchorPanel, { column: anchor.column, row: anchor.row }, laneOffset);
 
   return {
     x: anchorMm.x - holdMm.x,

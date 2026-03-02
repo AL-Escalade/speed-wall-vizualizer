@@ -18,6 +18,8 @@ import {
   parseInsertPosition,
   formatPanelId,
   formatInsertPosition,
+  getAnchorColumnIndex,
+  getAnchorMmPosition,
 } from './plate-grid.js';
 import { COLUMN_SYSTEMS, CANONICAL_COLUMN_SYSTEM } from './types.js';
 
@@ -270,5 +272,75 @@ describe('formatInsertPosition', () => {
   it('should format insert positions', () => {
     expect(formatInsertPosition({ column: 'F', row: 4 })).toBe('F4');
     expect(formatInsertPosition({ column: 'A', row: 10 })).toBe('A10');
+  });
+});
+
+describe('getAnchorColumnIndex', () => {
+  it('should return -1 for virtual column A-1', () => {
+    expect(getAnchorColumnIndex('A-1')).toBe(-1);
+  });
+
+  it('should return COLUMNS_PER_PANEL for virtual column K+1', () => {
+    expect(getAnchorColumnIndex('K+1')).toBe(GRID.COLUMNS_PER_PANEL);
+  });
+
+  it('should delegate to getColumnIndex for physical columns', () => {
+    expect(getAnchorColumnIndex('A')).toBe(0);
+    expect(getAnchorColumnIndex('F')).toBe(5);
+    expect(getAnchorColumnIndex('K')).toBe(10);
+  });
+});
+
+describe('getAnchorMmPosition', () => {
+  const snPanel = { side: 'SN' as const, number: 1 as const };
+  const dxPanel = { side: 'DX' as const, number: 1 as const };
+
+  it('should match getInsertPosition for physical positions', () => {
+    const anchor = getAnchorMmPosition(snPanel, { column: 'F', row: 5 });
+    const insert = getInsertPosition(snPanel, { column: 'F', row: 5 });
+    expect(anchor.x).toBe(insert.x);
+    expect(anchor.y).toBe(insert.y);
+  });
+
+  it('should place virtual column A-1 one spacing left of A', () => {
+    const atA = getAnchorMmPosition(snPanel, { column: 'A', row: 1 });
+    const atVirtual = getAnchorMmPosition(snPanel, { column: 'A-1', row: 1 });
+    expect(atA.x - atVirtual.x).toBe(GRID.COLUMN_SPACING);
+  });
+
+  it('should place virtual column K+1 one spacing right of K', () => {
+    const atK = getAnchorMmPosition(snPanel, { column: 'K', row: 1 });
+    const atVirtual = getAnchorMmPosition(snPanel, { column: 'K+1', row: 1 });
+    expect(atVirtual.x - atK.x).toBe(GRID.COLUMN_SPACING);
+  });
+
+  it('should place virtual row 0 one spacing below row 1', () => {
+    const atRow1 = getAnchorMmPosition(snPanel, { column: 'A', row: 1 });
+    const atRow0 = getAnchorMmPosition(snPanel, { column: 'A', row: 0 });
+    expect(atRow1.y - atRow0.y).toBe(GRID.ROW_SPACING);
+  });
+
+  it('should place virtual row 11 one spacing above row 10', () => {
+    const atRow10 = getAnchorMmPosition(snPanel, { column: 'A', row: 10 });
+    const atRow11 = getAnchorMmPosition(snPanel, { column: 'A', row: 11 });
+    expect(atRow11.y - atRow10.y).toBe(GRID.ROW_SPACING);
+  });
+
+  it('should handle DX panel offset for virtual columns', () => {
+    const snVirtual = getAnchorMmPosition(snPanel, { column: 'K+1', row: 1 });
+    const dxVirtual = getAnchorMmPosition(dxPanel, { column: 'K+1', row: 1 });
+    expect(dxVirtual.x - snVirtual.x).toBe(PANEL.WIDTH);
+  });
+
+  it('should handle combined virtual column and virtual row', () => {
+    const atA1 = getAnchorMmPosition(snPanel, { column: 'A', row: 1 });
+    const atCorner = getAnchorMmPosition(snPanel, { column: 'A-1', row: 0 });
+    expect(atA1.x - atCorner.x).toBe(GRID.COLUMN_SPACING);
+    expect(atA1.y - atCorner.y).toBe(GRID.ROW_SPACING);
+  });
+
+  it('should throw for out-of-range row', () => {
+    expect(() => getAnchorMmPosition(snPanel, { column: 'A', row: -1 as any })).toThrow('out of valid range');
+    expect(() => getAnchorMmPosition(snPanel, { column: 'A', row: 12 as any })).toThrow('out of valid range');
   });
 });

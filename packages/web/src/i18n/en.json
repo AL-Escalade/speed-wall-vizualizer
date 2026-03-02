@@ -60,6 +60,12 @@
   "section.row": "Row",
   "section.resetAnchor": "Reset to original position",
   "section.reset": "Reset",
+  "section.moveUp": "Move up one row",
+  "section.moveDown": "Move down one row",
+  "section.moveLeft": "Move one column left",
+  "section.moveRight": "Move one column right",
+  "section.previousPanel": "Previous panel",
+  "section.nextPanel": "Next panel",
 
   "viewer.generationError": "Generation error",
   "viewer.zoomIn": "Zoom in",

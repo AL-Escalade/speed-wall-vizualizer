@@ -352,6 +352,9 @@ const SectionItem = memo(function SectionItem({
             onUpdate={handleAnchorUpdate}
             onReset={handleAnchorReset}
             coordinateDisplaySystem={coordinateDisplaySystem}
+            lane={section.lane}
+            lanesCount={lanesCount}
+            onLaneChange={handleLaneChange}
           />
         </div>
       )}

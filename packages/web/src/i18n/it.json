@@ -60,6 +60,12 @@
   "section.row": "Riga",
   "section.resetAnchor": "Ripristina alla posizione originale",
   "section.reset": "Ripristina",
+  "section.moveUp": "Sposta in su di una riga",
+  "section.moveDown": "Sposta in giù di una riga",
+  "section.moveLeft": "Sposta di una colonna a sinistra",
+  "section.moveRight": "Sposta di una colonna a destra",
+  "section.previousPanel": "Pannello precedente",
+  "section.nextPanel": "Pannello successivo",
 
   "viewer.generationError": "Errore di generazione",
   "viewer.zoomIn": "Zoom +",

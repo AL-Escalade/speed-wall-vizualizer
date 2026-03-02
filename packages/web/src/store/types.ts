@@ -9,9 +9,9 @@ import type { PanelSide, CoordinateSystemId } from '@/constants/routes';
 export interface AnchorPosition {
   /** Panel side: 'SN' (gauche) or 'DX' (droit) */
   side: PanelSide;
-  /** Column (A-L) */
+  /** Column (A-L, or virtual: A-1, K+1) */
   column: string;
-  /** Row (1-10) */
+  /** Row (0-11, where 0 and 11 are virtual positions) */
   row: number;
 }
 
