@@ -15,6 +15,8 @@ import {
   getAnchorColumnDisplayLabel,
   getAnchorRowDisplayLabel,
   ANCHOR_ROW_OPTIONS,
+  ANCHOR_ROW_MIN,
+  ANCHOR_ROW_MAX,
 } from '@/constants/routes';
 import type { AnchorPosition } from './types';
 
@@ -87,14 +89,21 @@ export const AnchorConfigurator = memo(function AnchorConfigurator({
 
   // Arrow navigation handlers (with bounds clamping as defense in depth)
   const moveUp = useCallback(() => {
-    if (currentAnchor.row >= 11) return;
+    if (currentAnchor.row >= ANCHOR_ROW_MAX) return;
     updateField('row', currentAnchor.row + 1);
   }, [currentAnchor.row, updateField]);
 
   const moveDown = useCallback(() => {
-    if (currentAnchor.row <= 0) return;
+    if (currentAnchor.row <= ANCHOR_ROW_MIN) return;
     updateField('row', currentAnchor.row - 1);
   }, [currentAnchor.row, updateField]);
+
+  // Whether cross-lane navigation is possible (requires callback + multiple lanes)
+  const canChangeLane =
+    typeof onLaneChange === 'function'
+    && typeof lane === 'number'
+    && typeof lanesCount === 'number'
+    && lanesCount > 1;
 
   // Column navigation with cross-panel wrapping:
   // K+1 on one panel ≡ A-1 on the next, so wrap lands on A (index 1) / K (index last-1)
@@ -102,65 +111,77 @@ export const AnchorConfigurator = memo(function AnchorConfigurator({
     if (currentColumnIndex < lastColumnIndex) {
       handleColumnChange(anchorColumnOptions[currentColumnIndex + 1]);
     } else {
-      // At K+1: wrap to A on the next panel
+      // At K+1: wrap to A on the next panel (requires lane change capability)
       const firstRealColumn = anchorColumnOptions[1]; // A
       if (currentAnchor.side === PANEL_SIDES.LEFT) {
+        // Within the same lane: SN K+1 → DX A
         onUpdate({ ...currentAnchor, side: PANEL_SIDES.RIGHT, column: firstRealColumn });
-      } else {
+      } else if (canChangeLane && lane < lanesCount - 1) {
+        // DX K+1 → next lane's SN A
         onUpdate({ ...currentAnchor, side: PANEL_SIDES.LEFT, column: firstRealColumn });
-        onLaneChange?.(lane + 1);
+        onLaneChange(lane + 1);
       }
+      // If we cannot change lane, do nothing at the boundary
     }
-  }, [currentColumnIndex, lastColumnIndex, anchorColumnOptions, handleColumnChange, currentAnchor, onUpdate, onLaneChange, lane]);
+  }, [currentColumnIndex, lastColumnIndex, anchorColumnOptions, handleColumnChange, currentAnchor, onUpdate, onLaneChange, lane, canChangeLane, lanesCount]);
 
   const moveLeft = useCallback(() => {
     if (currentColumnIndex > 0) {
       handleColumnChange(anchorColumnOptions[currentColumnIndex - 1]);
     } else {
-      // At A-1: wrap to K on the previous panel
+      // At A-1: wrap to K on the previous panel (requires lane change capability)
       const lastRealColumn = anchorColumnOptions[lastColumnIndex - 1]; // K
       if (currentAnchor.side === PANEL_SIDES.RIGHT) {
+        // Within the same lane: DX A-1 → SN K
         onUpdate({ ...currentAnchor, side: PANEL_SIDES.LEFT, column: lastRealColumn });
-      } else {
+      } else if (canChangeLane && lane > 0) {
+        // SN A-1 → previous lane's DX K
         onUpdate({ ...currentAnchor, side: PANEL_SIDES.RIGHT, column: lastRealColumn });
-        onLaneChange?.(lane - 1);
+        onLaneChange(lane - 1);
       }
+      // If we cannot change lane, do nothing at the boundary
     }
-  }, [currentColumnIndex, lastColumnIndex, anchorColumnOptions, handleColumnChange, currentAnchor, onUpdate, onLaneChange, lane]);
+  }, [currentColumnIndex, lastColumnIndex, anchorColumnOptions, handleColumnChange, currentAnchor, onUpdate, onLaneChange, lane, canChangeLane]);
 
   // Half-lane (panel) navigation: each click moves by one panel side
   const goToPreviousPanel = useCallback(() => {
     if (currentAnchor.side === PANEL_SIDES.RIGHT) {
       // DX → SN (same lane)
       updateField('side', PANEL_SIDES.LEFT);
-    } else {
+    } else if (canChangeLane && lane > 0) {
       // SN → previous lane's DX
       updateField('side', PANEL_SIDES.RIGHT);
-      onLaneChange?.(lane - 1);
+      onLaneChange(lane - 1);
     }
-  }, [currentAnchor.side, updateField, onLaneChange, lane]);
+    // If we cannot change lane, do nothing when already on the first lane's SN
+  }, [currentAnchor.side, updateField, onLaneChange, lane, canChangeLane]);
 
   const goToNextPanel = useCallback(() => {
     if (currentAnchor.side === PANEL_SIDES.LEFT) {
       // SN → DX (same lane)
       updateField('side', PANEL_SIDES.RIGHT);
-    } else {
+    } else if (canChangeLane && lane < lanesCount - 1) {
       // DX → next lane's SN
       updateField('side', PANEL_SIDES.LEFT);
-      onLaneChange?.(lane + 1);
+      onLaneChange(lane + 1);
     }
-  }, [currentAnchor.side, updateField, onLaneChange, lane]);
+    // If we cannot change lane, do nothing when already on the last lane's DX
+  }, [currentAnchor.side, updateField, onLaneChange, lane, canChangeLane, lanesCount]);
 
   // Layout and disable state
-  const hasLaneNav = lanesCount > 1;
-  const isUpDisabled = currentAnchor.row >= 11;
-  const isDownDisabled = currentAnchor.row <= 0;
+  const hasLaneNav = canChangeLane;
+  const isUpDisabled = currentAnchor.row >= ANCHOR_ROW_MAX;
+  const isDownDisabled = currentAnchor.row <= ANCHOR_ROW_MIN;
   const isRightDisabled = currentColumnIndex >= lastColumnIndex
-    && currentAnchor.side === PANEL_SIDES.RIGHT && lane >= lanesCount - 1;
+    && currentAnchor.side === PANEL_SIDES.RIGHT
+    && (!canChangeLane || lane >= lanesCount - 1);
   const isLeftDisabled = currentColumnIndex <= 0
-    && currentAnchor.side === PANEL_SIDES.LEFT && lane <= 0;
-  const hasPrevPanel = !(currentAnchor.side === PANEL_SIDES.LEFT && lane <= 0);
-  const hasNextPanel = !(currentAnchor.side === PANEL_SIDES.RIGHT && lane >= lanesCount - 1);
+    && currentAnchor.side === PANEL_SIDES.LEFT
+    && (!canChangeLane || lane <= 0);
+  const hasPrevPanel = !(currentAnchor.side === PANEL_SIDES.LEFT
+    && (!canChangeLane || lane <= 0));
+  const hasNextPanel = !(currentAnchor.side === PANEL_SIDES.RIGHT
+    && (!canChangeLane || lane >= lanesCount - 1));
 
   return (
     <>

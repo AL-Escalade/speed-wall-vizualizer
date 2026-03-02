@@ -111,12 +111,25 @@ export const ROW_COUNT = 10;
 /** Extended row options for anchor positioning (0-11, where 0 and 11 are virtual) */
 export const ANCHOR_ROW_OPTIONS = Array.from({ length: ROW_COUNT + 2 }, (_, i) => i);
 
+/** Minimum anchor row (virtual row below first physical row) */
+export const ANCHOR_ROW_MIN = VIRTUAL_ROWS.BELOW_FIRST;
+
+/** Maximum anchor row (virtual row above last physical row) */
+export const ANCHOR_ROW_MAX = VIRTUAL_ROWS.ABOVE_LAST;
+
 /**
- * Get extended column labels for anchor positioning, including virtual positions.
- * Returns: ['A-1', ...physicalColumns..., lastCol+1 display label]
+ * Get extended column identifiers for anchor positioning, including virtual positions,
+ * in the internal storage coordinate system.
+ *
+ * Returns stored values:
+ *   ['A-1', ...physicalColumns..., VIRTUAL_COLUMNS.AFTER_LAST ('K+1' in the internal ABC system)]
+ *
+ * Note: The AFTER_LAST entry is the fixed stored sentinel and is not adapted per coordinate system.
+ * The `storageSystem` argument should refer to the storage/internal system
+ * (e.g. INTERNAL_STORAGE_SYSTEM), not an arbitrary display system.
  */
-export function getAnchorColumnOptions(system: CoordinateSystemId): string[] {
-  const physical = [...COORDINATE_SYSTEM_COLUMNS[system]];
+export function getAnchorColumnOptions(storageSystem: CoordinateSystemId): string[] {
+  const physical = [...COORDINATE_SYSTEM_COLUMNS[storageSystem]];
   return [VIRTUAL_COLUMNS.BEFORE_FIRST, ...physical, VIRTUAL_COLUMNS.AFTER_LAST];
 }
 

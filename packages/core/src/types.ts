@@ -149,7 +149,7 @@ export type ReferenceRoutes = Record<string, ReferenceRoute>;
 export interface AnchorPosition {
   /** Panel (e.g., "DX1", "SN3") */
   panel: string;
-  /** Column (A-L, or virtual: A-1, K+1) */
+  /** Column (any core Column for the active system, or virtual: A-1, K+1) */
   column: AnchorColumn;
   /** Row (1-10, or virtual: 0, 11) */
   row: AnchorRow;
