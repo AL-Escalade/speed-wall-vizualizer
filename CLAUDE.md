@@ -42,6 +42,7 @@ npm run generate:assets
   - `route-composer.ts` - Composes routes from segments with filtering/anchoring
   - `svg-generator.ts` - Generates SVG output from composed holds
   - `hold-svg-parser.ts` - Parses hold SVG files and applies transformations
+  - `rotation.ts` - Hold rotation angle calculations
   - `bundled-assets.ts` - Pre-bundled SVG content for browser use
 
 - **`packages/cli`** (`@voie-vitesse/cli`): Command-line interface
@@ -64,7 +65,7 @@ npm run generate:assets
 
 ### Hold Format
 
-Holds use compact string format: `"PANEL TYPE POSITION ORIENTATION [@LABEL]"`
+Holds use compact string format: `"PANEL TYPE POSITION ORIENTATION [@LABEL] [SCALE]"`
 - Example: `"DX2 BIG F1 D3 @M1"` - BIG hold at F1 on DX2, pointing to D3, labeled M1
 - Cross-panel orientation: `"SN5 FOOT H1 SN4:H10 @P6"` - orientation target on different panel
 
@@ -77,4 +78,19 @@ Three systems exist (letters differ after I):
 
 Routes declare their system via `columns` field.
 
-- Tous les changements liés à la configuration doivent pouvoir être rétro compatibles (ou on doit s'assurer de la migration) car des utilisateurs ont sur leur navigateur des configs dans leur localstorage, ils peuvent importer d'anciens fichiers exportés, ou peuvent suivre des liens qui contiennent une configuration.
+## Code Style
+
+- **ESM imports**: Use `.js` extension in all imports within `packages/core` and `packages/cli` (e.g., `from './types.js'`)
+- **Naming**: camelCase functions/variables, PascalCase types/components, SCREAMING_SNAKE_CASE constants, kebab-case files (except React components: PascalCase)
+- **Core package**: Pure functions, no classes. All functions are typed with explicit parameters.
+- **Web package**: React 19 + Zustand stores + Tailwind v4/DaisyUI + react-intl (fr/en/de/it) + arktype for validation
+- **Tests**: Vitest with `describe`/`it`/`expect`, co-located `*.test.ts` files. Web tests use jsdom.
+- **Linting**: oxlint with type-aware mode (no formatter configured)
+
+## Gotchas
+
+- Build uses `tsgo` (TypeScript Go compiler via `@typescript/native-preview`), not standard `tsc`
+- Run `npm run build` before `npm run dev:web` — the web app depends on core's compiled output
+- Config changes must be backward-compatible (or include migration) — users have configs in localStorage, may import old exported files, or follow URLs containing configurations
+- When adding user-visible strings in the web app, add translations to all 4 locale files in `packages/web/src/i18n/`
+- Web tests mock `window.matchMedia` and `ResizeObserver` in `packages/web/src/test/setup.ts`
