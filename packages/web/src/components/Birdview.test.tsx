@@ -53,7 +53,7 @@ describe('Birdview', () => {
     it('should render SVG content when provided', () => {
       const { container } = renderWithIntl(<Birdview {...defaultProps} />);
 
-      // Should have an element with dangerouslySetInnerHTML containing SVG
+      // Should have a shadow DOM host element containing SVG
       const svgContainer = container.querySelector('[style*="pointer-events: none"]');
       expect(svgContainer).toBeInTheDocument();
     });

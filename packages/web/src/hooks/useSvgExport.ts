@@ -4,9 +4,7 @@
 
 import { useCallback } from 'react';
 import { useConfigStore } from '@/store';
-
-/** Data attribute used to identify the exportable SVG container */
-const SVG_EXPORT_SELECTOR = '[data-export-target="wall-svg"]';
+import { getExportSvgContent } from '@/utils/exportSvgRef';
 
 interface UseSvgExportResult {
   exportSvg: () => boolean;
@@ -84,6 +82,11 @@ async function rasterizeSvgToCanvas(
     // Ensure SVG has proper dimensions for rendering
     const parser = new DOMParser();
     const svgDoc = parser.parseFromString(svgStr, 'image/svg+xml');
+    const parseError = svgDoc.querySelector('parsererror');
+    if (parseError) {
+      reject(new Error(`SVG re-parse failed: ${parseError.textContent}`));
+      return;
+    }
     const svgRoot = svgDoc.documentElement;
 
     // Set explicit width/height attributes if missing (required for image rendering)
@@ -135,10 +138,9 @@ export function useSvgExport(): UseSvgExportResult {
   const getCurrentConfig = useConfigStore((s) => s.getCurrentConfig);
 
   const exportSvg = useCallback(() => {
-    const container = document.querySelector(SVG_EXPORT_SELECTOR);
-    const svgElement = container?.querySelector('svg');
-    if (!svgElement) {
-      console.error('SVG export error: SVG element not found', { container, selector: SVG_EXPORT_SELECTOR });
+    const svgContent = getExportSvgContent();
+    if (!svgContent) {
+      console.error('SVG export error: no SVG content available');
       alert('Aucun SVG à exporter');
       return false;
     }
@@ -146,9 +148,7 @@ export function useSvgExport(): UseSvgExportResult {
     const config = getCurrentConfig();
     const fileName = config ? `${config.name.replace(/\s+/g, '_')}.svg` : 'wall.svg';
 
-    const serializer = new XMLSerializer();
-    const svgStr = serializer.serializeToString(svgElement);
-    const blob = new Blob([svgStr], { type: 'image/svg+xml' });
+    const blob = new Blob([svgContent], { type: 'image/svg+xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -161,10 +161,24 @@ export function useSvgExport(): UseSvgExportResult {
   }, [getCurrentConfig]);
 
   const exportPng = useCallback(async () => {
-    const container = document.querySelector(SVG_EXPORT_SELECTOR);
-    const svgElement = container?.querySelector('svg') as SVGSVGElement | null;
+    const svgContent = getExportSvgContent();
+    if (!svgContent) {
+      console.error('PNG export error: no SVG content available');
+      alert('Aucun SVG à exporter');
+      return false;
+    }
+
+    // Parse string to SVGSVGElement for rasterization
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(svgContent, 'image/svg+xml');
+    if (doc.querySelector('parsererror')) {
+      console.error('PNG export error: SVG content is malformed');
+      alert('Aucun SVG à exporter');
+      return false;
+    }
+    const svgElement = doc.querySelector('svg') as SVGSVGElement | null;
     if (!svgElement) {
-      console.error('PNG export error: SVG element not found', { container, selector: SVG_EXPORT_SELECTOR });
+      console.error('PNG export error: failed to parse SVG content');
       alert('Aucun SVG à exporter');
       return false;
     }

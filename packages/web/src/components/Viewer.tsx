@@ -9,6 +9,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useIntl } from 'react-intl';
 import { useConfigStore, useRoutesStore, useViewerStore, DEFAULT_DISPLAY_OPTIONS } from '@/store';
 import { sectionToSegment, normalizeSvgForWeb } from '@/utils/sectionMapper';
+import { setExportSvgContent } from '@/utils/exportSvgRef';
 import { useTouchGestures } from '@/hooks/useTouchGestures';
 import { useIsMobile } from '@/hooks/useMediaQuery';
 import { Birdview } from './Birdview';
@@ -81,10 +82,9 @@ export function Viewer() {
     onDoubleTap: handleDoubleTap,
   });
 
-  // Debounce timer ref for SVG generation
-  const generateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Generate SVG when config changes (debounced)
+  // Generate SVG when config changes
+  // No debounce needed: the previous 150ms delay was masking the real bottleneck
+  // (browser extension MutationObservers scanning injected DOM), now solved via Shadow DOM.
   useEffect(() => {
     if (!config || config.sections.length === 0) {
       setSvgContent(null);
@@ -147,23 +147,17 @@ export function Viewer() {
       }
     };
 
-    // Clear any pending generation
-    if (generateTimeoutRef.current) {
-      clearTimeout(generateTimeoutRef.current);
-    }
-
-    // Debounce SVG generation to avoid excessive regeneration during rapid changes
-    generateTimeoutRef.current = setTimeout(() => {
-      void generateWallSvg();
-    }, 150);
+    void generateWallSvg();
 
     return () => {
       isCancelled = true;
-      if (generateTimeoutRef.current) {
-        clearTimeout(generateTimeoutRef.current);
-      }
     };
-  }, [config, routes, showSmearingZones]);
+  }, [config, routes, showSmearingZones, intl]);
+
+  // Push SVG content to module-level ref for export (avoids DOM injection)
+  useEffect(() => {
+    setExportSvgContent(svgContent);
+  }, [svgContent]);
 
   // Convert SVG to data URL for optimized rendering
   useEffect(() => {
@@ -231,7 +225,7 @@ export function Viewer() {
     };
   }, [setStoreDimensions]);
 
-  // Cleanup RAF on unmount
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (rafPanId.current) {
@@ -240,6 +234,7 @@ export function Viewer() {
       if (rafZoomId.current) {
         cancelAnimationFrame(rafZoomId.current);
       }
+      setExportSvgContent(null);
     };
   }, []);
 
@@ -445,14 +440,6 @@ export function Viewer() {
           </div>
         )}
 
-        {/* Hidden SVG for export - rendered inline for DOM access */}
-        {svgContent && (
-          <div
-            className="hidden"
-            data-export-target="wall-svg"
-            dangerouslySetInnerHTML={{ __html: svgContent }}
-          />
-        )}
       </div>
 
       {/* Birdview minimap - hidden on very small screens */}

@@ -7,6 +7,39 @@ import { useShallow } from 'zustand/react/shallow';
 import { useIntl } from 'react-intl';
 import { useViewerStore } from '@/store';
 
+/**
+ * Renders generated SVG inside a Shadow DOM to prevent browser extensions
+ * (e.g. 1Password) from discovering and scanning its contents for form fields,
+ * since DOM traversal APIs do not pierce shadow boundaries.
+ */
+function ShadowHtml({ html, style, shadowCss }: {
+  html: string;
+  style?: React.CSSProperties;
+  shadowCss?: string;
+}) {
+  const hostRef = useRef<HTMLDivElement>(null);
+  const shadowRef = useRef<ShadowRoot | null>(null);
+  const shadowFailedRef = useRef(false);
+
+  useEffect(() => {
+    if (!hostRef.current) return;
+    if (!shadowRef.current && !shadowFailedRef.current) {
+      try {
+        shadowRef.current = hostRef.current.shadowRoot ?? hostRef.current.attachShadow({ mode: 'open' });
+      } catch {
+        // attachShadow may fail (React StrictMode double-mount, HMR) — fall back to direct rendering
+        shadowFailedRef.current = true;
+      }
+    }
+    // nosec: innerHTML is safe — content is generated SVG from generateSvg(), not user input
+    const styleTag = shadowCss ? `<style>${shadowCss}</style>` : '';
+    const target = shadowRef.current ?? hostRef.current;
+    target.innerHTML = styleTag + html;
+  }, [html, shadowCss]);
+
+  return <div ref={hostRef} style={style} />;
+}
+
 interface BirdviewProps {
   svgContent: string | null;
   svgWidth: number;
@@ -284,10 +317,10 @@ export function Birdview({
       {svgContent ? (
         <>
           {/* SVG thumbnail - force SVG to fill container */}
-          <div
-            dangerouslySetInnerHTML={{ __html: svgContent }}
+          <ShadowHtml
+            html={svgContent}
             style={svgContainerStyle}
-            className="[&>svg]:w-full [&>svg]:h-full"
+            shadowCss="svg { width: 100%; height: 100%; }"
           />
           {/* Viewport indicator */}
           <div
