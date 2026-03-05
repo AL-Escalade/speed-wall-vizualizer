@@ -4,7 +4,7 @@
 
 import type { RouteSegment, AnchorColumn, AnchorRow } from '@voie-vitesse/core';
 import { VIRTUAL_COLUMNS, VIRTUAL_ROWS, CANONICAL_COLUMN_SYSTEM } from '@voie-vitesse/core';
-import type { AnchorPosition } from '@/store/types';
+import type { AnchorPosition, HoldLabel } from '@/store/types';
 
 function isValidAnchorColumn(value: string): value is AnchorColumn {
   if (value === VIRTUAL_COLUMNS.BEFORE_FIRST || value === VIRTUAL_COLUMNS.AFTER_LAST) return true;
@@ -35,6 +35,7 @@ export interface WebSection {
   toHold: number | string;
   color: string;
   anchor?: AnchorPosition;
+  excludeHolds?: HoldLabel[];
 }
 
 /**
@@ -60,6 +61,7 @@ export function sectionToSegment(section: WebSection): RouteSegment {
     laneOffset: section.lane,
     color: section.color,
     anchor,
+    excludeHolds: section.excludeHolds,
   };
 }
 

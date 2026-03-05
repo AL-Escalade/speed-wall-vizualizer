@@ -173,6 +173,33 @@ describe('sectionToSegment', () => {
     expect(segment.anchor!.row).toBe(1);
   });
 
+  it('should pass excludeHolds to segment', () => {
+    const section: WebSection = {
+      source: 'ifsc',
+      lane: 0,
+      fromHold: 1,
+      toHold: 20,
+      color: '#FF0000',
+      excludeHolds: ['M2', 'M17'],
+    };
+
+    const segment = sectionToSegment(section);
+    expect(segment.excludeHolds).toEqual(['M2', 'M17']);
+  });
+
+  it('should pass undefined excludeHolds when not set', () => {
+    const section: WebSection = {
+      source: 'ifsc',
+      lane: 0,
+      fromHold: 1,
+      toHold: 20,
+      color: '#FF0000',
+    };
+
+    const segment = sectionToSegment(section);
+    expect(segment.excludeHolds).toBeUndefined();
+  });
+
   it('should handle string hold references', () => {
     const section: WebSection = {
       source: 'ifsc',

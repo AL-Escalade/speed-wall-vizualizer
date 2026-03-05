@@ -8,4 +8,5 @@ export { LaneSelector } from './LaneSelector';
 export { HoldRangeSelector } from './HoldRangeSelector';
 export { ColorPicker } from './ColorPicker';
 export { AnchorConfigurator } from './AnchorConfigurator';
+export { ExcludeHoldsSelector } from './ExcludeHoldsSelector';
 export type { AnchorPosition } from './types';

@@ -51,6 +51,8 @@
   "section.laneNumber": "Lane {number}",
   "section.firstHold": "First hold",
   "section.lastHold": "Last hold",
+  "section.excludeHolds": "Excluded holds",
+  "section.excludeHoldsPlaceholder": "None",
   "section.color": "Color",
   "section.anchorPosition": "First hold position",
   "section.side": "Side",

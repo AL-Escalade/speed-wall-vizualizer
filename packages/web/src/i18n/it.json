@@ -51,6 +51,8 @@
   "section.laneNumber": "Corsia {number}",
   "section.firstHold": "Prima presa",
   "section.lastHold": "Ultima presa",
+  "section.excludeHolds": "Prese escluse",
+  "section.excludeHoldsPlaceholder": "Nessuna",
   "section.color": "Colore",
   "section.anchorPosition": "Posizione della prima presa",
   "section.side": "Lato",

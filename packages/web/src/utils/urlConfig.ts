@@ -4,6 +4,7 @@
  */
 
 import type { SavedConfiguration } from '@/store';
+import type { HoldLabel } from '@/store/types';
 import { ROUTES } from './routes';
 
 /**
@@ -27,6 +28,7 @@ export interface ShareableConfig {
       column: string;
       row: number;
     };
+    excludeHolds?: HoldLabel[];
   }>;
   showArrow?: boolean;
   displayOptions?: {
@@ -51,6 +53,7 @@ export function extractShareableConfig(config: SavedConfiguration): ShareableCon
       toHold: s.toHold,
       color: s.color,
       anchor: s.anchor,
+      excludeHolds: s.excludeHolds?.length ? s.excludeHolds : undefined,
     })),
     showArrow: config.showArrow,
     displayOptions: config.displayOptions,
@@ -99,6 +102,10 @@ function isValidShareableConfig(data: unknown): data is ShareableConfig {
     if (typeof s.lane !== 'number') return false;
     if (s.fromHold === undefined || s.toHold === undefined) return false;
     if (typeof s.color !== 'string') return false;
+    if (s.excludeHolds !== undefined) {
+      if (!Array.isArray(s.excludeHolds)) return false;
+      if (!s.excludeHolds.every((h: unknown) => typeof h === 'string')) return false;
+    }
   }
 
   return true;
@@ -182,6 +189,7 @@ export function getConfigFingerprint(config: SavedConfiguration | ShareableConfi
       toHold: s.toHold,
       color: s.color,
       anchor: s.anchor,
+      excludeHolds: s.excludeHolds?.length ? [...s.excludeHolds].sort() : undefined,
     }));
 
   const normalized = {

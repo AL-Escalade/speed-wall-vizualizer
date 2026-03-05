@@ -51,6 +51,8 @@
   "section.laneNumber": "Bahn {number}",
   "section.firstHold": "Erster Griff",
   "section.lastHold": "Letzter Griff",
+  "section.excludeHolds": "Ausgeschlossene Griffe",
+  "section.excludeHoldsPlaceholder": "Keine",
   "section.color": "Farbe",
   "section.anchorPosition": "Position des ersten Griffs",
   "section.side": "Seite",

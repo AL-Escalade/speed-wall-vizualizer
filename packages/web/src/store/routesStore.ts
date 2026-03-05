@@ -5,6 +5,7 @@
 
 import { create } from 'zustand';
 import type { ReferenceRoute, ReferenceRoutes } from '@voie-vitesse/core';
+import type { HoldLabel } from './types';
 
 // Import route data from single source of truth
 import ifscData from '../../../../data/routes/ifsc.json';
@@ -88,7 +89,7 @@ interface RoutesState {
   /** Get hold count for a route */
   getHoldCount: (name: string) => number;
   /** Get hold labels for a route */
-  getHoldLabels: (name: string) => string[];
+  getHoldLabels: (name: string) => HoldLabel[];
   /** Get first hold label */
   getFirstHoldLabel: (name: string) => string | undefined;
   /** Get last hold label */
