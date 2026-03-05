@@ -22,6 +22,7 @@ const SectionSchema = type({
   toHold: 'number | string',
   color: 'string',
   'anchor?': AnchorPositionSchema,
+  'excludeHolds?': 'string[]',
 });
 
 /** Wall config schema */

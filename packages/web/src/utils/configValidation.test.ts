@@ -160,6 +160,44 @@ describe('validateConfiguration', () => {
     expect(result.success).toBe(false);
   });
 
+  it('should accept section with excludeHolds', () => {
+    const configWithExclude = {
+      ...validConfig,
+      sections: [
+        {
+          ...validConfig.sections[0],
+          excludeHolds: ['M2', 'M17'],
+        },
+      ],
+    };
+
+    const result = validateConfiguration(configWithExclude);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.sections[0].excludeHolds).toEqual(['M2', 'M17']);
+    }
+  });
+
+  it('should accept section without excludeHolds (backward compatible)', () => {
+    const result = validateConfiguration(validConfig);
+    expect(result.success).toBe(true);
+  });
+
+  it('should reject section with numeric excludeHolds', () => {
+    const configWithNumericExclude: unknown = {
+      ...validConfig,
+      sections: [
+        {
+          ...validConfig.sections[0],
+          excludeHolds: [2, 17],
+        },
+      ],
+    };
+
+    const result = validateConfiguration(configWithNumericExclude);
+    expect(result.success).toBe(false);
+  });
+
   it('should accept string fromHold and toHold (labels)', () => {
     const configWithLabels = {
       ...validConfig,

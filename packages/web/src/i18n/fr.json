@@ -51,6 +51,8 @@
   "section.laneNumber": "Couloir {number}",
   "section.firstHold": "Première prise",
   "section.lastHold": "Dernière prise",
+  "section.excludeHolds": "Prises exclues",
+  "section.excludeHoldsPlaceholder": "Aucune",
   "section.color": "Couleur",
   "section.anchorPosition": "Position de la première prise",
   "section.side": "Côté",

@@ -3,7 +3,7 @@
  * Displays and manages a single section configuration
  */
 
-import { memo, useCallback, useState, useEffect, useRef } from 'react';
+import { memo, useCallback, useMemo, useState, useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useConfigStore, useRoutesStore } from '@/store';
 import type { Section } from '@/store';
@@ -14,6 +14,7 @@ import {
   HoldRangeSelector,
   ColorPicker,
   AnchorConfigurator,
+  ExcludeHoldsSelector,
   type AnchorPosition,
 } from '../section';
 import {
@@ -108,6 +109,7 @@ export const SectionItem = memo(function SectionItem({
       toHold: lastLabel ?? 1,
       anchor,
       color: routeColor ?? section.color,
+      excludeHolds: [],
     });
   }, [section.id, section.color, getFirstHoldLabel, getLastHoldLabel, getRouteColor, getFirstHoldPosition, updateSection]);
 
@@ -117,12 +119,33 @@ export const SectionItem = memo(function SectionItem({
   }, [section.id, lanesCount, updateSection]);
 
   const handleFromChange = useCallback((value: string) => {
-    updateSection(section.id, { fromHold: value });
-  }, [section.id, updateSection]);
+    // Clean excludeHolds that fall outside the new range
+    const fromIdx = holdLabels.indexOf(value);
+    const toIdx = holdLabels.indexOf(String(section.toHold));
+    if (fromIdx !== -1 && toIdx !== -1) {
+      const start = Math.min(fromIdx, toIdx);
+      const end = Math.max(fromIdx, toIdx);
+      const validLabels = new Set(holdLabels.slice(start, end + 1));
+      const cleaned = (section.excludeHolds ?? []).filter((h) => validLabels.has(h));
+      updateSection(section.id, { fromHold: value, excludeHolds: cleaned });
+    } else {
+      updateSection(section.id, { fromHold: value, excludeHolds: [] });
+    }
+  }, [section.id, section.toHold, section.excludeHolds, holdLabels, updateSection]);
 
   const handleToChange = useCallback((value: string) => {
-    updateSection(section.id, { toHold: value });
-  }, [section.id, updateSection]);
+    const fromIdx = holdLabels.indexOf(String(section.fromHold));
+    const toIdx = holdLabels.indexOf(value);
+    if (fromIdx !== -1 && toIdx !== -1) {
+      const start = Math.min(fromIdx, toIdx);
+      const end = Math.max(fromIdx, toIdx);
+      const validLabels = new Set(holdLabels.slice(start, end + 1));
+      const cleaned = (section.excludeHolds ?? []).filter((h) => validLabels.has(h));
+      updateSection(section.id, { toHold: value, excludeHolds: cleaned });
+    } else {
+      updateSection(section.id, { toHold: value, excludeHolds: [] });
+    }
+  }, [section.id, section.fromHold, section.excludeHolds, holdLabels, updateSection]);
 
   // Debounced color change: update local state immediately, store after delay
   const handleColorChange = useCallback((color: string) => {
@@ -138,6 +161,22 @@ export const SectionItem = memo(function SectionItem({
     colorDebounceRef.current = setTimeout(() => {
       updateSection(section.id, { color });
     }, 150);
+  }, [section.id, updateSection]);
+
+  // Holds in the [fromHold, toHold] range for the exclude selector
+  const rangeHoldLabels = useMemo(() => {
+    const fromStr = String(section.fromHold);
+    const toStr = String(section.toHold);
+    const fromIdx = holdLabels.indexOf(fromStr);
+    const toIdx = holdLabels.indexOf(toStr);
+    if (fromIdx === -1 || toIdx === -1) return holdLabels;
+    const start = Math.min(fromIdx, toIdx);
+    const end = Math.max(fromIdx, toIdx);
+    return holdLabels.slice(start, end + 1);
+  }, [holdLabels, section.fromHold, section.toHold]);
+
+  const handleExcludeChange = useCallback((excludeHolds: string[]) => {
+    updateSection(section.id, { excludeHolds });
   }, [section.id, updateSection]);
 
   const handleAnchorUpdate = useCallback((anchor: AnchorPosition) => {
@@ -198,6 +237,12 @@ export const SectionItem = memo(function SectionItem({
             lane={section.lane}
             lanesCount={lanesCount}
             onLaneChange={handleLaneChange}
+          />
+
+          <ExcludeHoldsSelector
+            holdLabels={rangeHoldLabels}
+            excludeHolds={section.excludeHolds ?? []}
+            onChange={handleExcludeChange}
           />
         </div>
       )}

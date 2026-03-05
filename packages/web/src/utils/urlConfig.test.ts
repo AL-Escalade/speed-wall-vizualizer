@@ -81,6 +81,56 @@ describe('extractShareableConfig', () => {
     expect(shareable.sections[0].anchor).toEqual({ side: 'SN', column: 'F', row: 5 });
   });
 
+  it('should include excludeHolds if present and non-empty', () => {
+    const config: SavedConfiguration = {
+      id: 'test-id',
+      name: 'Test Config',
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [
+        {
+          id: 'section-1',
+          name: 'Section 1',
+          source: 'ifsc',
+          lane: 0,
+          fromHold: 1,
+          toHold: 20,
+          color: '#FF0000',
+          excludeHolds: ['M2', 'M17'],
+        },
+      ],
+      createdAt: 1000,
+      updatedAt: 2000,
+    };
+
+    const shareable = extractShareableConfig(config);
+    expect(shareable.sections[0].excludeHolds).toEqual(['M2', 'M17']);
+  });
+
+  it('should omit excludeHolds if empty array', () => {
+    const config: SavedConfiguration = {
+      id: 'test-id',
+      name: 'Test Config',
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [
+        {
+          id: 'section-1',
+          name: 'Section 1',
+          source: 'ifsc',
+          lane: 0,
+          fromHold: 1,
+          toHold: 20,
+          color: '#FF0000',
+          excludeHolds: [],
+        },
+      ],
+      createdAt: 1000,
+      updatedAt: 2000,
+    };
+
+    const shareable = extractShareableConfig(config);
+    expect(shareable.sections[0].excludeHolds).toBeUndefined();
+  });
+
   it('should include displayOptions if present', () => {
     const config: SavedConfiguration = {
       id: 'test-id',
@@ -149,6 +199,19 @@ describe('decodeConfig', () => {
 
   it('should return null for invalid encoded string', () => {
     const decoded = decodeConfig('invalid-base64!@#$');
+    expect(decoded).toBeNull();
+  });
+
+  it('should reject config with numeric excludeHolds', () => {
+    const invalidConfig = {
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [
+        { name: 'Section', source: 'ifsc', lane: 0, fromHold: 1, toHold: 20, color: '#FF0000', excludeHolds: [2, 17] },
+      ],
+    };
+    const encoded = btoa(JSON.stringify(invalidConfig));
+    const urlSafe = encoded.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    const decoded = decodeConfig(urlSafe);
     expect(decoded).toBeNull();
   });
 
@@ -416,6 +479,58 @@ describe('getConfigFingerprint', () => {
     };
 
     expect(getConfigFingerprint(config1)).not.toBe(getConfigFingerprint(config2));
+  });
+
+  it('should generate same fingerprint for empty excludeHolds and undefined', () => {
+    const config1: SavedConfiguration = {
+      id: 'id-1',
+      name: 'Config',
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [
+        { id: 's1', name: 'Section', source: 'ifsc', lane: 0, fromHold: 1, toHold: 20, color: '#FF0000', excludeHolds: [] },
+      ],
+      createdAt: 1000,
+      updatedAt: 2000,
+    };
+
+    const config2: SavedConfiguration = {
+      id: 'id-2',
+      name: 'Config',
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [
+        { id: 's2', name: 'Section', source: 'ifsc', lane: 0, fromHold: 1, toHold: 20, color: '#FF0000' },
+      ],
+      createdAt: 1000,
+      updatedAt: 2000,
+    };
+
+    expect(getConfigFingerprint(config1)).toBe(getConfigFingerprint(config2));
+  });
+
+  it('should generate same fingerprint regardless of excludeHolds order', () => {
+    const config1: SavedConfiguration = {
+      id: 'id-1',
+      name: 'Config',
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [
+        { id: 's1', name: 'Section', source: 'ifsc', lane: 0, fromHold: 1, toHold: 20, color: '#FF0000', excludeHolds: ['M2', 'M17'] },
+      ],
+      createdAt: 1000,
+      updatedAt: 2000,
+    };
+
+    const config2: SavedConfiguration = {
+      id: 'id-2',
+      name: 'Config',
+      wall: { lanes: 2, panelsHeight: 10 },
+      sections: [
+        { id: 's2', name: 'Section', source: 'ifsc', lane: 0, fromHold: 1, toHold: 20, color: '#FF0000', excludeHolds: ['M17', 'M2'] },
+      ],
+      createdAt: 1000,
+      updatedAt: 2000,
+    };
+
+    expect(getConfigFingerprint(config1)).toBe(getConfigFingerprint(config2));
   });
 
   it('should work with ShareableConfig type', () => {

@@ -4,6 +4,10 @@
 
 import type { WallConfig } from '@voie-vitesse/core';
 import type { PanelSide, CoordinateSystemId } from '@/constants/routes';
+import type { Flavor } from '@/utils/flavor';
+
+/** Hold label identifier (e.g. "M1", "P3") */
+export type HoldLabel = Flavor<string, 'HoldLabel'>;
 
 /** Anchor position for custom placement */
 export interface AnchorPosition {
@@ -32,6 +36,8 @@ export interface Section {
   color: string;
   /** Optional anchor position for custom placement */
   anchor?: AnchorPosition;
+  /** Hold labels to exclude from this section */
+  excludeHolds?: HoldLabel[];
 }
 
 /** Display options for SVG rendering */
