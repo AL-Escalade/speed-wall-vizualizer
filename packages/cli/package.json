@@ -17,7 +17,7 @@
     "@types/pdfkit": "^0.17.5",
     "@types/svg-to-pdfkit": "^0.1.4",
     "tsx": "^4.7.0",
-    "typescript": "^5.3.0"
+    "typescript": "^6.0.2"
   },
   "optionalDependencies": {
     "@resvg/resvg-js": "^2.6.2",
