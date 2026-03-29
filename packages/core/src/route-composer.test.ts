@@ -558,6 +558,42 @@ describe('composeSmearingZones', () => {
     expect(zones[0].laneOffset).toBe(0);
     expect(zones[1].laneOffset).toBe(1);
   });
+
+  it('should include zones for two segments with same source and laneOffset', () => {
+    // Regression: when two segments share source+laneOffset, the second must not
+    // be left with empty segmentHolds (which would cause zones to be filtered out).
+    const sharedSourceRoutes: ReferenceRoutes = {
+      ifsc: {
+        color: '#FF0000',
+        columns: COLUMN_SYSTEMS.ABC,
+        holds: [
+          'SN1 BIG A1 B2 @H1',
+          'SN1 BIG C3 D4 @H2',
+          'SN2 BIG E5 F6 @H3',
+          'SN2 BIG G7 H8 @H4',
+        ],
+        smearingZones: [
+          // Zone overlapping H1-H2 range (rows 1-4)
+          { label: 'Z1', panel: 'SN1', column: 'B', row: 1, width: 2, height: 4 },
+          // Zone overlapping H3-H4 range (rows 5-8)
+          { label: 'Z2', panel: 'SN2', column: 'F', row: 5, width: 2, height: 4 },
+        ],
+      },
+    };
+    // Two segments from same source on same lane, different hold ranges
+    const segments: RouteSegment[] = [
+      { source: 'ifsc', laneOffset: 2, fromHold: 'H3', toHold: 'H4' },
+      { source: 'ifsc', laneOffset: 2, fromHold: 'H1', toHold: 'H2' },
+    ];
+    const composedHolds = composeRoute(segments, sharedSourceRoutes);
+    expect(composedHolds).toHaveLength(4);
+
+    const zones = composeSmearingZones(segments, sharedSourceRoutes, composedHolds);
+    // Each segment should get its own zone, correctly matched to its hold range
+    expect(zones).toHaveLength(2);
+    expect(zones[0].label).toBe('Z2'); // first segment (H3-H4 on SN2) overlaps Z2
+    expect(zones[1].label).toBe('Z1'); // second segment (H1-H2 on SN1) overlaps Z1
+  });
 });
 
 describe('composeAllSmearingZones', () => {
@@ -589,13 +625,13 @@ describe('composeAllSmearingZones', () => {
     expect(allZones).toHaveLength(0);
   });
 
-  it('should handle unknown routes gracefully', () => {
+  it('should throw for unknown routes (consistent with composeAllRoutes)', () => {
     const generatedRoutes: GeneratedRoute[] = [
       { segments: [{ source: 'unknown' }] },
     ];
-    // Unknown route will have 0 holds
-    const allZones = composeAllSmearingZones(generatedRoutes, routes, []);
-    expect(allZones).toHaveLength(0);
+    expect(() => composeAllSmearingZones(generatedRoutes, routes, [])).toThrow(
+      'Unknown reference route: unknown'
+    );
   });
 
   it('should correctly count holds with excludeHolds', () => {
@@ -618,7 +654,7 @@ describe('composeAllSmearingZones', () => {
     expect(allZones).toHaveLength(1);
   });
 
-  it('should correctly handle fromHold and toHold in hold counting', () => {
+  it('should correctly handle fromHold and toHold as numeric indices in hold counting', () => {
     const routesMultiHold: ReferenceRoutes = {
       multi: {
         color: '#FF0000',
@@ -636,5 +672,39 @@ describe('composeAllSmearingZones', () => {
     expect(allHolds).toHaveLength(2); // holds 2 and 3
     const allZones = composeAllSmearingZones(generatedRoutes, routesMultiHold, allHolds);
     expect(allZones).toHaveLength(1);
+  });
+
+  it('should correctly handle fromHold and toHold as string labels in hold counting', () => {
+    // Regression test: when fromHold/toHold are string labels, the hold count must be
+    // resolved via label lookup, not fall back to 1/holds.length, otherwise multiple
+    // routes drift the holdIndex and smearing zones are filtered against wrong holds.
+    const routesWithLabels: ReferenceRoutes = {
+      labeled: {
+        color: '#FF0000',
+        columns: COLUMN_SYSTEMS.ABC,
+        holds: [
+          'SN1 BIG A1 B2 @H1',
+          'SN1 FOOT C3 D4 @H2',
+          'SN1 BIG E5 F6 @H3',
+          'SN1 FOOT G7 H8 @H4',
+        ],
+        smearingZones: [
+          { label: 'Z1', panel: 'SN1', column: 'B', row: 5, width: 2, height: 4 },
+        ],
+      },
+    };
+    // Two routes: first takes H1→H2, second takes H3→H4
+    // Z1 overlaps only with the second route (rows 5-9, holds H3 at row 5 and H4 at row 7)
+    const generatedRoutes: GeneratedRoute[] = [
+      { segments: [{ source: 'labeled', fromHold: 'H1', toHold: 'H2' }] },
+      { segments: [{ source: 'labeled', fromHold: 'H3', toHold: 'H4' }] },
+    ];
+    const allHolds = composeAllRoutes(generatedRoutes, routesWithLabels);
+    expect(allHolds).toHaveLength(4); // 2 + 2
+
+    const allZones = composeAllSmearingZones(generatedRoutes, routesWithLabels, allHolds);
+    // Z1 should appear exactly once, attributed to the second route (H3-H4)
+    expect(allZones).toHaveLength(1);
+    expect(allZones[0].label).toBe('Z1');
   });
 });

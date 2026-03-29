@@ -348,21 +348,14 @@ export function composeSmearingZones(
 ): ComposedSmearingZone[] {
   const allZones: ComposedSmearingZone[] = [];
 
-  // Group composed holds by segment source and lane offset for filtering
+  // Slice composed holds per segment using count from extractHolds,
+  // rather than matching by source+laneOffset (which breaks when two segments
+  // share the same source and laneOffset).
   let holdIndex = 0;
   for (const segment of segments) {
-    // Count how many holds came from this segment
-    const segmentHolds: ComposedHold[] = [];
-    while (holdIndex < composedHolds.length) {
-      const hold = composedHolds[holdIndex];
-      if (hold.sourceRoute.toLowerCase() === segment.source.toLowerCase() &&
-          hold.laneOffset === (segment.laneOffset ?? 0)) {
-        segmentHolds.push(hold);
-        holdIndex++;
-      } else {
-        break;
-      }
-    }
+    const segmentHoldCount = extractHolds(segment, routes).length;
+    const segmentHolds = composedHolds.slice(holdIndex, holdIndex + segmentHoldCount);
+    holdIndex += segmentHoldCount;
 
     const zones = extractSmearingZones(segment, routes, segmentHolds);
     allZones.push(...zones);
@@ -387,16 +380,12 @@ export function composeAllSmearingZones(
   let holdIndex = 0;
 
   for (const route of generatedRoutes) {
-    // Count holds for this route
-    const routeHoldCount = route.segments.reduce((count, segment) => {
-      const sourceRoute = routes[segment.source.toLowerCase()];
-      if (!sourceRoute) return count;
-      const holds = getRouteHolds(sourceRoute);
-      const from = typeof segment.fromHold === 'number' ? segment.fromHold : 1;
-      const to = typeof segment.toHold === 'number' ? segment.toHold : holds.length;
-      const excludeCount = segment.excludeHolds?.length ?? 0;
-      return count + (to - from + 1) - excludeCount;
-    }, 0);
+    // Count holds for this route using extractHolds — the single source of truth
+    // for fromHold/toHold resolution (including string labels) and excludeHolds filtering.
+    const routeHoldCount = route.segments.reduce(
+      (count, segment) => count + extractHolds(segment, routes).length,
+      0
+    );
 
     const routeHolds = allComposedHolds.slice(holdIndex, holdIndex + routeHoldCount);
     holdIndex += routeHoldCount;
