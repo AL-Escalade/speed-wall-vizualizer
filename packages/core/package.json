@@ -23,7 +23,7 @@
     "dev": "tsgo --watch"
   },
   "dependencies": {
-    "@xmldom/xmldom": "^0.8.11"
+    "@xmldom/xmldom": "^0.9.9"
   },
   "devDependencies": {
     "@types/node": "^24.12.0",
