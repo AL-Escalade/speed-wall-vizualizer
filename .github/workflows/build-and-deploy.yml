@@ -91,6 +91,9 @@ jobs:
 
       - name: Build web application
         run: npm run build:web
+        env:
+          UMAMI_WEBSITE_ID: ${{ secrets.UMAMI_WEBSITE_ID }}
+          UMAMI_SCRIPT_URL: ${{ secrets.UMAMI_SCRIPT_URL }}
 
       - name: Upload build artifacts
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
