@@ -7,6 +7,7 @@
  */
 
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
+import type { Document, Element } from '@xmldom/xmldom';
 import type { HoldSvgData, Point, Dimensions, HoldTypeConfig, HoldTypesConfig, LabelZones, ArrowDirection } from './types.js';
 import { HOLD_SVG_CONTENT, HOLD_TYPES_CONFIG } from './bundled-assets.js';
 
@@ -166,6 +167,10 @@ function parseViewBox(viewBox: string): Dimensions {
  */
 function extractViewBox(doc: Document): Dimensions {
   const svg = doc.documentElement;
+
+  if (!svg) {
+    throw new Error('SVG document has no root element');
+  }
 
   // Try viewBox attribute
   const viewBox = svg.getAttribute('viewBox');
