@@ -255,7 +255,7 @@ export function PrintPage() {
           {/* Loading / Error states */}
           {isGenerating && (
             <div data-testid="loading" className={`${isMobile ? 'py-8' : 'flex-1'} flex items-center justify-center`}>
-              <span className="loading loading-spinner loading-lg"></span>
+              <span className="loading loading-spinner loading-lg" />
             </div>
           )}
 

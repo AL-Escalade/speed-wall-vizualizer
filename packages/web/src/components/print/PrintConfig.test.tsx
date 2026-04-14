@@ -182,7 +182,7 @@ describe('PrintConfig', () => {
   });
 
   it('should disable export button when exporting', () => {
-    const { container } = renderWithIntl(<PrintConfig {...defaultProps} isExporting={true} />);
+    const { container } = renderWithIntl(<PrintConfig {...defaultProps} isExporting />);
 
     // When exporting, button shows spinner - find button by class
     const exportButton = container.querySelector('button.btn-primary.w-full');
@@ -197,7 +197,7 @@ describe('PrintConfig', () => {
   });
 
   it('should show loading spinner when exporting', () => {
-    const { container } = renderWithIntl(<PrintConfig {...defaultProps} isExporting={true} />);
+    const { container } = renderWithIntl(<PrintConfig {...defaultProps} isExporting />);
 
     const spinner = container.querySelector('.loading-spinner');
     expect(spinner).toBeInTheDocument();
@@ -207,7 +207,7 @@ describe('PrintConfig', () => {
     renderWithIntl(
       <PrintConfig
         {...defaultProps}
-        isExporting={true}
+        isExporting
         exportProgress={{ current: 3, total: 8 }}
       />
     );

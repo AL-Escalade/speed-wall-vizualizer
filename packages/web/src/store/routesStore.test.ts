@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { useRoutesStore } from './routesStore';
-import type { HoldPosition } from './routesStore';
+import { useRoutesStore, type HoldPosition } from './routesStore';
 
 // Known expected values from route data for specific assertions
 const EXPECTED_ROUTE_NAMES = ['ifsc', 'training', 'u11-u13', 'u11-u13-comp', 'u15', 'u15-it', 'u13-de'] as const;

@@ -5,8 +5,7 @@
 
 import { memo, useCallback, useMemo, useState, useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { useConfigStore, useRoutesStore } from '@/store';
-import type { Section } from '@/store';
+import { useConfigStore, useRoutesStore, type Section } from '@/store';
 import {
   SectionHeader,
   SourceSelector,

@@ -9,8 +9,7 @@ import {
   composeSmearingZones,
   composeAllSmearingZones,
 } from './route-composer.js';
-import type { ReferenceRoute, ReferenceRoutes, RouteSegment, GeneratedRoute } from './types.js';
-import { COLUMN_SYSTEMS } from './types.js';
+import { type ReferenceRoute, type ReferenceRoutes, type RouteSegment, type GeneratedRoute, COLUMN_SYSTEMS } from './types.js';
 
 describe('parseHold', () => {
   it('should parse basic hold format with ABC system', () => {

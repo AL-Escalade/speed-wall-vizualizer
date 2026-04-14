@@ -6,8 +6,7 @@
  * - A <circle> or <ellipse> element with id="insert" for the anchor point
  */
 
-import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
-import type { Document, Element } from '@xmldom/xmldom';
+import { DOMParser, XMLSerializer, type Document, type Element } from '@xmldom/xmldom';
 import type { HoldSvgData, Point, Dimensions, HoldTypeConfig, HoldTypesConfig, LabelZones, ArrowDirection } from './types.js';
 import { HOLD_SVG_CONTENT, HOLD_TYPES_CONFIG } from './bundled-assets.js';
 

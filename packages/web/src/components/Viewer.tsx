@@ -391,7 +391,7 @@ export function Viewer() {
       >
         {isGenerating && (
           <div className="absolute inset-0 flex items-center justify-center bg-base-300/50 z-20">
-            <span className="loading loading-spinner loading-lg"></span>
+            <span className="loading loading-spinner loading-lg" />
           </div>
         )}
 

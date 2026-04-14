@@ -10,8 +10,7 @@
 
 import { readFile } from 'fs/promises';
 import { resolve, basename, dirname, join } from 'path';
-import type { Config, OutputFormat } from '@voie-vitesse/core';
-import { generateSvg, composeAllRoutes } from '@voie-vitesse/core';
+import { type Config, type OutputFormat, generateSvg, composeAllRoutes } from '@voie-vitesse/core';
 import { writeOutput, formatFromPath, getExtension } from './output/index.js';
 import { getAvailableRouteNames, getReferenceRoute, loadRoutes } from './reference-routes/index.js';
 
@@ -187,8 +186,7 @@ async function main(): Promise<void> {
     const svgContent = await generateSvg(config, allHolds);
 
     // Determine output path and format
-    let outputPath = args.output;
-    let format = args.format;
+    let { output: outputPath, format } = args;
 
     if (!outputPath) {
       const configName = basename(args.config, '.json');
@@ -201,7 +199,7 @@ async function main(): Promise<void> {
 
     // Ensure correct extension
     if (!outputPath.endsWith(`.${format}`)) {
-      outputPath = outputPath.replace(/\.[^.]+$/, '') + `.${getExtension(format)}`;
+      outputPath = `${outputPath.replace(/\.[^.]+$/, '')}.${getExtension(format)}`;
     }
 
     // Write output

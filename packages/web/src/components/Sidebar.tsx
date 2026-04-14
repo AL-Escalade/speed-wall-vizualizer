@@ -6,8 +6,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { Plus, Trash2, Pencil, Check, X, ChevronDown } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useIntl } from 'react-intl';
-import { useConfigStore, useRoutesStore, useViewerStore, DEFAULT_DISPLAY_OPTIONS } from '@/store';
-import type { LanguageSetting } from '@/store';
+import { useConfigStore, useRoutesStore, useViewerStore, DEFAULT_DISPLAY_OPTIONS, type LanguageSetting } from '@/store';
 import { SectionItem } from './sidebarComponents/SectionItem';
 import {
   ROUTE_SOURCES,

@@ -20,7 +20,7 @@ describe('PrintPreviewLoading', () => {
   });
 
   it('should have mobile classes when mobile', () => {
-    const { container } = render(<PrintPreviewLoading isMobile={true} />);
+    const { container } = render(<PrintPreviewLoading isMobile />);
     const wrapper = container.firstChild as HTMLElement;
     expect(wrapper.className).toContain('py-8');
   });
@@ -45,7 +45,7 @@ describe('PrintPreviewError', () => {
   });
 
   it('should have mobile classes when mobile', () => {
-    const { container } = render(<PrintPreviewError isMobile={true} error="Error" />);
+    const { container } = render(<PrintPreviewError isMobile error="Error" />);
     const wrapper = container.firstChild as HTMLElement;
     expect(wrapper.className).toContain('py-8');
   });
@@ -64,7 +64,7 @@ describe('PrintPreviewEmpty', () => {
   });
 
   it('should have mobile classes when mobile', () => {
-    const { container } = render(<PrintPreviewEmpty isMobile={true} message="Empty" />);
+    const { container } = render(<PrintPreviewEmpty isMobile message="Empty" />);
     const wrapper = container.firstChild as HTMLElement;
     expect(wrapper.className).toContain('py-8');
   });

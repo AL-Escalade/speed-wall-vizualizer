@@ -112,7 +112,7 @@ export const AnchorConfigurator = memo(function AnchorConfigurator({
       handleColumnChange(anchorColumnOptions[currentColumnIndex + 1]);
     } else {
       // At K+1: wrap to A on the next panel (requires lane change capability)
-      const firstRealColumn = anchorColumnOptions[1]; // A
+      const [, firstRealColumn] = anchorColumnOptions; // A
       if (currentAnchor.side === PANEL_SIDES.LEFT) {
         // Within the same lane: SN K+1 → DX A
         onUpdate({ ...currentAnchor, side: PANEL_SIDES.RIGHT, column: firstRealColumn });

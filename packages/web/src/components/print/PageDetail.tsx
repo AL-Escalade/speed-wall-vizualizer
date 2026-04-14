@@ -144,7 +144,7 @@ export function PageDetail({
               }}
             >
               {isLoadingSvg ? (
-                <span className="loading loading-spinner loading-md text-base-content/30"></span>
+                <span className="loading loading-spinner loading-md text-base-content/30" />
               ) : pageSvgUrl ? (
                 <img
                   src={pageSvgUrl}
