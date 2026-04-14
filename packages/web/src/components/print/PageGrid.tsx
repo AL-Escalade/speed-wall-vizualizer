@@ -234,8 +234,8 @@ export function PageGrid({
     <div className="space-y-3 md:space-y-4">
       <h2 className="font-semibold text-sm md:text-base">Aperçu des pages</h2>
       <div className="flex gap-2 md:gap-4 max-h-48 md:max-h-64 overflow-x-auto">
-        {pagesByCol.map((colPages, colIndex) => (
-          <div key={colIndex} className="flex flex-col gap-2 shrink-0">
+        {pagesByCol.map((colPages) => (
+          <div key={`col-${colPages[0].index}`} className="flex flex-col gap-2 shrink-0">
             {colPages.map((p) => (
               <PageThumbnail
                 key={p.index}
