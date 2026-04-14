@@ -81,7 +81,7 @@ export function DisplayOptions() {
                 checked={config.showArrow ?? false}
                 onChange={(e) => setShowArrow(e.target.checked)}
               />
-              <span className="label-text text-sm">Afficher les flèches d'orientation</span>
+              <span className="label-text text-sm">Afficher les flèches d&apos;orientation</span>
             </label>
           </div>
           <div className="form-control">
@@ -107,7 +107,7 @@ export function DisplayOptions() {
               step="5"
               className="range range-sm"
               value={displayOptions.labelFontSize ?? DEFAULT_DISPLAY_OPTIONS.labelFontSize}
-              onChange={(e) => updateDisplayOptions({ labelFontSize: parseInt(e.target.value) })}
+              onChange={(e) => updateDisplayOptions({ labelFontSize: parseInt(e.target.value, 10) })}
             />
             <div className="text-xs text-base-content/50 text-right mt-1">
               {displayOptions.labelFontSize ?? DEFAULT_DISPLAY_OPTIONS.labelFontSize}px
@@ -125,7 +125,7 @@ export function DisplayOptions() {
               step="5"
               className="range range-sm"
               value={displayOptions.holdLabelFontSize ?? DEFAULT_DISPLAY_OPTIONS.holdLabelFontSize}
-              onChange={(e) => updateDisplayOptions({ holdLabelFontSize: parseInt(e.target.value) })}
+              onChange={(e) => updateDisplayOptions({ holdLabelFontSize: parseInt(e.target.value, 10) })}
             />
             <div className="text-xs text-base-content/50 text-right mt-1">
               {displayOptions.holdLabelFontSize ?? DEFAULT_DISPLAY_OPTIONS.holdLabelFontSize}px

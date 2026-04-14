@@ -25,7 +25,7 @@ export type ProgressCallback = (current: number, total: number) => void;
 /**
  * Rasterize SVG to canvas at specific viewport
  */
-async function rasterizeSvgToCanvas(
+function rasterizeSvgToCanvas(
   svgContent: string,
   viewBox: { x: number; y: number; width: number; height: number },
   outputWidth: number,

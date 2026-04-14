@@ -3,7 +3,15 @@
   "categories": {
     "correctness": "error",
     "suspicious": "error",
-    "perf": "error"
+    "perf": "error",
+    "pedantic": "error"
+  },
+  "rules": {
+    "max-lines-per-function": "off",
+    "max-lines": "off",
+    "max-depth": "off",
+    "no-inline-comments": "off",
+    "require-await": "off"
   },
   "ignorePatterns": [
     "dist",

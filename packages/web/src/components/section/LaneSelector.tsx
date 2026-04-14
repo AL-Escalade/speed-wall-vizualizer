@@ -25,7 +25,7 @@ export const LaneSelector = memo(function LaneSelector({
       <select
         className="select select-bordered select-sm w-full"
         value={value}
-        onChange={(e) => onChange(parseInt(e.target.value))}
+        onChange={(e) => onChange(parseInt(e.target.value, 10))}
       >
         {Array.from({ length: lanesCount }, (_, i) => (
           <option key={i} value={i}>
