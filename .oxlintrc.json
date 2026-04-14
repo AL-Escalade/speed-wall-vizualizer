@@ -2,6 +2,9 @@
   "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
   "plugins": ["react"],
   "jsPlugins": ["eslint-plugin-react-refresh"],
+  "categories": {
+    "correctness": "error"
+  },
   "rules": {
     "react-refresh/only-export-components": ["warn", { "allowConstantExport": true }]
   },
