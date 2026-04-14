@@ -27,7 +27,10 @@
     "max-params": "off",
     "no-continue": "off",
     "no-nested-ternary": "off",
-    "new-cap": "off"
+    "new-cap": "off",
+    "no-eval": "error",
+    "no-implied-eval": "error",
+    "no-new-func": "error"
   },
   "ignorePatterns": [
     "dist",
