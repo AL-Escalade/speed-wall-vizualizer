@@ -51,7 +51,7 @@ export const SectionHeader = memo(function SectionHeader({
     if (confirm(intl.formatMessage({ id: 'section.deleteSectionConfirm' }))) {
       onRemove();
     }
-  }, [onRemove]);
+  }, [onRemove, intl]);
 
   return (
     <div

@@ -157,7 +157,7 @@ export function PrintPage() {
     return () => {
       isCancelled = true;
     };
-  }, [config, routes, showSmearingZones]);
+  }, [config, routes, showSmearingZones, intl]);
 
   // Reset selected page only when total pages changes or layout becomes null
   const totalPages = layout?.layout.totalPages ?? 0;
@@ -205,7 +205,7 @@ export function PrintPage() {
       setIsExporting(false);
       setExportProgress(undefined);
     }
-  }, [svgContent, layout, config, printConfig.mode]);
+  }, [svgContent, layout, config, printConfig.mode, intl]);
 
   // Go back to main view
   const handleBack = useCallback(() => {

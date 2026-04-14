@@ -38,7 +38,7 @@ export function SharedConfigLoader() {
 
     importConfiguration(hydrateShareableConfig(config));
     void navigate(ROUTES.HOME, { replace: true });
-  }, [encoded, navigate, importConfiguration]);
+  }, [encoded, navigate, importConfiguration, intl]);
 
   if (error) {
     return (
