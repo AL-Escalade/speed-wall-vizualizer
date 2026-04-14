@@ -3,10 +3,12 @@
   "plugins": ["react"],
   "jsPlugins": ["eslint-plugin-react-refresh"],
   "categories": {
-    "correctness": "error"
+    "correctness": "error",
+    "suspicious": "error"
   },
   "rules": {
-    "react-refresh/only-export-components": ["warn", { "allowConstantExport": true }]
+    "react-refresh/only-export-components": ["warn", { "allowConstantExport": true }],
+    "react/react-in-jsx-scope": "off"
   },
   "ignorePatterns": [
     "dist",

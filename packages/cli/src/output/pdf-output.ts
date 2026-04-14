@@ -82,7 +82,7 @@ export async function writePdf(svgContent: string, outputPath: string): Promise<
     });
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'ERR_MODULE_NOT_FOUND') {
-      throw new Error('PDF output requires "pdfkit" and "svg-to-pdfkit" packages. Install with: npm install pdfkit svg-to-pdfkit');
+      throw new Error('PDF output requires "pdfkit" and "svg-to-pdfkit" packages. Install with: npm install pdfkit svg-to-pdfkit', { cause: error });
     }
     throw error;
   }

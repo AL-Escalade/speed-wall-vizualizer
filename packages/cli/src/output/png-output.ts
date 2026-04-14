@@ -63,7 +63,7 @@ export async function writePng(
     console.log(`  Output size: ${targetWidth}x${pngData.height}px`);
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'ERR_MODULE_NOT_FOUND') {
-      throw new Error('PNG output requires the "@resvg/resvg-js" package. Install it with: npm install @resvg/resvg-js');
+      throw new Error('PNG output requires the "@resvg/resvg-js" package. Install it with: npm install @resvg/resvg-js', { cause: error });
     }
     throw error;
   }

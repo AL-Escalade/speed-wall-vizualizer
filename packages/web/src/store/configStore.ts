@@ -267,10 +267,10 @@ export const useConfigStore = create<ConfigState>()(
           updatedAt: Date.now(),
         };
 
-        set((state) => ({
+        set({
           configurations: [...state.configurations, importedConfig],
           activeConfigId: id,
-        }));
+        });
       },
 
       getCurrentConfig: () => {
