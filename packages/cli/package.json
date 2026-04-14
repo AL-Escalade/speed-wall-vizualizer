@@ -13,7 +13,7 @@
     "@voie-vitesse/core": "*"
   },
   "devDependencies": {
-    "@types/node": "^24.12.0",
+    "@types/node": "^24.12.2",
     "@types/pdfkit": "^0.17.5",
     "@types/svg-to-pdfkit": "^0.1.4",
     "tsx": "^4.7.0",
