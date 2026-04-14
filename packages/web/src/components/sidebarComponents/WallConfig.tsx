@@ -26,7 +26,7 @@ export function WallConfig() {
             min="1"
             max="4"
             value={config.wall.lanes}
-            onChange={(e) => updateWall({ lanes: parseInt(e.target.value) || 1 })}
+            onChange={(e) => updateWall({ lanes: parseInt(e.target.value, 10) || 1 })}
             className="input input-bordered input-sm w-full"
           />
         </div>
@@ -39,7 +39,7 @@ export function WallConfig() {
             min="1"
             max="10"
             value={config.wall.panelsHeight}
-            onChange={(e) => updateWall({ panelsHeight: parseInt(e.target.value) || 1 })}
+            onChange={(e) => updateWall({ panelsHeight: parseInt(e.target.value, 10) || 1 })}
             className="input input-bordered input-sm w-full"
           />
         </div>

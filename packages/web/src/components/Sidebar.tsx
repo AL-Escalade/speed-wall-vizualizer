@@ -149,7 +149,7 @@ function WallConfig() {
             min="1"
             max="4"
             value={config.wall.lanes}
-            onChange={(e) => updateWall({ lanes: parseInt(e.target.value) || 1 })}
+            onChange={(e) => updateWall({ lanes: parseInt(e.target.value, 10) || 1 })}
             className="input input-bordered input-sm w-full"
           />
         </div>
@@ -162,7 +162,7 @@ function WallConfig() {
             min="1"
             max="10"
             value={config.wall.panelsHeight}
-            onChange={(e) => updateWall({ panelsHeight: parseInt(e.target.value) || 1 })}
+            onChange={(e) => updateWall({ panelsHeight: parseInt(e.target.value, 10) || 1 })}
             className="input input-bordered input-sm w-full"
           />
         </div>
@@ -189,6 +189,10 @@ function SectionList() {
   );
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
+  const handleToggle = useCallback((id: string) => {
+    setExpandedId((prev) => (prev === id ? null : id));
+  }, []);
+
   if (!config) return null;
 
   const handleAddSection = () => {
@@ -213,10 +217,6 @@ function SectionList() {
     // Expand the new section (collapse others)
     setExpandedId(newId);
   };
-
-  const handleToggle = useCallback((id: string) => {
-    setExpandedId((prev) => (prev === id ? null : id));
-  }, []);
 
   return (
     <div className="p-4 md:flex-1 md:flex md:flex-col md:min-h-0">
@@ -378,7 +378,7 @@ function DisplayOptions() {
               step="5"
               className="range range-sm"
               value={displayOptions.labelFontSize ?? DEFAULT_DISPLAY_OPTIONS.labelFontSize}
-              onChange={(e) => updateDisplayOptions({ labelFontSize: parseInt(e.target.value) })}
+              onChange={(e) => updateDisplayOptions({ labelFontSize: parseInt(e.target.value, 10) })}
             />
             <div className="text-xs text-base-content/50 text-right mt-1">
               {displayOptions.labelFontSize ?? DEFAULT_DISPLAY_OPTIONS.labelFontSize}px
@@ -396,7 +396,7 @@ function DisplayOptions() {
               step="5"
               className="range range-sm"
               value={displayOptions.holdLabelFontSize ?? DEFAULT_DISPLAY_OPTIONS.holdLabelFontSize}
-              onChange={(e) => updateDisplayOptions({ holdLabelFontSize: parseInt(e.target.value) })}
+              onChange={(e) => updateDisplayOptions({ holdLabelFontSize: parseInt(e.target.value, 10) })}
             />
             <div className="text-xs text-base-content/50 text-right mt-1">
               {displayOptions.holdLabelFontSize ?? DEFAULT_DISPLAY_OPTIONS.holdLabelFontSize}px

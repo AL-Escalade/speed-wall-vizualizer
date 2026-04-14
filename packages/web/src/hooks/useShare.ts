@@ -47,10 +47,9 @@ export function useShare(): UseShareResult {
         timeoutRef.current = null;
       }, 2000);
       return true;
-    } else {
-      alert('Impossible de copier le lien');
-      return false;
     }
+    alert('Impossible de copier le lien');
+    return false;
   }, [getCurrentConfig]);
 
   return { share, isSuccess };

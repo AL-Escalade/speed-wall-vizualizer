@@ -80,8 +80,8 @@ describe('Birdview', () => {
       const style = window.getComputedStyle(minimap);
 
       // Width should be at most 120px, height at most 200px
-      expect(parseInt(style.width)).toBeLessThanOrEqual(120);
-      expect(parseInt(style.height)).toBeLessThanOrEqual(200);
+      expect(parseInt(style.width, 10)).toBeLessThanOrEqual(120);
+      expect(parseInt(style.height, 10)).toBeLessThanOrEqual(200);
     });
 
     it('should handle zero dimensions gracefully', () => {

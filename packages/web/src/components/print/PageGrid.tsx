@@ -174,6 +174,27 @@ export function PageGrid({
 }: PageGridProps) {
   const intl = useIntl();
 
+  // Hooks must be declared before any conditional return to keep call order stable.
+  const printableSize = useMemo(
+    () => ({
+      width: layout?.page.printableWidth ?? 0,
+      height: layout?.page.printableHeight ?? 0,
+    }),
+    [layout?.page.printableWidth, layout?.page.printableHeight]
+  );
+
+  const pagesByCol = useMemo(() => {
+    const result: PageLayout[][] = [];
+    if (!layout) return result;
+    for (const p of layout.pages) {
+      if (!result[p.col]) {
+        result[p.col] = [];
+      }
+      result[p.col].push(p);
+    }
+    return result;
+  }, [layout]);
+
   if (!layout || !svgContent) {
     return (
       <div className="flex items-center justify-center h-32 text-base-content/50">
@@ -182,26 +203,7 @@ export function PageGrid({
     );
   }
 
-  const { page, layout: layoutMetrics, pages, lanes } = layout;
-
-  // Memoize to prevent triggering unnecessary thumbnail recalculations
-  const printableSize = useMemo(
-    () => ({ width: page.printableWidth, height: page.printableHeight }),
-    [page.printableWidth, page.printableHeight]
-  );
-
-  // Full wall mode - organize by columns (since pages are numbered column-major)
-  // Must be called before any conditional returns to respect hooks rules
-  const pagesByCol = useMemo(() => {
-    const result: PageLayout[][] = [];
-    for (const p of pages) {
-      if (!result[p.col]) {
-        result[p.col] = [];
-      }
-      result[p.col].push(p);
-    }
-    return result;
-  }, [pages]);
+  const { layout: layoutMetrics, lanes } = layout;
 
   // If lane-by-lane mode with lanes data
   if (lanes && lanes.length > 0) {

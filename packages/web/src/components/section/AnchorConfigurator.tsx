@@ -227,7 +227,7 @@ export const AnchorConfigurator = memo(function AnchorConfigurator({
           <select
             className="select select-bordered select-sm w-full"
             value={currentAnchor.row}
-            onChange={(e) => updateField('row', parseInt(e.target.value))}
+            onChange={(e) => updateField('row', parseInt(e.target.value, 10))}
           >
             {ANCHOR_ROW_OPTIONS.map((row) => (
               <option key={row} value={row}>
