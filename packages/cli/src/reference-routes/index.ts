@@ -6,8 +6,7 @@
 import { readFileSync, readdirSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import type { ReferenceRoute, ReferenceRoutes, Hold, PanelId, PanelSide, PanelNumber, InsertPosition, Column, Row, ColumnSystem } from '@voie-vitesse/core';
-import { DEFAULT_COLUMN_SYSTEM, validateColumn } from '@voie-vitesse/core';
+import { type ReferenceRoute, type ReferenceRoutes, type Hold, type PanelId, type PanelSide, type PanelNumber, type InsertPosition, type Column, type Row, type ColumnSystem, DEFAULT_COLUMN_SYSTEM, validateColumn } from '@voie-vitesse/core';
 
 /**
  * Parse a panel ID string (e.g., "SN1", "DX2") into a PanelId object

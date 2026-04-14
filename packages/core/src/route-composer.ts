@@ -2,8 +2,7 @@
  * Route composition from segments of reference routes
  */
 
-import type { Hold, ReferenceRoute, ReferenceRoutes, RouteSegment, GeneratedRoute, AnchorPosition, PanelId, InsertPosition, ColumnSystem, SmearingZone, ComposedSmearingZone, Column, Row } from './types.js';
-import { DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM } from './types.js';
+import { type Hold, type ReferenceRoute, type ReferenceRoutes, type RouteSegment, type GeneratedRoute, type AnchorPosition, type PanelId, type InsertPosition, type ColumnSystem, type SmearingZone, type ComposedSmearingZone, type Column, type Row, DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM } from './types.js';
 import { parsePanelId, getInsertPosition, getAnchorMmPosition, parseInsertPosition as parseInsertPositionCore, convertColumn, GRID } from './plate-grid.js';
 
 /** Offset in mm for anchor-based positioning */
@@ -301,7 +300,7 @@ export function extractSmearingZones(
   // Calculate anchor offset if segment has anchor
   let anchorOffset: MmOffset | undefined;
   if (segment.anchor && selectedHolds.length > 0) {
-    const firstHold = selectedHolds[0];
+    const [firstHold] = selectedHolds;
     anchorOffset = calculateMmOffset(firstHold.panel, firstHold.position, segment.anchor, laneOffset);
   }
 

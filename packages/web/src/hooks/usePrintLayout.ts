@@ -130,7 +130,7 @@ export function calculatePrintLayout(
 
   // Calculate scale based on pages in height
   // Each page must be completely filled - overlap is a MINIMUM
-  const pagesInHeight = config.pagesInHeight;
+  const { pagesInHeight } = config;
   const minOverlap = config.overlap;
 
   // Calculate scale using minimum overlap
@@ -250,7 +250,7 @@ export function calculateLaneLayout(
   const printableWidth = pageSize.width - 2 * margin;
   const printableHeight = pageSize.height - 2 * margin;
 
-  const pagesInHeight = config.pagesInHeight;
+  const { pagesInHeight } = config;
   const minOverlap = config.overlap;
 
   // For lane-by-lane, each lane has its own layout

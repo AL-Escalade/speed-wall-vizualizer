@@ -137,7 +137,7 @@ export function PrintConfig({
       </div>
 
       {/* Summary */}
-      <div className="divider"></div>
+      <div className="divider" />
       <div className="text-sm text-base-content/70">
         <p>{intl.formatMessage({ id: 'print.totalPages' }, { count: totalPages })}</p>
       </div>
@@ -150,7 +150,7 @@ export function PrintConfig({
       >
         {isExporting ? (
           <>
-            <span className="loading loading-spinner loading-sm"></span>
+            <span className="loading loading-spinner loading-sm" />
             {exportProgress && (
               <span>
                 {intl.formatMessage({ id: 'print.exportProgress' }, { current: exportProgress.current, total: exportProgress.total })}

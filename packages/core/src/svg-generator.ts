@@ -2,8 +2,7 @@
  * SVG Generator for speed climbing wall visualization
  */
 
-import type { Config, Dimensions, ArrowDirection, ColumnSystem, ComposedSmearingZone } from './types.js';
-import { DEFAULT_COLUMN_SYSTEM } from './types.js';
+import { type Config, type Dimensions, type ArrowDirection, type ColumnSystem, type ComposedSmearingZone, DEFAULT_COLUMN_SYSTEM } from './types.js';
 import { GRID, PANEL, PANELS_PER_LANE, ROWS, PANEL_NUMBERS, getInsertPosition, getWallDimensions, getColumnsForSystem, parsePanelId } from './plate-grid.js';
 import { calculateHoldRotation } from './rotation.js';
 import { loadHoldSvg, getHoldDimensions, getHoldDefaultOrientation, getHoldShowArrow } from './hold-svg-parser.js';

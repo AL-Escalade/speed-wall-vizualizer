@@ -30,7 +30,7 @@ describe('PrintPageHeader', () => {
   });
 
   it('should show short title on mobile', () => {
-    renderWithIntl(<PrintPageHeader {...defaultProps} isMobile={true} />);
+    renderWithIntl(<PrintPageHeader {...defaultProps} isMobile />);
     expect(screen.getByText('Impression')).toBeInTheDocument();
   });
 
@@ -40,7 +40,7 @@ describe('PrintPageHeader', () => {
   });
 
   it('should not show config name on mobile', () => {
-    renderWithIntl(<PrintPageHeader {...defaultProps} isMobile={true} configName="My Config" />);
+    renderWithIntl(<PrintPageHeader {...defaultProps} isMobile configName="My Config" />);
     expect(screen.queryByText('My Config')).not.toBeInTheDocument();
   });
 

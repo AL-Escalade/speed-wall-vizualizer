@@ -2,8 +2,7 @@
  * Section mapping utilities for converting between web app and core formats
  */
 
-import type { RouteSegment, AnchorColumn, AnchorRow } from '@voie-vitesse/core';
-import { VIRTUAL_COLUMNS, VIRTUAL_ROWS, CANONICAL_COLUMN_SYSTEM } from '@voie-vitesse/core';
+import { type RouteSegment, type AnchorColumn, type AnchorRow, VIRTUAL_COLUMNS, VIRTUAL_ROWS, CANONICAL_COLUMN_SYSTEM } from '@voie-vitesse/core';
 import type { AnchorPosition, HoldLabel } from '@/store/types';
 
 function isValidAnchorColumn(value: string): value is AnchorColumn {

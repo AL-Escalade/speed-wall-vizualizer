@@ -63,8 +63,7 @@ export function useTouchGestures(
       if (e.touches.length === 2) {
         // Two-finger gesture start - prevent default to stop page scroll/zoom
         e.preventDefault();
-        const touch1 = e.touches[0];
-        const touch2 = e.touches[1];
+        const [touch1, touch2] = e.touches;
         const distance = getDistance(touch1, touch2);
         const center = getCenter(touch1, touch2);
 
@@ -78,7 +77,7 @@ export function useTouchGestures(
       } else if (e.touches.length === 1) {
         // Single finger - check for double tap
         const now = Date.now();
-        const touch = e.touches[0];
+        const [touch] = e.touches;
         const lastTap = lastTapPosRef.current;
 
         // Double tap: within 300ms and 50px of last tap
@@ -112,8 +111,7 @@ export function useTouchGestures(
       if (e.touches.length === 2 && pinchStateRef.current) {
         e.preventDefault();
 
-        const touch1 = e.touches[0];
-        const touch2 = e.touches[1];
+        const [touch1, touch2] = e.touches;
         const currentDistance = getDistance(touch1, touch2);
         const center = getCenter(touch1, touch2);
         const state = pinchStateRef.current;
@@ -147,7 +145,7 @@ export function useTouchGestures(
 
       // Single-finger pan
       if (e.touches.length === 1 && singleTouchRef.current) {
-        const touch = e.touches[0];
+        const [touch] = e.touches;
         const state = singleTouchRef.current;
 
         const deltaX = touch.clientX - state.lastX;

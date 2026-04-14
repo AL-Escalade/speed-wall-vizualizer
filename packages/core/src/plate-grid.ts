@@ -2,8 +2,7 @@
  * IFSC speed climbing wall grid constants and position calculations
  */
 
-import type { PanelSide, PanelNumber, Column, Row, Point, PanelId, InsertPosition, ColumnSystem, AnchorColumn, AnchorRow } from './types.js';
-import { DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM, VIRTUAL_COLUMNS, VIRTUAL_ROWS } from './types.js';
+import { type PanelSide, type PanelNumber, type Column, type Row, type Point, type PanelId, type InsertPosition, type ColumnSystem, type AnchorColumn, type AnchorRow, DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM, VIRTUAL_COLUMNS, VIRTUAL_ROWS } from './types.js';
 
 /** IFSC grid constants (all dimensions in mm) */
 export const GRID = {

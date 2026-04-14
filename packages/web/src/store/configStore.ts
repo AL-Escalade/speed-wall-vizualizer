@@ -27,7 +27,7 @@ const IFSC_COLOR = ifscData.color;
 /** Parse first hold position from route data */
 function parseFirstHoldPosition(holds: string[]): { side: 'SN' | 'DX'; column: string; row: number } {
   if (holds.length === 0) return { side: 'SN', column: 'A', row: 1 };
-  const firstHold = holds[0];
+  const [firstHold] = holds;
   const parts = firstHold.trim().split(/\s+/);
   if (parts.length < 3) return { side: 'SN', column: 'A', row: 1 };
 
@@ -346,7 +346,7 @@ export const useConfigStore = create<ConfigState>()(
             } else {
               // Sort by createdAt ascending (oldest first)
               group.sort((a, b) => a.createdAt - b.createdAt);
-              const kept = group[0];
+              const [kept] = group;
               deduped.push(kept);
 
               // Track removed configs

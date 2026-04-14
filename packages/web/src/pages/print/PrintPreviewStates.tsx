@@ -22,7 +22,7 @@ export interface PrintPreviewLoadingProps {
 export function PrintPreviewLoading({ isMobile }: PrintPreviewLoadingProps) {
   return (
     <StateContainer isMobile={isMobile}>
-      <span className="loading loading-spinner loading-lg"></span>
+      <span className="loading loading-spinner loading-lg" />
     </StateContainer>
   );
 }

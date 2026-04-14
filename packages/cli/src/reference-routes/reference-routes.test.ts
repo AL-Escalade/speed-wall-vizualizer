@@ -7,8 +7,7 @@ import {
   getReferenceRoute,
   getAvailableRouteNames,
 } from './index.js';
-import { COLUMN_SYSTEMS } from '@voie-vitesse/core';
-import type { ReferenceRoute } from '@voie-vitesse/core';
+import { COLUMN_SYSTEMS, type ReferenceRoute } from '@voie-vitesse/core';
 
 // Note: parseHold is tested extensively in @voie-vitesse/core (route-composer.test.ts)
 // These tests focus on CLI-specific behavior differences

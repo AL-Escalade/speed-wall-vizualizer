@@ -109,7 +109,7 @@ describe('SectionHeader', () => {
       const { container } = renderWithIntl(
         <SectionHeader
           section={mockSection}
-          isExpanded={true}
+          isExpanded
           onToggle={() => {}}
           onRename={() => {}}
           onRemove={() => {}}

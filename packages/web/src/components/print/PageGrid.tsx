@@ -101,7 +101,7 @@ const PageThumbnail = memo(function PageThumbnail({
       {/* Thumbnail content */}
       <div className="absolute inset-1 bg-white rounded overflow-hidden pointer-events-none flex items-center justify-center">
         {isLoading ? (
-          <span className="loading loading-spinner loading-xs text-base-content/30"></span>
+          <span className="loading loading-spinner loading-xs text-base-content/30" />
         ) : thumbnailSvg ? (
           <img
             src={thumbnailSvg}

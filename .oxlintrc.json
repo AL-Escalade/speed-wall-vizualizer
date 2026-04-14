@@ -6,7 +6,8 @@
     "correctness": "error",
     "suspicious": "error",
     "perf": "error",
-    "pedantic": "error"
+    "pedantic": "error",
+    "style": "error"
   },
   "rules": {
     "react-refresh/only-export-components": ["warn", { "allowConstantExport": true }],
@@ -15,7 +16,24 @@
     "max-lines": "off",
     "max-depth": "off",
     "no-inline-comments": "off",
-    "require-await": "off"
+    "require-await": "off",
+    "no-magic-numbers": "off",
+    "sort-keys": "off",
+    "id-length": "off",
+    "sort-imports": "off",
+    "func-style": "off",
+    "react/jsx-max-depth": "off",
+    "no-ternary": "off",
+    "curly": "off",
+    "max-statements": "off",
+    "capitalized-comments": "off",
+    "react/jsx-props-no-spreading": "off",
+    "init-declarations": "off",
+    "arrow-body-style": "off",
+    "max-params": "off",
+    "no-continue": "off",
+    "no-nested-ternary": "off",
+    "new-cap": "off"
   },
   "ignorePatterns": [
     "dist",
