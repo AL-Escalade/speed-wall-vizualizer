@@ -3,12 +3,6 @@
   "plugins": ["react"],
   "jsPlugins": ["eslint-plugin-react-refresh"],
   "rules": {
-    "correctness": "error",
-    "suspicious": "error",
-    "pedantic": "warn",
-    "style": "warn",
-    "perf": "warn",
-    "restriction": "off",
     "react-refresh/only-export-components": ["warn", { "allowConstantExport": true }]
   },
   "ignorePatterns": [
