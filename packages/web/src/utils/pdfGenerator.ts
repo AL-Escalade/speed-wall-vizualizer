@@ -187,7 +187,10 @@ export async function generatePdf(
       pagesInWidth,
     });
 
-    // Rasterize the SVG portion
+    // Rasterize the SVG portion.
+    // Sequential is required: the pdf object is mutated in order (addPage/addImage)
+    // and progress is reported page-by-page.
+    // eslint-disable-next-line no-await-in-loop
     const canvas = await rasterizeSvgToCanvas(
       svgContent,
       viewBox,

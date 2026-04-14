@@ -577,9 +577,12 @@ export async function generateSvg(
     parts.push(`</g>`);
   }
 
-  // Generate hold data first to collect all SVG elements
+  // Generate hold data first to collect all SVG elements.
+  // Sequential is fine: loadHoldSvg reads from an in-memory cache and parseHoldSvg
+  // is synchronous CPU work, so Promise.all would not parallelize anything in practice.
   const holdResults: { holdSvg: string; labelSvg: string; arrowSvg: string | null }[] = [];
   for (const hold of holds) {
+    // eslint-disable-next-line no-await-in-loop
     const result = await generateHold(hold, wallDimensions, opts.holdLabelFontSize);
     holdResults.push(result);
   }
