@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@voie-vitesse/core": "*",
-    "arktype": "^2.1.29",
+    "arktype": "^2.2.0",
     "jspdf": "^4.2.1",
     "lucide-react": "^1.7.0",
     "react": "^19.2.4",
