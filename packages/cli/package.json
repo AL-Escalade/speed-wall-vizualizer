@@ -16,7 +16,7 @@
     "@types/node": "^24.12.2",
     "@types/pdfkit": "^0.17.6",
     "@types/svg-to-pdfkit": "^0.1.4",
-    "tsx": "^4.7.0",
+    "tsx": "^4.22.4",
     "typescript": "^6.0.3"
   },
   "optionalDependencies": {
