@@ -6,7 +6,7 @@
     "voie-vitesse": "./dist/cli.js"
   },
   "scripts": {
-    "build": "tsgo",
+    "build": "tsc",
     "generate": "tsx src/cli.ts"
   },
   "dependencies": {
@@ -16,12 +16,12 @@
     "@types/node": "^24.12.2",
     "@types/pdfkit": "^0.17.6",
     "@types/svg-to-pdfkit": "^0.1.4",
-    "tsx": "^4.7.0",
-    "typescript": "^6.0.3"
+    "tsx": "^4.22.4",
+    "typescript": "^7.0.1-rc"
   },
   "optionalDependencies": {
     "@resvg/resvg-js": "^2.6.2",
-    "pdfkit": "^0.18.0",
+    "pdfkit": "^0.19.1",
     "svg-to-pdfkit": "^0.1.8"
   }
 }
