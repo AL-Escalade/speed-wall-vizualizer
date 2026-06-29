@@ -24,6 +24,7 @@ export type PanelSide = typeof PANEL_SIDES[keyof typeof PANEL_SIDES];
 export const ROUTE_SOURCES = {
   TRAINING: 'training',
   IFSC: 'ifsc',
+  IFSC_10M: 'ifsc-10m',
   U11_U13: 'u11-u13',
   U11_U13_COMP: 'u11-u13-comp',
   U15: 'u15',
@@ -37,6 +38,7 @@ export type RouteSource = typeof ROUTE_SOURCES[keyof typeof ROUTE_SOURCES];
 export const ROUTE_DISPLAY_NAMES: Record<string, string> = {
   [ROUTE_SOURCES.TRAINING]: 'IFSC + U15 [FR]',
   [ROUTE_SOURCES.IFSC]: 'IFSC',
+  [ROUTE_SOURCES.IFSC_10M]: 'IFSC 10m (2013-2019)',
   [ROUTE_SOURCES.U11_U13]: 'U11/U13 [FR] (entraînement)',
   [ROUTE_SOURCES.U11_U13_COMP]: 'U11/U13 [FR] (compétition)',
   [ROUTE_SOURCES.U15]: 'U15 [FR]',
@@ -48,6 +50,7 @@ export const ROUTE_DISPLAY_NAMES: Record<string, string> = {
 export const ROUTE_INTL_KEYS: Record<string, string> = {
   [ROUTE_SOURCES.TRAINING]: 'route.training',
   [ROUTE_SOURCES.IFSC]: 'route.ifsc',
+  [ROUTE_SOURCES.IFSC_10M]: 'route.ifsc10m',
   [ROUTE_SOURCES.U11_U13]: 'route.u11u13',
   [ROUTE_SOURCES.U11_U13_COMP]: 'route.u11u13comp',
   [ROUTE_SOURCES.U15]: 'route.u15',

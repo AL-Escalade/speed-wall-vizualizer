@@ -59,7 +59,11 @@ export interface PanelId {
 /** Insert position within a panel */
 export interface InsertPosition {
   column: Column;
-  row: Row;
+  /**
+   * Row coordinate within the panel. Normally an integer insert (1-10), but may be
+   * fractional to nudge a hold vertically between inserts (e.g. 5.1).
+   */
+  row: number;
 }
 
 /** Full insert coordinates */

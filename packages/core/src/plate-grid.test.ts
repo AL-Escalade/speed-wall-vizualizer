@@ -246,6 +246,12 @@ describe('parseInsertPosition', () => {
     expect(pos.row).toBe(4);
   });
 
+  it('should parse fractional rows for fine vertical placement', () => {
+    const pos = parseInsertPosition('F5.4');
+    expect(pos.column).toBe('F');
+    expect(pos.row).toBeCloseTo(5.4);
+  });
+
   it('should throw for invalid format', () => {
     expect(() => parseInsertPosition('4F')).toThrow('Invalid insert position format');
     expect(() => parseInsertPosition('FF4')).toThrow('Invalid insert position format');
