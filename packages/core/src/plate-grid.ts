@@ -144,7 +144,7 @@ export function getColumnX(column: Column, panelSide: PanelSide, laneOffset: num
  * @param panelNumber - Panel number (1-10, 1 = bottom)
  * @returns Y position in mm
  */
-export function getRowY(row: Row, panelNumber: PanelNumber): number {
+export function getRowY(row: number, panelNumber: PanelNumber): number {
   const panelOffset = (panelNumber - 1) * PANEL.HEIGHT;
   const rowOffset = GRID.PANEL_MARGIN_VERTICAL + (row - 1) * GRID.ROW_SPACING;
   return panelOffset + rowOffset;
@@ -240,12 +240,12 @@ export function parsePanelId(panelStr: string): PanelId {
  * @returns Parsed insert position with column converted to canonical ABC system
  */
 export function parseInsertPosition(posStr: string, sourceColumnSystem: ColumnSystem = DEFAULT_COLUMN_SYSTEM): InsertPosition {
-  const match = posStr.match(/^([A-M])(\d+)$/i);
+  const match = posStr.match(/^([A-M])(\d+(?:\.\d+)?)$/i);
   if (!match) {
-    throw new Error(`Invalid insert position format: "${posStr}". Expected format: <column><row> (e.g., "F4", "A10")`);
+    throw new Error(`Invalid insert position format: "${posStr}". Expected format: <column><row> (e.g., "F4", "A10", "F5.1")`);
   }
   const sourceColumn = match[1].toUpperCase() as Column;
-  const row = parseInt(match[2], 10) as Row;
+  const row = parseFloat(match[2]);
 
   // Validate column against the source coordinate system
   validateColumn(sourceColumn, sourceColumnSystem);

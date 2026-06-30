@@ -127,6 +127,7 @@
 
   "route.training": "IFSC + U15 [FR]",
   "route.ifsc": "IFSC",
+  "route.ifsc10m": "IFSC 10 m (2013-2019)",
   "route.u11u13": "U11/U13 [FR] (Training)",
   "route.u11u13comp": "U11/U13 [FR] (Wettkampf)",
   "route.u15": "U15 [FR]",

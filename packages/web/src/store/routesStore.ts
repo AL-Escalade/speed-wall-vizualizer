@@ -9,6 +9,7 @@ import type { HoldLabel } from './types';
 
 // Import route data from single source of truth
 import ifscData from '../../../../data/routes/ifsc.json';
+import ifsc10mData from '../../../../data/routes/ifsc-10m.json';
 import trainingData from '../../../../data/routes/training.json';
 import u11u13Data from '../../../../data/routes/u11-u13.json';
 import u15Data from '../../../../data/routes/u15.json';
@@ -21,6 +22,7 @@ function buildRoutes(): ReferenceRoutes {
 
   const routeDataList = [
     { name: 'ifsc', data: ifscData },
+    { name: 'ifsc-10m', data: ifsc10mData },
     { name: 'training', data: trainingData },
     { name: 'u11-u13', data: u11u13Data },
     { name: 'u11-u13-comp', data: u11u13Data }, // Competition uses same route data
@@ -69,13 +71,13 @@ function parseHoldPosition(holdStr: string): HoldPosition | undefined {
 
   // Parse position (e.g., "G3" -> column: "G", row: 3)
   // Accept all possible column letters A-M (varies by coordinate system)
-  const posMatch = positionStr.match(/^([A-M])(\d+)$/i);
+  const posMatch = positionStr.match(/^([A-M])(\d+(?:\.\d+)?)$/i);
   if (!posMatch) return undefined;
 
   return {
     side,
     column: posMatch[1].toUpperCase(),
-    row: parseInt(posMatch[2], 10),
+    row: parseFloat(posMatch[2]),
   };
 }
 
