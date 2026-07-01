@@ -72,6 +72,14 @@ Les 2 voies complètes U15 sont sur le mur, ainsi que 2 voies complètes U11/U13
 
 <img src="images/u11-u13-comp.svg" alt="Voie U11-U13 compétition" width="150">
 
+### Voie U12-U14 (FFME - entraînement)
+
+<img src="images/u12-u14-training.svg" alt="Voie U12-U14 entraînement" width="150">
+
+### Voie U12-U14 (FFME - compétition)
+
+<img src="images/u12-u14-comp.svg" alt="Voie U12-U14 compétition" width="150">
+
 ### Voie U13 (Allemagne/Suisse) - 10m
 
 <img src="images/u13-de.svg" alt="Voie U13 DE" width="150">
@@ -82,6 +90,8 @@ Les 2 voies complètes U15 sont sur le mur, ainsi que 2 voies complètes U11/U13
 - `u15` : Catégorie U15 (FFME)
 - `u11-u13` : Catégorie U11-U13 (FFME - entraînement)
 - `u11-u13-comp` : Catégorie U11-U13 (FFME - compétition)
+- `u12-u14` : Catégorie U12-U14 (FFME - entraînement)
+- `u12-u14-comp` : Catégorie U12-U14 (FFME - compétition)
 - `u15-it` : Catégorie U15 (Italie/Allemagne/Suisse)
 - `u13-de` : Catégorie U13 (Allemagne/Suisse) - 10m
 - `training` : Combinaison voie U15 et IFSC
