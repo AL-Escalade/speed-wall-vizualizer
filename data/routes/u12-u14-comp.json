@@ -1,0 +1,30 @@
+{
+  "$schema": "../../schemas/route.schema.json",
+  "name": "u12-u14-comp",
+  "description": "U12-U14 Speed Route (FFME) - Competition setup - V2 15/11/2024",
+  "columns": "ABCDEFGHIKL",
+  "color": "#00AAFF",
+  "holdScales": {
+    "BIG": 0.8,
+    "FOOT": 0.8
+  },
+  "holds": [
+    "DX1 FOOT A3 B3 @P1",
+    "SN1 FOOT I7 K7 @P2",
+    "DX1 BIG A9 DX2:A1 @M1",
+    "DX1 BIG C10 DX2:C1 @M2",
+    "SN2 BIG I2 K4 @M3",
+    "SN2 BIG L6 DX2:A10 @M4",
+    "SN2 BIG H10 F6 @M5",
+    "SN3 BIG K4 DX3:A5 @M6",
+    "SN3 BIG I8 H5 @M7",
+    "DX3 FOOT A10 B10 @P3",
+    "SN3 BIG H10 SN4:K1 @M8",
+    "DX4 BIG A5 C4 @M9",
+    "DX4 BIG A10 DX5:C1 @M10",
+    "SN5 BIG L2 SN4:I10 @M11",
+    "DX5 FOOT A6 A7 @P4",
+    "SN5 BIG I10 G9 @M12",
+    "SN6 STOP I3 I3 @PAD"
+  ]
+}

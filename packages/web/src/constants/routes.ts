@@ -24,8 +24,11 @@ export type PanelSide = typeof PANEL_SIDES[keyof typeof PANEL_SIDES];
 export const ROUTE_SOURCES = {
   TRAINING: 'training',
   IFSC: 'ifsc',
+  IFSC_10M: 'ifsc-10m',
   U11_U13: 'u11-u13',
   U11_U13_COMP: 'u11-u13-comp',
+  U12_U14: 'u12-u14',
+  U12_U14_COMP: 'u12-u14-comp',
   U15: 'u15',
   U15_IT: 'u15-it',
   U13_DE: 'u13-de',
@@ -37,8 +40,11 @@ export type RouteSource = typeof ROUTE_SOURCES[keyof typeof ROUTE_SOURCES];
 export const ROUTE_DISPLAY_NAMES: Record<string, string> = {
   [ROUTE_SOURCES.TRAINING]: 'IFSC + U15 [FR]',
   [ROUTE_SOURCES.IFSC]: 'IFSC',
+  [ROUTE_SOURCES.IFSC_10M]: 'IFSC 10m (2013-2019)',
   [ROUTE_SOURCES.U11_U13]: 'U11/U13 [FR] (entraînement)',
   [ROUTE_SOURCES.U11_U13_COMP]: 'U11/U13 [FR] (compétition)',
+  [ROUTE_SOURCES.U12_U14]: 'U12/U14 [FR] (entraînement)',
+  [ROUTE_SOURCES.U12_U14_COMP]: 'U12/U14 [FR] (compétition)',
   [ROUTE_SOURCES.U15]: 'U15 [FR]',
   [ROUTE_SOURCES.U15_IT]: 'U15 [IT/DE/CH]',
   [ROUTE_SOURCES.U13_DE]: 'U13 [DE/CH]',
@@ -48,8 +54,11 @@ export const ROUTE_DISPLAY_NAMES: Record<string, string> = {
 export const ROUTE_INTL_KEYS: Record<string, string> = {
   [ROUTE_SOURCES.TRAINING]: 'route.training',
   [ROUTE_SOURCES.IFSC]: 'route.ifsc',
+  [ROUTE_SOURCES.IFSC_10M]: 'route.ifsc10m',
   [ROUTE_SOURCES.U11_U13]: 'route.u11u13',
   [ROUTE_SOURCES.U11_U13_COMP]: 'route.u11u13comp',
+  [ROUTE_SOURCES.U12_U14]: 'route.u12u14',
+  [ROUTE_SOURCES.U12_U14_COMP]: 'route.u12u14comp',
   [ROUTE_SOURCES.U15]: 'route.u15',
   [ROUTE_SOURCES.U15_IT]: 'route.u15it',
   [ROUTE_SOURCES.U13_DE]: 'route.u13de',
@@ -175,7 +184,7 @@ export const COMPETITION_ANCHOR = {
 
 /** Check if a route source uses competition anchor */
 export function isCompetitionRoute(source: string): boolean {
-  return source === ROUTE_SOURCES.U11_U13_COMP;
+  return source === ROUTE_SOURCES.U11_U13_COMP || source === ROUTE_SOURCES.U12_U14_COMP;
 }
 
 /** Default hold labels when none available */

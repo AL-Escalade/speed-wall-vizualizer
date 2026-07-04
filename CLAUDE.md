@@ -89,7 +89,7 @@ Routes declare their system via `columns` field.
 
 ## Gotchas
 
-- Build uses `tsgo` (TypeScript Go compiler via `@typescript/native-preview`), not standard `tsc`
+- Build uses TypeScript 7 RC through the standard `tsc` binary
 - Run `npm run build` before `npm run dev:web` — the web app depends on core's compiled output
 - Config changes must be backward-compatible (or include migration) — users have configs in localStorage, may import old exported files, or follow URLs containing configurations
 - When adding user-visible strings in the web app, add translations to all 4 locale files in `packages/web/src/i18n/`

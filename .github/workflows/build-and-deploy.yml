@@ -26,18 +26,19 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - name: Fix Dependabot lockfile
+      - name: Fix Dependabot workspace dependencies
         if: github.actor == 'dependabot[bot]'
         run: |
-          echo "Dependabot PR detected, updating package-lock.json..."
+          echo "Dependabot PR detected, aligning coupled dependencies and updating package-lock.json..."
+          node scripts/align-react-dependencies.mjs
           npm install --package-lock-only
 
-      - name: Commit lockfile changes
+      - name: Commit dependency fixes
         if: github.actor == 'dependabot[bot]'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: 'chore: update package-lock.json for workspace dependencies'
-          file_pattern: 'package-lock.json'
+          commit_message: 'chore: update workspace dependency metadata'
+          file_pattern: 'package-lock.json packages/*/package.json'
           commit_user_name: 'github-actions[bot]'
           commit_user_email: 'github-actions[bot]@users.noreply.github.com'
 

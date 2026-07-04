@@ -1,0 +1,72 @@
+{
+  "$schema": "../../schemas/route.schema.json",
+  "name": "ifsc-10m",
+  "description": "IFSC World Record Mt 10 route (10m wall, used 2013-2019). Truncated IFSC route over 7 panels.",
+  "holdTypes": {
+    "BIG": { "width": 460, "height": 350 },
+    "FOOT": { "width": 70, "height": 78 }
+  },
+  "columns": "ABCDEFGHILM",
+  "color": "#FF0000",
+  "holds": [
+    "DX1 FOOT F4 G4 @P1",
+    "DX1 FOOT A10 B10 @P2",
+    "DX2 BIG F1 D3 @M1",
+    "DX2 BIG G3 E5 @M2",
+    "DX2 BIG A9 C10 @M3",
+    "SN2 FOOT G3 H3 @P3",
+    "DX3 FOOT C6 C5 @P4",
+    "SN3 BIG G4 G1 @M4",
+    "SN3 BIG M10 I8 @M5",
+    "DX4 BIG B2 D3 @M6",
+    "SN4 BIG M8 L10 @M7",
+    "DX5 FOOT E1 E2 @P5",
+    "DX5 BIG C3 C6 @M8",
+    "DX5 BIG E9 H9 @M9",
+    "SN5 FOOT H1 SN4:H10 @P6",
+    "SN5 FOOT M6 M5 @P7",
+    "SN5 FOOT E7 E6 @P8",
+    "SN6 BIG H2 E2 @M10",
+    "SN6 BIG L7 M9 @M11",
+    "SN6 BIG F9 F6 @M12",
+    "SN7 STOP M5.4 M5.4 @PAD"
+  ],
+  "smearingZones": [
+    {
+      "label": "A1",
+      "panel": "SN2",
+      "column": "M",
+      "columnOffset": 0,
+      "row": 4,
+      "width": 4,
+      "height": 3
+    },
+    {
+      "label": "A2",
+      "panel": "SN3",
+      "column": "I",
+      "columnOffset": 0,
+      "row": 3,
+      "width": 5,
+      "height": 4
+    },
+    {
+      "label": "A3",
+      "panel": "DX5",
+      "column": "F",
+      "columnOffset": 0,
+      "row": 1,
+      "width": 4,
+      "height": 3
+    },
+    {
+      "label": "A4",
+      "panel": "SN5",
+      "column": "F",
+      "columnOffset": 0,
+      "row": 9,
+      "width": 5,
+      "height": 3
+    }
+  ]
+}

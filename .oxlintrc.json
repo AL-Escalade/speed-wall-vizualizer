@@ -22,6 +22,7 @@
     "id-length": "off",
     "sort-imports": "off",
     "func-style": "off",
+    "prefer-arrow-callback": "off",
     "react/jsx-max-depth": "off",
     "no-ternary": "off",
     "curly": "off",
@@ -34,6 +35,9 @@
     "no-continue": "off",
     "no-nested-ternary": "off",
     "new-cap": "off",
+    "logical-assignment-operators": "off",
+    "no-underscore-dangle": "off",
+    "require-unicode-regexp": "off",
     "no-eval": "error",
     "no-implied-eval": "error",
     "no-new-func": "error"
