@@ -11,7 +11,7 @@
     "packages/*"
   ],
   "scripts": {
-    "lint": "oxlint --type-aware packages/",
+    "lint": "oxlint --type-aware -A prefer-named-capture-group packages/",
     "build": "tsc -b && npm run build:web -w @voie-vitesse/web",
     "build:core": "npm run build -w @voie-vitesse/core",
     "build:cli": "npm run build -w @voie-vitesse/cli",
