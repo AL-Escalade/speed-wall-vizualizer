@@ -2,8 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { useRoutesStore, type HoldPosition } from './routesStore';
 
 // Known expected values from route data for specific assertions
-const EXPECTED_ROUTE_NAMES = ['ifsc', 'ifsc-10m', 'training', 'u11-u13', 'u11-u13-comp', 'u15', 'u15-it', 'u13-de'] as const;
+const EXPECTED_ROUTE_NAMES = ['ifsc', 'ifsc-10m', 'training', 'u11-u13', 'u11-u13-comp', 'u12-u14', 'u12-u14-comp', 'u15', 'u15-it', 'u13-de'] as const;
 const IFSC_HOLD_COUNT = 32;
+const U12_U14_HOLD_COUNT = 17;
 const IFSC_COLOR = '#FF0000';
 const IFSC_FIRST_LABEL = 'P1';
 const IFSC_LAST_LABEL = 'PAD';
@@ -33,6 +34,13 @@ describe('routesStore', () => {
       const { routes } = useRoutesStore.getState();
       expect(routes['ifsc'].color).toBe(IFSC_COLOR);
       expect(routes['ifsc'].holds).toHaveLength(IFSC_HOLD_COUNT);
+    });
+
+    it('should load both U12/U14 FFME setups', () => {
+      const { routes } = useRoutesStore.getState();
+      expect(routes['u12-u14'].holds).toHaveLength(U12_U14_HOLD_COUNT);
+      expect(routes['u12-u14-comp'].holds).toHaveLength(U12_U14_HOLD_COUNT);
+      expect(routes['u12-u14-comp'].holds).not.toEqual(routes['u12-u14'].holds);
     });
   });
 

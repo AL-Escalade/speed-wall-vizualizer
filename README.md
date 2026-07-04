@@ -72,6 +72,14 @@ Both full U15 routes are on the wall, along with 2 full U11/U13 routes. Between 
 
 <img src="docs/images/u11-u13-comp.svg" alt="U11-U13 competition route" width="150">
 
+### U12-U14 route (FFME - training)
+
+<img src="docs/images/u12-u14-training.svg" alt="U12-U14 training route" width="150">
+
+### U12-U14 route (FFME - competition)
+
+<img src="docs/images/u12-u14-comp.svg" alt="U12-U14 competition route" width="150">
+
 ### U13 route (Germany/Switzerland) - 10m
 
 <img src="docs/images/u13-de.svg" alt="U13 DE route" width="150">
@@ -82,6 +90,8 @@ Both full U15 routes are on the wall, along with 2 full U11/U13 routes. Between 
 - `u15`: U15 category (FFME)
 - `u11-u13`: U11-U13 category (FFME - training)
 - `u11-u13-comp`: U11-U13 category (FFME - competition)
+- `u12-u14`: U12-U14 category (FFME - training)
+- `u12-u14-comp`: U12-U14 category (FFME - competition)
 - `u15-it`: U15 category (Italy/Germany/Switzerland)
 - `u13-de`: U13 category (Germany/Switzerland) - 10m
 - `training`: Combined U15 and IFSC route
