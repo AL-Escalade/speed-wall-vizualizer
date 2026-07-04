@@ -60,7 +60,7 @@ Les 2 voies complètes U15 sont sur le mur, ainsi que 2 voies complètes U11/U13
 
 <img src="images/u15.svg" alt="Voie U15" width="150">
 
-### Voie U15 (Italie/Allemagne/Suisse)
+### Voie U15 (Italie/Allemagne/Canada/Suisse)
 
 <img src="images/u15-it.svg" alt="Voie U15 IT" width="150">
 
@@ -80,7 +80,11 @@ Les 2 voies complètes U15 sont sur le mur, ainsi que 2 voies complètes U11/U13
 
 <img src="images/u12-u14-comp.svg" alt="Voie U12-U14 compétition" width="150">
 
-### Voie U13 (Allemagne/Suisse) - 10m
+### Voie U11-U13 (Allemagne/Italie) - 10m
+
+<img src="images/u11-u13-de-it.svg" alt="Voie U11-U13 DE/IT" width="150">
+
+### Voie U13 (Canada/États-Unis) - 10m
 
 <img src="images/u13-de.svg" alt="Voie U13 DE" width="150">
 
@@ -92,9 +96,14 @@ Les 2 voies complètes U15 sont sur le mur, ainsi que 2 voies complètes U11/U13
 - `u11-u13-comp` : Catégorie U11-U13 (FFME - compétition)
 - `u12-u14` : Catégorie U12-U14 (FFME - entraînement)
 - `u12-u14-comp` : Catégorie U12-U14 (FFME - compétition)
-- `u15-it` : Catégorie U15 (Italie/Allemagne/Suisse)
-- `u13-de` : Catégorie U13 (Allemagne/Suisse) - 10m
+- `u11-u13-de-it` : Catégorie U11-U13 (Allemagne/Italie) - 10m
+- `u15-it` : Catégorie U15 (Italie/Allemagne/Canada/Suisse)
+- `u13-de` : Catégorie U13 (Canada/États-Unis) - 10m
 - `training` : Combinaison voie U15 et IFSC
+
+## PDF de référence
+
+Les PDF officiels utilisés comme sources des voies sont stockés dans [reference-routes](reference-routes/README.md).
 
 ## Développement
 
