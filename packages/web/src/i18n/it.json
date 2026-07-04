@@ -132,9 +132,10 @@
   "route.u11u13comp": "U11/U13 [FR] (competizione)",
   "route.u12u14": "U12/U14 [FR] (allenamento)",
   "route.u12u14comp": "U12/U14 [FR] (competizione)",
+  "route.u11u13deit": "U11/U13 [DE/IT]",
   "route.u15": "U15 [FR]",
-  "route.u15it": "U15 [IT/DE/CH]",
-  "route.u13de": "U13 [DE/CH]",
+  "route.u15it": "U15 [IT/DE/CA/CH]",
+  "route.u13de": "U13 [CA/US]",
 
   "coordinate.abc": "ABC (A-K)",
   "coordinate.ffme": "FFME (A-L, senza J)",

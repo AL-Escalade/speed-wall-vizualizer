@@ -1,7 +1,7 @@
 {
   "$schema": "../../schemas/route.schema.json",
-  "name": "u15-it",
-  "description": "U15 Speed Route (Italy/Germany/Canada/Switzerland)",
+  "name": "u11-u13-de-it",
+  "description": "U11-U13 Speed Route (Germany/Italy) - 10m",
   "holdTypes": {
     "BIG": { "width": 460, "height": 350 },
     "FOOT": { "width": 70, "height": 78 },
@@ -31,44 +31,21 @@
     "SN6 BIG H2 E2 @H10",
     "SN6 BIG L7 M9 @H11",
     "SN6 BIG F9 F6 @H12",
-    "SN7 BIG M4 DX7:A5 @H13",
-    "SN7 BIG G9 E8 @H14",
-    "DX7 FOOT B10 A10 @F9",
-    "SN8 BIG L1 SN7:H10 @H15",
-    "SN8 BIG I3 L5 @H16",
-    "DX8 FOOT E1 F1 @F10",
-    "DX8 FOOT A5 A6 @F11",
-    "SN8 BIG C8 E9 @H17",
-    "DX9 BIG A2 C4 @H18",
-    "DX9 BIG E7 E10 @H19",
-    "SN9 BIG M10 DX10:A1 @H20",
     "DX1 FOOT-DE15 F2 E2 @G1",
     "DX1 FOOT-DE15 B7 A7 @G2",
-    "SN2 FOOT-DE15 M1 L1 @G3",
-    "SN2 FOOT-DE15 I5 H5 @G4",
-    "DX4 FOOT-DE15 C10 B10 @G5",
-    "SN4 FOOT-DE15 L4 I4 @G6",
-    "SN5 FOOT-DE15 M10 L10 @G7",
-    "DX8 FOOT-DE15 A9 SN8:M9 @G8",
-    "DX9 FOOT-DE15 B5 A5 @G9",
-    "DX10 FOOT-DE15 E3 D4 @G10",
     "DX1 BIG-DE15 F9 H8 @I1",
     "DX1 BIG-DE15 G10 I9 @I2",
+    "SN2 FOOT-DE15 M1 L1 @G3",
     "DX2 BIG-DE15 C4 A4 @I3",
+    "SN2 FOOT-DE15 I5 H5 @G4",
     "SN3 BIG-DE15 I1 SN2:I10 @I4",
     "SN3 BIG-DE15 M6 L5 @I5",
-    "DX10 STOP A8 A8 @PAD"
+    "SN4 FOOT-DE15 L4 I4 @G5",
+    "DX4 FOOT-DE15 C10 B10 @G6",
+    "SN5 FOOT-DE15 M10 L10 @G7",
+    "SN7 STOP M3 M3 @PAD"
   ],
   "smearingZones": [
-    {
-      "label": "R3",
-      "panel": "DX5",
-      "column": "F",
-      "columnOffset": 0,
-      "row": 1,
-      "width": 4,
-      "height": 3
-    },
     {
       "label": "R4",
       "panel": "SN5",
@@ -76,24 +53,6 @@
       "columnOffset": 0,
       "row": 9,
       "width": 5,
-      "height": 3
-    },
-    {
-      "label": "R5",
-      "panel": "SN8",
-      "column": "H",
-      "columnOffset": 0,
-      "row": 7,
-      "width": 8,
-      "height": 4.5
-    },
-    {
-      "label": "R6",
-      "panel": "SN9",
-      "column": "I",
-      "columnOffset": 0,
-      "row": 4,
-      "width": 3,
       "height": 3
     }
   ]

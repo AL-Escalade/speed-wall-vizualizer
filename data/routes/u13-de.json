@@ -1,7 +1,7 @@
 {
   "$schema": "../../schemas/route.schema.json",
   "name": "u13-de",
-  "description": "U13 Speed Route (Germany/Switzerland) - 10m",
+  "description": "Youth C/D 10m Speed Route (Canada/USA; Bavarian-derived)",
   "columns": "ABCDEFGHILM",
   "color": "#32CD32",
   "holds": [
