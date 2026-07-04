@@ -17,6 +17,7 @@ import u12u14CompData from '../../../../data/routes/u12-u14-comp.json';
 import u11u13DeItData from '../../../../data/routes/u11-u13-de-it.json';
 import u15Data from '../../../../data/routes/u15.json';
 import u15ItData from '../../../../data/routes/u15-it.json';
+import u13u15InData from '../../../../data/routes/u13-u15-in.json';
 import u13DeData from '../../../../data/routes/u13-de.json';
 
 /** Build reference routes from imported data */
@@ -34,6 +35,7 @@ function buildRoutes(): ReferenceRoutes {
     { name: 'u11-u13-de-it', data: u11u13DeItData },
     { name: 'u15', data: u15Data },
     { name: 'u15-it', data: u15ItData },
+    { name: 'u13-u15-in', data: u13u15InData },
     { name: 'u13-de', data: u13DeData },
   ];
 
