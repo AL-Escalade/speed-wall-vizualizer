@@ -1,7 +1,7 @@
 {
   "$schema": "../../schemas/route.schema.json",
   "name": "u11-u13-de-it",
-  "description": "U11-U13 Speed Route (Germany/Italy) - 10m",
+  "description": "U11-U13 Speed Route (Austria/Germany/Italy) - 10m",
   "holdTypes": {
     "BIG": { "width": 460, "height": 350 },
     "FOOT": { "width": 70, "height": 78 },

@@ -32,6 +32,7 @@ export const ROUTE_SOURCES = {
   U11_U13_DE_IT: 'u11-u13-de-it',
   U15: 'u15',
   U15_IT: 'u15-it',
+  U13_U15_IN: 'u13-u15-in',
   U13_DE: 'u13-de',
 } as const;
 
@@ -46,9 +47,10 @@ export const ROUTE_DISPLAY_NAMES: Record<string, string> = {
   [ROUTE_SOURCES.U11_U13_COMP]: 'U11/U13 [FR] (compétition)',
   [ROUTE_SOURCES.U12_U14]: 'U12/U14 [FR] (entraînement)',
   [ROUTE_SOURCES.U12_U14_COMP]: 'U12/U14 [FR] (compétition)',
-  [ROUTE_SOURCES.U11_U13_DE_IT]: 'U11/U13 [DE/IT]',
+  [ROUTE_SOURCES.U11_U13_DE_IT]: 'U11/U13 [AT/DE/IT]',
   [ROUTE_SOURCES.U15]: 'U15 [FR]',
-  [ROUTE_SOURCES.U15_IT]: 'U15 [IT/DE/CA/CH]',
+  [ROUTE_SOURCES.U15_IT]: 'U15 [AT/DE/IT/CA/CH]',
+  [ROUTE_SOURCES.U13_U15_IN]: 'U13/U15 [IN]',
   [ROUTE_SOURCES.U13_DE]: 'U13 [CA/US]',
 };
 
@@ -64,6 +66,7 @@ export const ROUTE_INTL_KEYS: Record<string, string> = {
   [ROUTE_SOURCES.U11_U13_DE_IT]: 'route.u11u13deit',
   [ROUTE_SOURCES.U15]: 'route.u15',
   [ROUTE_SOURCES.U15_IT]: 'route.u15it',
+  [ROUTE_SOURCES.U13_U15_IN]: 'route.u13u15in',
   [ROUTE_SOURCES.U13_DE]: 'route.u13de',
 };
 
