@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run build:ts && npm run build:web",
+    "build": "bun run build:ts && bun run build:web",
     "build:ts": "tsc -b",
     "build:web": "vite build",
     "preview": "vite preview"
