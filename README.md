@@ -115,20 +115,20 @@ Official route source PDFs are stored in [docs/reference-routes](docs/reference-
 ### Installation
 
 ```bash
-npm install
-npm run build
+bun install
+bun run build
 ```
 
 ### Run the web app in development mode
 
 ```bash
-npm run dev
+bun run dev:web
 ```
 
 ### Generate an SVG via CLI
 
 ```bash
-npm run generate -- -c data/base.json -o output/wall.svg
+bun run generate -- -c data/base.json -o output/wall.svg
 ```
 
 Options:

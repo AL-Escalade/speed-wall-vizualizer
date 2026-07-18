@@ -115,20 +115,20 @@ Les PDF officiels utilisés comme sources des voies sont stockés dans [referenc
 ### Installation
 
 ```bash
-npm install
-npm run build
+bun install
+bun run build
 ```
 
 ### Lancer l'application web en développement
 
 ```bash
-npm run dev
+bun run dev:web
 ```
 
 ### Générer un SVG via CLI
 
 ```bash
-npm run generate -- -c data/base.json -o output/wall.svg
+bun run generate -- -c data/base.json -o output/wall.svg
 ```
 
 Options :

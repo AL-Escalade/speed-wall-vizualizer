@@ -10,18 +10,18 @@ Tests are mandatory for this project. All pull requests must pass tests and main
 
 ```bash
 # Run all tests
-npm test
+bun run test
 
 # Run tests with coverage report
-npm run test:coverage
+bun run test:coverage
 
 # Run tests with UI (interactive mode)
-npm run test:ui
+bun run test:ui
 
 # Run tests for a specific package
-npm test -- --project core
-npm test -- --project cli
-npm test -- --project web
+bun run test -- --project core
+bun run test -- --project cli
+bun run test -- --project web
 ```
 
 ## Test Structure
@@ -155,7 +155,7 @@ The following are excluded from coverage requirements:
 ## CI Integration
 
 Tests run automatically on every push and pull request. Coverage is:
-1. Generated using `npm run test:coverage`
+1. Generated using `bun run test:coverage`
 2. Compared against the main branch baseline
 3. Reported as a PR comment
 4. Fails the build if coverage regresses
@@ -185,4 +185,4 @@ When adding a new file:
 1. Create a corresponding `.test.ts` file
 2. Write tests for the public API
 3. Ensure coverage thresholds are met
-4. Run `npm run test:coverage` locally before pushing
+4. Run `bun run test:coverage` locally before pushing
