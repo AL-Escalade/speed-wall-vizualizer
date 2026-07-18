@@ -20,39 +20,46 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
+          bun-version: '1.3.11'
+
+      - name: Cache Bun install cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
 
       - name: Fix Dependabot workspace dependencies
         if: github.actor == 'dependabot[bot]'
         run: |
-          echo "Dependabot PR detected, aligning coupled dependencies and updating package-lock.json..."
-          node scripts/align-react-dependencies.mjs
-          npm install --package-lock-only
+          echo "Dependabot PR detected, aligning coupled dependencies and updating bun.lock..."
+          bun scripts/align-react-dependencies.mjs
+          bun install --lockfile-only
 
       - name: Commit dependency fixes
         if: github.actor == 'dependabot[bot]'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'chore: update workspace dependency metadata'
-          file_pattern: 'package-lock.json packages/*/package.json'
+          file_pattern: 'bun.lock packages/*/package.json'
           commit_user_name: 'github-actions[bot]'
           commit_user_email: 'github-actions[bot]@users.noreply.github.com'
 
       - name: Install dependencies
-        run: npm ci
+        run: bun install --frozen-lockfile
 
       - name: Lint
-        run: npm run lint
+        run: bun run lint
 
       - name: Build core package
-        run: npm run build:core
+        run: bun run build:core
 
       - name: Run tests with coverage
-        run: npm run test:coverage
+        run: bun run test:coverage
 
       - name: Copy coverage file to root
         run: cp coverage/cobertura-coverage.xml cobertura-coverage.xml
@@ -91,7 +98,7 @@ jobs:
           retention-days: 30
 
       - name: Build web application
-        run: npm run build:web
+        run: bun run build:web
         env:
           UMAMI_WEBSITE_ID: ${{ secrets.UMAMI_WEBSITE_ID }}
           UMAMI_SCRIPT_URL: ${{ secrets.UMAMI_SCRIPT_URL }}
