@@ -10,31 +10,31 @@ Speed Wall Visualizer - A tool for visualizing and configuring speed climbing wa
 
 ```bash
 # Install dependencies
-npm install
+bun install
 
 # Build all packages (required before running)
-npm run build
+bun run build
 
 # Development
-npm run dev:web          # Start web app dev server (Vite)
-npm run test             # Run tests with Vitest
-npm run test:coverage    # Run tests with coverage
-npx vitest run <file>    # Run single test file
+bun run dev:web          # Start web app dev server (Vite)
+bun run test             # Run tests with Vitest
+bun run test:coverage    # Run tests with coverage
+bun run vitest run <file> # Run single test file
 
 # Generate SVG via CLI
-npm run generate -- -c data/base.json -o output/wall.svg
-npm run generate:base    # Generate from base.json
+bun run generate -- -c data/base.json -o output/wall.svg
+bun run generate:base    # Generate from base.json
 
 # Lint (all packages with oxlint)
-npm run lint
+bun run lint
 
 # Regenerate bundled assets (after modifying hold SVGs)
-npm run generate:assets
+bun run generate:assets
 ```
 
 ## Architecture
 
-### Monorepo Structure (npm workspaces)
+### Monorepo Structure (Bun workspaces)
 
 - **`packages/core`** (`@voie-vitesse/core`): Core library with no UI dependencies
   - `types.ts` - Domain types (Panel, Hold, Route, Config)
@@ -90,7 +90,8 @@ Routes declare their system via `columns` field.
 ## Gotchas
 
 - Build uses TypeScript 7 (stable) through the standard `tsc` binary
-- Run `npm run build` before `npm run dev:web` — the web app depends on core's compiled output
+- Package manager is Bun — use `bun install`/`bun run`, not npm/npx
+- Run `bun run build` before `bun run dev:web` — the web app depends on core's compiled output
 - Config changes must be backward-compatible (or include migration) — users have configs in localStorage, may import old exported files, or follow URLs containing configurations
 - When adding user-visible strings in the web app, add translations to all 4 locale files in `packages/web/src/i18n/`
 - Web tests mock `window.matchMedia` and `ResizeObserver` in `packages/web/src/test/setup.ts`
