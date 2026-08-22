@@ -104,7 +104,18 @@
         "color": {
           "type": "string",
           "pattern": "^#[0-9A-Fa-f]{6}$",
-          "description": "Override color for this segment (default: use route color)"
+          "description": "Uniform override color for this segment (default: use route color)"
+        },
+        "colors": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^#[0-9A-Fa-f]{6}$"
+          },
+          "description": "Per-color-tag overrides. When present (even empty), takes precedence over `color`, which is then ignored; tags without an entry use the route's color."
         },
         "laneOffset": {
           "type": "integer",

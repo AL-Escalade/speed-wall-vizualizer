@@ -603,6 +603,16 @@ export function getHoldShowArrow(holdType: string): boolean {
 }
 
 /**
+ * Get the color forced for a hold type, regardless of its route's color.
+ * Used to keep finish pads dark whatever the route they belong to.
+ * @param holdType - The hold type name (e.g., "BIG", "FOOT", "STOP")
+ * @returns The forced color, or undefined when the route's color applies
+ */
+export function getHoldTypeColor(holdType: string): string | undefined {
+  return getHoldTypeConfig(holdType).color;
+}
+
+/**
  * Clear the hold types configuration cache
  */
 export function clearHoldTypesConfigCache(): void {

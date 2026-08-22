@@ -10,7 +10,7 @@
 
 import { readFile } from 'fs/promises';
 import { resolve, basename, dirname, join } from 'path';
-import { type Config, type OutputFormat, generateSvg, composeAllRoutes } from '@voie-vitesse/core';
+import { type Config, type OutputFormat, generateSvg, composeAllRoutes, getRouteColorMap, DEFAULT_COLOR_TAG } from '@voie-vitesse/core';
 import { writeOutput, formatFromPath, getExtension } from './output/index.js';
 import { getAvailableRouteNames, getReferenceRoute, loadRoutes } from './reference-routes/index.js';
 
@@ -116,9 +116,13 @@ function listRoutes(): void {
     const route = getReferenceRoute(name);
     if (route) {
       const holdCount = route.holds.length;
+      const colorMap = getRouteColorMap(route);
+      const colors = Object.entries(colorMap)
+        .map(([tag, color]) => (tag === DEFAULT_COLOR_TAG ? color : `${tag}=${color}`))
+        .join(', ');
       console.log(`  ${name}`);
       console.log(`    Holds: ${holdCount}`);
-      console.log(`    Color: ${route.color}`);
+      console.log(`    Color: ${colors}`);
       console.log('');
     }
   }

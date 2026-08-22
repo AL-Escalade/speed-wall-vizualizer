@@ -11,11 +11,12 @@ import {
   SourceSelector,
   LaneSelector,
   HoldRangeSelector,
-  ColorPicker,
+  SectionColorPickers,
   AnchorConfigurator,
   ExcludeHoldsSelector,
   type AnchorPosition,
 } from '../section';
+import { isSectionColorCustomized } from '@/utils/sectionColors';
 import {
   COMPETITION_ANCHOR,
   DEFAULT_ANCHOR,
@@ -38,13 +39,15 @@ export const SectionItem = memo(function SectionItem({
   lanesCount,
   coordinateDisplaySystem,
 }: SectionItemProps) {
-  const { updateSection, removeSection } = useConfigStore(
+  const { updateSection, removeSection, setSectionColors, resetSectionColors } = useConfigStore(
     useShallow((s) => ({
       updateSection: s.updateSection,
       removeSection: s.removeSection,
+      setSectionColors: s.setSectionColors,
+      resetSectionColors: s.resetSectionColors,
     }))
   );
-  const { getRouteNames, getHoldLabels, getFirstHoldLabel, getLastHoldLabel, getFirstHoldPosition, getRouteColor } = useRoutesStore(
+  const { getRouteNames, getHoldLabels, getFirstHoldLabel, getLastHoldLabel, getFirstHoldPosition, getRouteColor, getRouteColorMap } = useRoutesStore(
     useShallow((s) => ({
       getRouteNames: s.getRouteNames,
       getHoldLabels: s.getHoldLabels,
@@ -52,20 +55,24 @@ export const SectionItem = memo(function SectionItem({
       getLastHoldLabel: s.getLastHoldLabel,
       getFirstHoldPosition: s.getFirstHoldPosition,
       getRouteColor: s.getRouteColor,
+      getRouteColorMap: s.getRouteColorMap,
     }))
   );
   const routeNames = getRouteNames();
   const holdLabels = getHoldLabels(section.source);
   const defaultAnchor = getFirstHoldPosition(section.source) ?? DEFAULT_ANCHOR;
 
-  // Local color state for immediate visual feedback during color picker drag
-  const [localColor, setLocalColor] = useState(section.color);
+  // Local color overlay for immediate visual feedback during color picker drag.
+  // A single map with a single timer, rather than one hook per tag: the tag
+  // count changes when the source route changes, which would break hook order.
+  //
+  // The overlay is cleared as soon as it is flushed to the store, so it only
+  // ever holds in-flight values. A persistent overlay would shadow the store
+  // whenever the section changed underneath - an import reusing this section's
+  // id keeps the component mounted, so its state would survive the swap.
+  const [localColors, setLocalColors] = useState<Record<string, string>>({});
+  const pendingColorsRef = useRef<Record<string, string>>({});
   const colorDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Sync local color with section color when section changes externally
-  useEffect(() => {
-    setLocalColor(section.color);
-  }, [section.color]);
 
   // Cleanup debounce timer on unmount
   useEffect(() => {
@@ -75,6 +82,12 @@ export const SectionItem = memo(function SectionItem({
       }
     };
   }, []);
+
+  const routeColorMap = getRouteColorMap(section.source) ?? {};
+  const colorTags = Object.keys(routeColorMap);
+  const effectiveColors = Object.fromEntries(
+    colorTags.map((tag) => [tag, localColors[tag] ?? section.colors?.[tag] ?? routeColorMap[tag]])
+  );
 
   // Handlers
   const handleToggleClick = useCallback(() => {
@@ -97,16 +110,16 @@ export const SectionItem = memo(function SectionItem({
       ? COMPETITION_ANCHOR
       : getFirstHoldPosition(newSource) ?? DEFAULT_ANCHOR;
 
-    // Also update local color immediately
-    if (routeColor) {
-      setLocalColor(routeColor);
-    }
+    // Color tags are route-specific, so overrides cannot survive a source change
+    setLocalColors({});
+    pendingColorsRef.current = {};
 
     updateSection(section.id, {
       source: newSource,
       fromHold: firstLabel ?? 1,
       toHold: lastLabel ?? 1,
       anchor,
+      colors: {},
       color: routeColor ?? section.color,
       excludeHolds: [],
     });
@@ -147,9 +160,13 @@ export const SectionItem = memo(function SectionItem({
   }, [section.id, section.fromHold, section.excludeHolds, holdLabels, updateSection]);
 
   // Debounced color change: update local state immediately, store after delay
-  const handleColorChange = useCallback((color: string) => {
+  const handleColorChange = useCallback((tag: string, color: string) => {
     // Update local state immediately for visual feedback
-    setLocalColor(color);
+    setLocalColors((prev) => ({ ...prev, [tag]: color }));
+
+    // Accumulate into a map, not a scalar: dragging one picker then another
+    // within the debounce window must not drop the first value
+    pendingColorsRef.current[tag] = color;
 
     // Clear pending store update
     if (colorDebounceRef.current) {
@@ -158,9 +175,22 @@ export const SectionItem = memo(function SectionItem({
 
     // Debounce store update to avoid excessive SVG regeneration
     colorDebounceRef.current = setTimeout(() => {
-      updateSection(section.id, { color });
+      setSectionColors(section.id, pendingColorsRef.current);
+      pendingColorsRef.current = {};
+      // Hand rendering back to the store in the same tick, so the overlay never
+      // outlives the write it was covering for
+      setLocalColors({});
     }, 150);
-  }, [section.id, updateSection]);
+  }, [section.id, setSectionColors]);
+
+  const handleColorReset = useCallback(() => {
+    if (colorDebounceRef.current) {
+      clearTimeout(colorDebounceRef.current);
+    }
+    pendingColorsRef.current = {};
+    setLocalColors({});
+    resetSectionColors(section.id);
+  }, [section.id, resetSectionColors]);
 
   // Holds in the [fromHold, toHold] range for the exclude selector
   const rangeHoldLabels = useMemo(() => {
@@ -197,7 +227,7 @@ export const SectionItem = memo(function SectionItem({
         onToggle={handleToggleClick}
         onRename={handleRename}
         onRemove={handleRemove}
-        displayColor={localColor}
+        displayColors={colorTags.map((tag) => effectiveColors[tag])}
       />
 
       {isExpanded && (
@@ -222,9 +252,12 @@ export const SectionItem = memo(function SectionItem({
             onToChange={handleToChange}
           />
 
-          <ColorPicker
-            value={localColor}
+          <SectionColorPickers
+            tags={colorTags}
+            values={effectiveColors}
+            isCustomized={isSectionColorCustomized(section)}
             onChange={handleColorChange}
+            onReset={handleColorReset}
           />
 
           <AnchorConfigurator

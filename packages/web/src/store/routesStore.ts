@@ -4,7 +4,7 @@
  */
 
 import { create } from 'zustand';
-import type { ReferenceRoute, ReferenceRoutes } from '@voie-vitesse/core';
+import { type ReferenceRoute, type ReferenceRoutes, type RouteColorMap, getRouteColorMap, getDefaultColorTag } from '@voie-vitesse/core';
 import type { HoldLabel } from './types';
 
 // Import route data from single source of truth
@@ -106,8 +106,10 @@ interface RoutesState {
   getLastHoldLabel: (name: string) => string | undefined;
   /** Get position of the first hold */
   getFirstHoldPosition: (name: string) => HoldPosition | undefined;
-  /** Get the route's default color */
+  /** Get the route's default color (the first color it declares) */
   getRouteColor: (name: string) => string | undefined;
+  /** Get the route's tag -> color map, normalized for single-color routes */
+  getRouteColorMap: (name: string) => RouteColorMap | undefined;
 }
 
 export const useRoutesStore = create<RoutesState>()((_set, get) => ({
@@ -130,7 +132,8 @@ export const useRoutesStore = create<RoutesState>()((_set, get) => ({
     const route = get().routes[name.toLowerCase()];
     if (!route) return [];
     return route.holds.map((hold) => {
-      const match = hold.match(/@([\w-]+)$/);
+      // Not end-anchored: a hold may carry a trailing #COLORTAG after its label
+      const match = hold.match(/@([\w-]+)(?=\s|$)/);
       return match ? match[1] : '';
     }).filter(Boolean);
   },
@@ -152,7 +155,13 @@ export const useRoutesStore = create<RoutesState>()((_set, get) => ({
   },
 
   getRouteColor: (name: string) => {
+    const colorMap = get().getRouteColorMap(name);
+    if (!colorMap) return undefined;
+    return colorMap[getDefaultColorTag({ color: colorMap })];
+  },
+
+  getRouteColorMap: (name: string) => {
     const route = get().routes[name.toLowerCase()];
-    return route?.color;
+    return route ? getRouteColorMap(route) : undefined;
   },
 }));

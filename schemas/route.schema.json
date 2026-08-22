@@ -50,17 +50,32 @@
       "default": "ABCDEFGHIJK"
     },
     "color": {
-      "type": "string",
-      "pattern": "^#[0-9A-Fa-f]{6}$",
-      "description": "Default color for holds (hex format, e.g., #FF0000)"
+      "description": "Hold colors: either a single hex color, or a map of tag -> hex color whose FIRST key is the default applied to untagged holds",
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^#[0-9A-Fa-f]{6}$"
+          }
+        }
+      ]
     },
     "holds": {
       "type": "array",
       "description": "List of holds in compact format",
       "items": {
         "type": "string",
-        "pattern": "^(SN|DX)(10|[1-9]) ([A-Z][A-Z0-9]*(-[A-Z][A-Z0-9]*)*) [A-M](10|[1-9])(\\.[0-9]+)? ((SN|DX)(10|[1-9]):)?[A-M](10|[1-9])(\\.[0-9]+)?( [0-9.]+)?( @[A-Za-z0-9-]+)?$",
-        "description": "Hold definition: PANEL TYPE POSITION ORIENTATION [SCALE] [@LABEL]. Column letters must match the declared coordinate system. Rows are integer inserts (1-10) but may be fractional (e.g. F5.1) to nudge a hold vertically between inserts."
+        "pattern": "^(SN|DX)(10|[1-9]) ([A-Z][A-Z0-9]*(-[A-Z][A-Z0-9]*)*) [A-M](10|[1-9])(\\.[0-9]+)? ((SN|DX)(10|[1-9]):)?[A-M](10|[1-9])(\\.[0-9]+)?( ([0-9.]+|@[A-Za-z0-9-]+|#[A-Za-z][A-Za-z0-9_-]*)){0,3}$",
+        "description": "Hold definition: PANEL TYPE POSITION ORIENTATION followed by up to three optional tokens in any order: SCALE, @LABEL, #COLORTAG. Column letters must match the declared coordinate system. Rows are integer inserts (1-10) but may be fractional (e.g. F5.1) to nudge a hold vertically between inserts. The color tag must be a key of the route's color map."
       }
     },
     "smearingZones": {
@@ -112,6 +127,11 @@
           "minimum": 0,
           "exclusiveMinimum": true,
           "description": "Height in insert units (e.g., 4.0 = 4 row spacings, can span panels)"
+        },
+        "colorTag": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]*$",
+          "description": "Key of the route's color map. Defaults to the route's first declared color."
         }
       }
     }

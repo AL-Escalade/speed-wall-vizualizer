@@ -3,7 +3,10 @@
   "name": "u13-de",
   "description": "Youth C/D 10m Speed Route (Canada/USA; Bavarian-derived)",
   "columns": "ABCDEFGHILM",
-  "color": "#32CD32",
+  "color": {
+    "RED": "#FF0000",
+    "DARKRED": "#B22222"
+  },
   "holds": [
     "DX1 FOOT F4 G4 @F1",
     "DX1 FOOT A10 B10 @F2",
@@ -25,15 +28,15 @@
     "SN6 BIG H2 E2 @H10",
     "SN6 BIG L7 M9 @H11",
     "SN6 BIG F9 F6 @H12",
-    "DX1 FOOT C3 C4 @G1",
-    "DX1 BIG E9 G10 @I1",
-    "DX2 FOOT C6 C7 @G2",
-    "SN2 FOOT L5 L6 @G3",
-    "SN3 FOOT I1 I2 @G4",
-    "SN3 FOOT M3 M4 @G5",
-    "SN3 FOOT M7 M8 @G6",
-    "DX4 BIG C10 F10 @I2",
-    "DX6 BIG B1 E1 @I3",
+    "DX1 FOOT C3 C4 @G1 #DARKRED",
+    "DX1 BIG E9 G10 @I1 #DARKRED",
+    "DX2 FOOT C6 C7 @G2 #DARKRED",
+    "SN2 FOOT L5 L6 @G3 #DARKRED",
+    "SN3 FOOT I1 I2 @G4 #DARKRED",
+    "SN3 FOOT M3 M4 @G5 #DARKRED",
+    "SN3 FOOT M7 M8 @G6 #DARKRED",
+    "DX4 BIG C10 F10 @I2 #DARKRED",
+    "DX6 BIG B1 E1 @I3 #DARKRED",
     "SN7 STOP M3 M3 @PAD"
   ],
   "smearingZones": [

@@ -1,6 +1,33 @@
 import { describe, it, expect } from 'vitest';
 import { sectionToSegment, normalizeSvgForWeb, type WebSection } from './sectionMapper';
 
+describe('sectionToSegment color modes', () => {
+  const base: WebSection = { source: 'u15-it', lane: 0, fromHold: 1, toHold: 20, color: '#FF0000' };
+
+  // The core resolver switches on the PRESENCE of `colors`, so emitting both
+  // would make `colors: {}` ambiguous between "route colors" and "uniform color"
+  it('should emit only `color` for a section predating multi-color routes', () => {
+    const segment = sectionToSegment(base);
+
+    expect(segment.color).toBe('#FF0000');
+    expect('colors' in segment).toBe(false);
+  });
+
+  it('should emit only `colors` when per-tag overrides exist', () => {
+    const segment = sectionToSegment({ ...base, colors: { DARKGREEN: '#123456' } });
+
+    expect(segment.colors).toEqual({ DARKGREEN: '#123456' });
+    expect('color' in segment).toBe(false);
+  });
+
+  it('should emit an empty `colors` map rather than falling back to `color`', () => {
+    const segment = sectionToSegment({ ...base, colors: {} });
+
+    expect(segment.colors).toEqual({});
+    expect('color' in segment).toBe(false);
+  });
+});
+
 describe('sectionToSegment', () => {
   it('should convert basic section to segment', () => {
     const section: WebSection = {

@@ -2,8 +2,12 @@
  * Route composition from segments of reference routes
  */
 
-import { type Hold, type ReferenceRoute, type ReferenceRoutes, type RouteSegment, type GeneratedRoute, type AnchorPosition, type PanelId, type InsertPosition, type ColumnSystem, type SmearingZone, type ComposedSmearingZone, type Column, type Row, DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM } from './types.js';
+import { type Hold, type ReferenceRoute, type ReferenceRoutes, type RouteSegment, type GeneratedRoute, type AnchorPosition, type PanelId, type InsertPosition, type ColumnSystem, type SmearingZone, type ComposedSmearingZone, type Column, type Row, type RouteColorMap, DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM, DEFAULT_COLOR_TAG } from './types.js';
 import { parsePanelId, getInsertPosition, getAnchorMmPosition, parseInsertPosition as parseInsertPositionCore, convertColumn, GRID } from './plate-grid.js';
+import { getHoldTypeColor } from './hold-svg-parser.js';
+
+/** Last-resort hold color, used only when a route declares no color at all */
+const FALLBACK_COLOR = '#FF0000';
 
 /** Offset in mm for anchor-based positioning */
 interface MmOffset {
@@ -48,14 +52,14 @@ function parseOrientation(
 
 /**
  * Parse a compact hold string into a Hold object
- * Format: "PANEL TYPE POSITION ORIENTATION [@LABEL] [SCALE]"
+ * Format: "PANEL TYPE POSITION ORIENTATION [@LABEL] [SCALE] [#COLORTAG]"
  * @param holdStr - Compact hold string
  * @param columnSystem - Column coordinate system for validation (default: ABC)
  */
 export function parseHold(holdStr: string, columnSystem: ColumnSystem = DEFAULT_COLUMN_SYSTEM): Hold {
   const parts = holdStr.trim().split(/\s+/);
-  if (parts.length < 4 || parts.length > 6) {
-    throw new Error(`Invalid hold format: "${holdStr}". Expected "PANEL TYPE POSITION ORIENTATION [@LABEL] [SCALE]"`);
+  if (parts.length < 4 || parts.length > 7) {
+    throw new Error(`Invalid hold format: "${holdStr}". Expected "PANEL TYPE POSITION ORIENTATION [@LABEL] [SCALE] [#COLORTAG]"`);
   }
 
   const [panelStr, type, positionStr, orientationStr, ...rest] = parts;
@@ -64,11 +68,34 @@ export function parseHold(holdStr: string, columnSystem: ColumnSystem = DEFAULT_
 
   let label: string | undefined;
   let scale: number | undefined;
+  let colorTag: string | undefined;
+
+  // Rejecting duplicates rather than letting the last one win: the trailing
+  // tokens are order-free, so a repeated token is always an authoring mistake
+  // and silently keeping one of them hides it
+  const rejectDuplicate = (seen: unknown, kind: string) => {
+    if (seen !== undefined) {
+      throw new Error(`Duplicate ${kind} in hold: "${holdStr}". Expected at most one.`);
+    }
+  };
 
   for (const part of rest) {
     if (part.startsWith('@')) {
+      rejectDuplicate(label, 'label');
       label = part.substring(1);
+      if (!label) {
+        throw new Error(`Invalid label: "${part}". Expected "@LABEL".`);
+      }
+    } else if (part.startsWith('#')) {
+      // Checked before the numeric branch, otherwise parseFloat("#GREEN") is NaN
+      // and the scale error below would fire with a misleading message
+      rejectDuplicate(colorTag, 'color tag');
+      colorTag = part.substring(1);
+      if (!colorTag) {
+        throw new Error(`Invalid color tag: "${part}". Expected "#COLORTAG".`);
+      }
     } else {
+      rejectDuplicate(scale, 'scale');
       const parsed = parseFloat(part);
       if (isNaN(parsed) || parsed <= 0) {
         throw new Error(`Invalid scale value: "${part}". Expected a positive number.`);
@@ -85,6 +112,7 @@ export function parseHold(holdStr: string, columnSystem: ColumnSystem = DEFAULT_
     orientationPanel: orientation.panel,
     scale,
     label,
+    colorTag,
   };
 }
 
@@ -94,6 +122,68 @@ export function parseHold(holdStr: string, columnSystem: ColumnSystem = DEFAULT_
 export function getRouteHolds(route: ReferenceRoute): Hold[] {
   const columnSystem = route.columns || DEFAULT_COLUMN_SYSTEM;
   return route.holds.map(holdStr => parseHold(holdStr, columnSystem));
+}
+
+/**
+ * Normalize a route's color declaration into a tag -> color map.
+ * A single color string becomes `{ DEFAULT: color }`.
+ */
+export function getRouteColorMap(route: Pick<ReferenceRoute, 'color'>): RouteColorMap {
+  return typeof route.color === 'string' ? { [DEFAULT_COLOR_TAG]: route.color } : route.color;
+}
+
+/**
+ * Get the tag used by holds that carry no explicit color tag.
+ * This is the first key of the color map, so declaration order is significant.
+ */
+export function getDefaultColorTag(route: Pick<ReferenceRoute, 'color'>): string {
+  if (typeof route.color === 'string') return DEFAULT_COLOR_TAG;
+  return Object.keys(route.color)[0] ?? DEFAULT_COLOR_TAG;
+}
+
+/**
+ * Check that every color tag used by a route's holds and zones is declared in its
+ * color map. Undeclared tags fall back to the default color at render time rather
+ * than throwing, so this exists to catch typos in route data via tests and the CLI.
+ * @returns Human-readable problems, empty when the route is consistent
+ */
+export function validateRouteColorTags(route: ReferenceRoute): string[] {
+  const problems: string[] = [];
+  const colorMap = getRouteColorMap(route);
+  const declared = new Set(Object.keys(colorMap));
+
+  if (declared.size === 0) {
+    problems.push('Color map is empty: at least one color must be declared.');
+    return problems;
+  }
+
+  const reportUnknown = (tag: string, origin: string) => {
+    if (!declared.has(tag)) {
+      problems.push(
+        `Unknown color tag "${tag}" in ${origin}. Declared tags: ${[...declared].join(', ')}.`
+      );
+    }
+  };
+
+  const columnSystem = route.columns || DEFAULT_COLUMN_SYSTEM;
+  for (const holdStr of route.holds) {
+    // Report an unparsable hold rather than throwing: this is a diagnostic
+    // helper, and a caller that loads routes should not lose a whole route to
+    // one bad line. Composition reports the same error again, precisely.
+    let colorTag: string | undefined;
+    try {
+      ({ colorTag } = parseHold(holdStr, columnSystem));
+    } catch (error) {
+      problems.push(`Unparsable hold "${holdStr}": ${(error as Error).message}`);
+      continue;
+    }
+    if (colorTag) reportUnknown(colorTag, `hold "${holdStr}"`);
+  }
+  for (const zone of route.smearingZones ?? []) {
+    if (zone.colorTag) reportUnknown(zone.colorTag, `smearing zone "${zone.label}"`);
+  }
+
+  return problems;
 }
 
 /**
@@ -113,6 +203,55 @@ function calculateMmOffset(
     x: anchorMm.x - holdMm.x,
     y: anchorMm.y - holdMm.y,
   };
+}
+
+/**
+ * Resolve the color of a single hold or smearing zone.
+ *
+ * Precedence: an explicit color tag wins, then a color forced by the hold type
+ * (finish pads), then the segment's overrides, then the route's own colors.
+ *
+ * The segment branches on the *presence* of `colors`, not its content: a merged
+ * rule would let a stale uniform `color` bleed into the tags a partial override
+ * map does not cover. As a result `colors: {}` means "route colors, no override".
+ *
+ * @param segment - Route segment, possibly carrying color overrides
+ * @param routeMap - The route's normalized tag -> color map
+ * @param defaultTag - Tag applied to items carrying no explicit tag
+ * @param tag - The item's own color tag, if any
+ * @param holdType - Hold type, omitted for smearing zones
+ */
+function resolveItemColor(
+  segment: RouteSegment,
+  routeMap: RouteColorMap,
+  defaultTag: string,
+  tag: string | undefined,
+  holdType?: string
+): string {
+  if (!tag && holdType !== undefined) {
+    const typeColor = getHoldTypeColor(holdType);
+    if (typeColor) return typeColor;
+  }
+
+  const resolvedTag = tag ?? defaultTag;
+  // The last fallback only fires on an empty color map, which the schema forbids
+  // and validateRouteColorTags reports; render something rather than crash
+  const routeColor =
+    lookupColor(routeMap, resolvedTag) ?? lookupColor(routeMap, defaultTag) ?? FALLBACK_COLOR;
+
+  return segment.colors === undefined
+    ? segment.color ?? routeColor       // legacy uniform mode
+    : lookupColor(segment.colors, resolvedTag) ?? routeColor;  // per-tag mode
+}
+
+/**
+ * Read a color out of a tag map without ever reaching the prototype chain.
+ * A plain `map[tag]` would return a Function for tags such as "constructor" or
+ * "toString" - names the schema's tag pattern allows - and the `??` fallback
+ * would not fire, injecting that Function into the SVG fill attribute.
+ */
+function lookupColor(map: RouteColorMap, tag: string): string | undefined {
+  return Object.hasOwn(map, tag) ? map[tag] : undefined;
 }
 
 /** A hold with its source route information */
@@ -139,6 +278,8 @@ export function extractHolds(segment: RouteSegment, routes: ReferenceRoutes): Co
   }
 
   const holds = getRouteHolds(route);
+  const routeColorMap = getRouteColorMap(route);
+  const defaultColorTag = getDefaultColorTag(route);
 
   const findHoldIndex = (ref: number | string | undefined, defaultValue: number): number => {
     if (ref === undefined) return defaultValue;
@@ -195,7 +336,7 @@ export function extractHolds(segment: RouteSegment, routes: ReferenceRoutes): Co
       composedHoldNumber: 0,
       laneOffset,
       holdScale,
-      color: segment.color ?? route.color, // Use segment color override or route's default color
+      color: resolveItemColor(segment, routeColorMap, defaultColorTag, hold.colorTag, hold.type),
       anchorOffset,
     });
   }
@@ -294,7 +435,8 @@ export function extractSmearingZones(
   }
 
   const laneOffset = segment.laneOffset ?? 0;
-  const color = segment.color ?? route.color;
+  const routeColorMap = getRouteColorMap(route);
+  const defaultColorTag = getDefaultColorTag(route);
   const routeColumnSystem = route.columns || DEFAULT_COLUMN_SYSTEM;
 
   // Calculate anchor offset if segment has anchor
@@ -327,7 +469,9 @@ export function extractSmearingZones(
       column: zone.canonicalColumn,
       // Pass through columnOffset if present
       columnOffset: zone.columnOffset,
-      color,
+      colorTag: zone.colorTag,
+      // Zones carry no hold type, so no type-forced color applies
+      color: resolveItemColor(segment, routeColorMap, defaultColorTag, zone.colorTag),
       anchorOffset,
       laneOffset,
     }));

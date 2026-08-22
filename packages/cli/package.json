@@ -7,7 +7,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "generate": "bun src/cli.ts"
+    "generate": "bun src/cli.ts",
+    "generate:doc-images": "bun scripts/generate-doc-images.ts"
   },
   "dependencies": {
     "@voie-vitesse/core": "*"

@@ -99,7 +99,18 @@ export interface Hold {
   scale?: number;
   /** Label for this hold (e.g., "M1", "P2") */
   label?: string;
+  /** Color tag referencing a key of the route's color map. Default: the route's default tag */
+  colorTag?: string;
 }
+
+/**
+ * Map of color tag -> hex color for a reference route.
+ * Key insertion order matters: the first key is the route's default color.
+ */
+export type RouteColorMap = Record<string, string>;
+
+/** Reserved tag synthesized for routes declaring a single `color` string */
+export const DEFAULT_COLOR_TAG = 'DEFAULT';
 
 /** Scale factors per hold type */
 export type HoldScales = Record<string, number>;
@@ -120,6 +131,8 @@ export interface SmearingZone {
   width: number;
   /** Height in insert units (float, e.g., 4.0 = 4 row spacings, can span panels) */
   height: number;
+  /** Color tag referencing a key of the route's color map. Default: the route's default tag */
+  colorTag?: string;
 }
 
 /** Composed smearing zone with computed offsets */
@@ -134,8 +147,11 @@ export interface ComposedSmearingZone extends SmearingZone {
 
 /** Reference route definition */
 export interface ReferenceRoute {
-  /** Color for holds from this route */
-  color: string;
+  /**
+   * Color for holds from this route. Either a single hex color applied to every
+   * untagged hold, or a map of tag -> hex color whose first key is the default.
+   */
+  color: string | RouteColorMap;
   /** Scale factors per hold type (e.g., { "BIG": 0.8, "FOOT": 0.8 }) */
   holdScales?: HoldScales;
   /** Column coordinate system used in hold definitions (default: ABC = "ABCDEFGHIJK") */
@@ -171,8 +187,13 @@ export interface RouteSegment {
   excludeHolds?: (number | string)[];
   /** Where to place the first hold. If specified, all holds are offset accordingly */
   anchor?: AnchorPosition;
-  /** Override color for this segment (default: use route color) */
+  /** Uniform override color for this segment (default: use route color) */
   color?: string;
+  /**
+   * Per-tag color overrides. When present (even empty), takes precedence over
+   * `color`, which is then ignored; tags without an entry use the route's color.
+   */
+  colors?: RouteColorMap;
   /** Horizontal offset in lanes (0 = leftmost lane). Default: 0 */
   laneOffset?: number;
 }
@@ -240,6 +261,11 @@ export interface HoldTypeConfig {
   labelMargin?: number;
   /** Whether to show arrow indicator for this hold type (default: true) */
   showArrow?: boolean;
+  /**
+   * Color forced for every hold of this type, regardless of the route's color.
+   * An explicit color tag on the hold still wins. Used to keep finish pads dark.
+   */
+  color?: string;
 }
 
 /** All hold type configurations */

@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "lint": "oxlint --type-aware -A prefer-named-capture-group packages/",
-    "build": "tsc -b && bun run --filter='@voie-vitesse/web' build:web",
+    "build": "tsc -b && tsc --noEmit -p packages/cli/tsconfig.scripts.json && bun run --filter='@voie-vitesse/web' build:web",
     "build:core": "bun run --filter='@voie-vitesse/core' build",
     "build:cli": "bun run --filter='@voie-vitesse/cli' build",
     "build:web": "bun run --filter='@voie-vitesse/web' build:web",
@@ -21,6 +21,7 @@
     "generate": "bun run --filter='@voie-vitesse/cli' generate --",
     "generate:base": "bun run --filter='@voie-vitesse/cli' generate -- -c ../../data/base.json -o ../../output/base.svg",
     "generate:assets": "bun scripts/generate-bundled-assets.ts",
+    "generate:doc-images": "bun run --filter='@voie-vitesse/cli' generate:doc-images",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui"

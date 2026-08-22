@@ -245,6 +245,38 @@ describe('decodeConfig', () => {
   });
 });
 
+describe('hydrateShareableConfig migration', () => {
+  // Pins the migration to this entry point: deleting the migrateSectionColors
+  // call in hydrateShareableConfig must fail a test, not just pass silently
+  const share = (color: string, colors?: Record<string, string>): ShareableConfig => ({
+    wall: { lanes: 2, panelsHeight: 10 },
+    sections: [{
+      name: 'S', source: 'u15-it', lane: 0, fromHold: 'F1', toHold: 'PAD', color,
+      ...(colors === undefined ? {} : { colors }),
+    }],
+  });
+
+  it('should adopt the route colors for a link predating multi-color routes', () => {
+    // #008000 is u15-it's pre-feature color, so the section was never customized
+    const hydrated = hydrateShareableConfig(share('#008000'));
+
+    expect(hydrated.sections[0].colors).toEqual({});
+    expect(hydrated.sections[0].color).toBe('#FF0000');
+  });
+
+  it('should pin a deliberately chosen color across every tag', () => {
+    const hydrated = hydrateShareableConfig(share('#FF6600'));
+
+    expect(hydrated.sections[0].colors).toEqual({ RED: '#FF6600', DARKGREEN: '#FF6600' });
+  });
+
+  it('should leave an already migrated link untouched', () => {
+    const hydrated = hydrateShareableConfig(share('#FF0000', { DARKGREEN: '#123456' }));
+
+    expect(hydrated.sections[0].colors).toEqual({ DARKGREEN: '#123456' });
+  });
+});
+
 describe('hydrateShareableConfig', () => {
   it('should generate new IDs and timestamps', () => {
     const shareable: ShareableConfig = {
@@ -331,6 +363,35 @@ describe('roundtrip encoding/decoding', () => {
 });
 
 describe('getConfigFingerprint', () => {
+  const withColors = (colors: Record<string, string>): SavedConfiguration => ({
+    id: 'id',
+    name: 'Config',
+    wall: { lanes: 2, panelsHeight: 10 },
+    sections: [
+      { id: 's', name: 'Section', source: 'u15', lane: 0, fromHold: 1, toHold: 20, color: '#0000ff', colors },
+    ],
+    createdAt: 1000,
+    updatedAt: 2000,
+  });
+
+  it('should ignore the key order of the colors map', () => {
+    // Insertion order is user-driven: it follows whichever picker was dragged
+    // first, so two identically-rendering configs must still fingerprint alike
+    expect(getConfigFingerprint(withColors({ RED: '#0000ff', DARKRED: '#00ff00' })))
+      .toBe(getConfigFingerprint(withColors({ DARKRED: '#00ff00', RED: '#0000ff' })));
+  });
+
+  it('should still distinguish different color values', () => {
+    expect(getConfigFingerprint(withColors({ RED: '#0000ff' })))
+      .not.toBe(getConfigFingerprint(withColors({ RED: '#00ff00' })));
+  });
+
+  it('should treat an absent colors map as an empty one', () => {
+    const absent = withColors({});
+    delete absent.sections[0].colors;
+    expect(getConfigFingerprint(absent)).toBe(getConfigFingerprint(withColors({})));
+  });
+
   it('should generate same fingerprint for identical configs', () => {
     const config1: SavedConfiguration = {
       id: 'id-1',

@@ -8,6 +8,9 @@ import {
   extractSmearingZones,
   composeSmearingZones,
   composeAllSmearingZones,
+  getRouteColorMap,
+  getDefaultColorTag,
+  validateRouteColorTags,
 } from './route-composer.js';
 import { type ReferenceRoute, type ReferenceRoutes, type RouteSegment, type GeneratedRoute, COLUMN_SYSTEMS } from './types.js';
 
@@ -57,12 +60,45 @@ describe('parseHold', () => {
 
   it('should throw for invalid hold format', () => {
     expect(() => parseHold('SN1 BIG A1')).toThrow('Invalid hold format');
-    expect(() => parseHold('SN1 BIG A1 B2 C3 D4 E5')).toThrow('Invalid hold format');
+    expect(() => parseHold('SN1 BIG A1 B2 C3 D4 E5 F6')).toThrow('Invalid hold format');
   });
 
   it('should throw for invalid scale value', () => {
     expect(() => parseHold('SN1 BIG A1 B2 -0.5', COLUMN_SYSTEMS.ABC)).toThrow('Invalid scale value');
     expect(() => parseHold('SN1 BIG A1 B2 abc', COLUMN_SYSTEMS.ABC)).toThrow('Invalid scale value');
+  });
+
+  it('should parse hold with color tag', () => {
+    const hold = parseHold('SN2 BIG C3 D4 #DARKGREEN', COLUMN_SYSTEMS.ABC);
+    expect(hold.colorTag).toBe('DARKGREEN');
+    expect(hold.label).toBeUndefined();
+    expect(hold.scale).toBeUndefined();
+  });
+
+  it('should parse hold with label, scale and color tag in any order', () => {
+    const hold = parseHold('SN2 BIG C3 D4 #GREEN 0.9 @M1', COLUMN_SYSTEMS.ABC);
+    expect(hold.label).toBe('M1');
+    expect(hold.scale).toBe(0.9);
+    expect(hold.colorTag).toBe('GREEN');
+  });
+
+  it('should leave colorTag undefined when no tag is present', () => {
+    const hold = parseHold('SN2 BIG C3 D4 @M1', COLUMN_SYSTEMS.ABC);
+    expect(hold.colorTag).toBeUndefined();
+  });
+
+  it('should throw for an empty color tag', () => {
+    expect(() => parseHold('SN1 BIG A1 B2 #', COLUMN_SYSTEMS.ABC)).toThrow('Invalid color tag');
+  });
+
+  it('should throw for an empty label', () => {
+    expect(() => parseHold('SN1 BIG A1 B2 @', COLUMN_SYSTEMS.ABC)).toThrow('Invalid label');
+  });
+
+  it('should reject duplicate trailing tokens rather than keeping the last', () => {
+    expect(() => parseHold('SN1 BIG A1 B2 @M1 @M2', COLUMN_SYSTEMS.ABC)).toThrow('Duplicate label');
+    expect(() => parseHold('SN1 BIG A1 B2 #RED #GREEN', COLUMN_SYSTEMS.ABC)).toThrow('Duplicate color tag');
+    expect(() => parseHold('SN1 BIG A1 B2 0.8 0.9', COLUMN_SYSTEMS.ABC)).toThrow('Duplicate scale');
   });
 
   it('should convert columns from FFME to ABC system', () => {
@@ -96,6 +132,191 @@ describe('getRouteHolds', () => {
     const holds = getRouteHolds(route);
     expect(holds[0].position.column).toBe('J'); // K in FFME → J in ABC
     expect(holds[0].orientation.column).toBe('K'); // L in FFME → K in ABC
+  });
+});
+
+describe('getRouteColorMap', () => {
+  it('should wrap a single color string under the default tag', () => {
+    expect(getRouteColorMap({ color: '#FF0000' })).toEqual({ DEFAULT: '#FF0000' });
+  });
+
+  it('should return a color map unchanged', () => {
+    const color = { RED: '#FF0000', DARKGREEN: '#006400' };
+    expect(getRouteColorMap({ color })).toEqual(color);
+  });
+});
+
+describe('getDefaultColorTag', () => {
+  it('should return the reserved tag for a single color string', () => {
+    expect(getDefaultColorTag({ color: '#FF0000' })).toBe('DEFAULT');
+  });
+
+  it('should return the first declared key of a color map', () => {
+    expect(getDefaultColorTag({ color: { RED: '#FF0000', DARKGREEN: '#006400' } })).toBe('RED');
+    expect(getDefaultColorTag({ color: { DARKGREEN: '#006400', RED: '#FF0000' } })).toBe('DARKGREEN');
+  });
+
+  it('should fall back to the reserved tag for an empty color map', () => {
+    expect(getDefaultColorTag({ color: {} })).toBe('DEFAULT');
+  });
+});
+
+describe('validateRouteColorTags', () => {
+  it('should return no problems for a consistent route', () => {
+    const route: ReferenceRoute = {
+      color: { RED: '#FF0000', DARKGREEN: '#006400' },
+      columns: COLUMN_SYSTEMS.ABC,
+      holds: ['SN1 BIG A1 B2 @M1', 'SN1 FOOT C3 D4 @G1 #DARKGREEN'],
+    };
+    expect(validateRouteColorTags(route)).toEqual([]);
+  });
+
+  it('should report a hold tag missing from the color map', () => {
+    const route: ReferenceRoute = {
+      color: { RED: '#FF0000' },
+      columns: COLUMN_SYSTEMS.ABC,
+      holds: ['SN1 FOOT C3 D4 @G1 #DARKGREEN'],
+    };
+    const problems = validateRouteColorTags(route);
+    expect(problems).toHaveLength(1);
+    expect(problems[0]).toContain('DARKGREEN');
+  });
+
+  it('should report a smearing zone tag missing from the color map', () => {
+    const route: ReferenceRoute = {
+      color: { RED: '#FF0000' },
+      columns: COLUMN_SYSTEMS.ABC,
+      holds: ['SN1 BIG A1 B2 @M1'],
+      smearingZones: [
+        { label: 'R1', panel: 'SN1', column: 'A', row: 1, width: 2, height: 2, colorTag: 'BLUE' },
+      ],
+    };
+    const problems = validateRouteColorTags(route);
+    expect(problems).toHaveLength(1);
+    expect(problems[0]).toContain('R1');
+  });
+
+  it('should report an unparsable hold instead of throwing', () => {
+    const route: ReferenceRoute = {
+      color: { RED: '#FF0000' },
+      columns: COLUMN_SYSTEMS.ABC,
+      holds: ['SN1 BIG A1 B2 @M1', 'SN1 BIG A1 B2 @M1 @M2'],
+    };
+
+    // A caller loading routes must not lose a whole route to one bad line
+    const problems = validateRouteColorTags(route);
+    expect(problems).toHaveLength(1);
+    expect(problems[0]).toContain('Unparsable hold');
+    expect(problems[0]).toContain('Duplicate label');
+  });
+
+  it('should report an empty color map', () => {
+    const route: ReferenceRoute = {
+      color: {},
+      columns: COLUMN_SYSTEMS.ABC,
+      holds: ['SN1 BIG A1 B2 @M1'],
+    };
+    expect(validateRouteColorTags(route)).toEqual(['Color map is empty: at least one color must be declared.']);
+  });
+});
+
+describe('extractHolds color resolution', () => {
+  const routes: ReferenceRoutes = {
+    mixed: {
+      color: { RED: '#FF0000', DARKGREEN: '#006400' },
+      columns: COLUMN_SYSTEMS.ABC,
+      holds: [
+        'SN1 BIG A1 B2 @M1',
+        'SN1 FOOT C3 D4 @G1 #DARKGREEN',
+        'SN2 STOP E5 E5 @PAD',
+      ],
+    },
+    single: {
+      color: '#00AAFF',
+      columns: COLUMN_SYSTEMS.ABC,
+      holds: ['SN1 BIG A1 B2 @M1', 'SN2 STOP E5 E5 @PAD'],
+    },
+  };
+
+  it('should apply the route color map per tag', () => {
+    const holds = extractHolds({ source: 'mixed' }, routes);
+    expect(holds[0].color).toBe('#FF0000');
+    expect(holds[1].color).toBe('#006400');
+  });
+
+  it('should force the hold type color on untagged pads', () => {
+    expect(extractHolds({ source: 'mixed' }, routes)[2].color).toBe('#1A1A1A');
+    expect(extractHolds({ source: 'single' }, routes)[1].color).toBe('#1A1A1A');
+  });
+
+  it('should let an explicit tag win over the hold type color', () => {
+    const routesWithTaggedPad: ReferenceRoutes = {
+      mixed: {
+        ...routes.mixed,
+        holds: ['SN2 STOP E5 E5 @PAD #DARKGREEN'],
+      },
+    };
+    expect(extractHolds({ source: 'mixed' }, routesWithTaggedPad)[0].color).toBe('#006400');
+  });
+
+  it('should apply a legacy uniform segment color to every tag', () => {
+    const holds = extractHolds({ source: 'mixed', color: '#FF6600' }, routes);
+    expect(holds[0].color).toBe('#FF6600');
+    expect(holds[1].color).toBe('#FF6600');
+  });
+
+  it('should override only the tags listed in segment colors', () => {
+    const holds = extractHolds({ source: 'mixed', colors: { DARKGREEN: '#123456' } }, routes);
+    expect(holds[0].color).toBe('#FF0000'); // untouched tag still follows the route
+    expect(holds[1].color).toBe('#123456');
+  });
+
+  it('should treat an empty colors map as "route colors, no override"', () => {
+    const holds = extractHolds({ source: 'mixed', colors: {} }, routes);
+    expect(holds[0].color).toBe('#FF0000');
+    expect(holds[1].color).toBe('#006400');
+  });
+
+  it('should ignore a stale uniform color when colors is present', () => {
+    const holds = extractHolds({ source: 'mixed', color: '#FF6600', colors: {} }, routes);
+    expect(holds[0].color).toBe('#FF0000');
+    expect(holds[1].color).toBe('#006400');
+  });
+
+  it('should not resolve a tag that only exists on Object.prototype', () => {
+    // The schema's tag pattern allows "constructor" and "toString", and a plain
+    // map[tag] lookup would return a Function, which `??` would not fall back on
+    for (const inherited of ['constructor', 'toString', 'valueOf', 'hasOwnProperty']) {
+      const inheritedTagRoutes: ReferenceRoutes = {
+        mixed: {
+          color: { RED: '#FF0000' },
+          columns: COLUMN_SYSTEMS.ABC,
+          holds: [`SN1 BIG A1 B2 @M1 #${inherited}`],
+        },
+      };
+      expect(extractHolds({ source: 'mixed' }, inheritedTagRoutes)[0].color).toBe('#FF0000');
+    }
+  });
+
+  it('should not resolve a segment override inherited from Object.prototype', () => {
+    const ownToStringRoutes: ReferenceRoutes = {
+      mixed: {
+        color: { toString: '#123456', RED: '#FF0000' },
+        columns: COLUMN_SYSTEMS.ABC,
+        holds: ['SN1 BIG A1 B2 @M1'],
+      },
+    };
+    // An own "toString" key is legitimate data and must still resolve
+    expect(extractHolds({ source: 'mixed' }, ownToStringRoutes)[0].color).toBe('#123456');
+    // ...while a segment map lacking it falls back to the route rather than a Function
+    expect(extractHolds({ source: 'mixed', colors: {} }, ownToStringRoutes)[0].color).toBe('#123456');
+  });
+
+  it('should fall back to the default tag for an undeclared tag', () => {
+    const routesWithTypo: ReferenceRoutes = {
+      mixed: { ...routes.mixed, holds: ['SN1 BIG A1 B2 @M1 #TYPO'] },
+    };
+    expect(extractHolds({ source: 'mixed' }, routesWithTypo)[0].color).toBe('#FF0000');
   });
 });
 
