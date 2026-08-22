@@ -5,6 +5,7 @@ import {
   decodeConfig,
   hydrateShareableConfig,
   getConfigFingerprint,
+  generateShareUrl,
   type ShareableConfig,
 } from './urlConfig';
 import type { SavedConfiguration } from '@/store';
@@ -242,6 +243,57 @@ describe('decodeConfig', () => {
     const decoded = decodeConfig(encoded);
 
     expect(decoded!.sections[0].anchor).toEqual({ side: 'DX', column: 'A', row: 1 });
+  });
+});
+
+describe('generateShareUrl', () => {
+  it('should build a share URL that decodes back to the configuration', () => {
+    const config: SavedConfiguration = {
+      id: 'id', name: 'Config', wall: { lanes: 2, panelsHeight: 10 },
+      sections: [{ id: 's', name: 'S', source: 'u15-it', lane: 0, fromHold: 'F1', toHold: 'PAD', color: '#FF0000', colors: { DARKGREEN: '#123456' } }],
+      createdAt: 1, updatedAt: 2,
+    };
+
+    const url = generateShareUrl(config);
+    const encoded = url.split('/').pop() ?? '';
+    const decoded = decodeConfig(encoded);
+
+    expect(url.startsWith(window.location.origin)).toBe(true);
+    expect(decoded?.sections[0].colors).toEqual({ DARKGREEN: '#123456' });
+  });
+});
+
+describe('decodeConfig colors validation', () => {
+  const encodeRaw = (obj: unknown): string => {
+    const json = JSON.stringify(obj);
+    const bytes = new TextEncoder().encode(json);
+    const binary = String.fromCharCode(...bytes);
+    return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  };
+
+  const payload = (colors: unknown) => ({
+    wall: { lanes: 2, panelsHeight: 10 },
+    sections: [{ name: 'S', source: 'ifsc', lane: 0, fromHold: 1, toHold: 20, color: '#FF0000', colors }],
+  });
+
+  it('should accept a link carrying no colors at all', () => {
+    const withoutColors = payload(undefined);
+    delete (withoutColors.sections[0] as { colors?: unknown }).colors;
+
+    expect(decodeConfig(encodeRaw(withoutColors))).not.toBeNull();
+  });
+
+  it('should accept a well-formed colors map', () => {
+    expect(decodeConfig(encodeRaw(payload({ RED: '#123456' })))).not.toBeNull();
+  });
+
+  it.each([
+    ['an array', []],
+    ['null', null],
+    ['a string', 'red'],
+    ['non-string values', { RED: 42 }],
+  ])('should reject %s as a colors map', (_label, colors) => {
+    expect(decodeConfig(encodeRaw(payload(colors)))).toBeNull();
   });
 });
 
