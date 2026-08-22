@@ -213,7 +213,7 @@ export function PrintPage() {
   }, [navigate]);
 
   return (
-    <div className="h-screen flex flex-col bg-base-300">
+    <div className="h-dvh flex flex-col bg-base-300">
       {/* Header */}
       <header data-testid="print-header" className="navbar bg-base-200 border-b border-base-300 px-2 md:px-4 min-h-12 md:min-h-16">
         <div className="flex-1 flex items-center gap-2 md:gap-4">

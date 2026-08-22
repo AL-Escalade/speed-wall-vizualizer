@@ -35,7 +35,7 @@ export function MobileNav() {
   const { activeTab, setActiveTab } = useMobileTab();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-base-100 border-t border-base-300 flex z-50 safe-area-bottom">
+    <nav className="shrink-0 bg-base-100 border-t border-base-300 flex safe-area-bottom">
       <TabButton
         tab="config"
         icon={<Settings size={20} />}
