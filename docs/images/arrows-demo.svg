@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="3160mm" height="3000mm" viewBox="-80 12000 3160 3000">
+<defs>
+<pattern id="smearing-hatch-FF0000" patternUnits="userSpaceOnUse" width="40" height="40" patternTransform="rotate(45)">
+    <line x1="0" y1="0" x2="0" y2="40" stroke="#FF0000" stroke-width="0" stroke-opacity="0.5" />
+  </pattern>
+<pattern id="smearing-hatch-00AAFF" patternUnits="userSpaceOnUse" width="40" height="40" patternTransform="rotate(45)">
+    <line x1="0" y1="0" x2="0" y2="40" stroke="#00AAFF" stroke-width="0" stroke-opacity="0.5" />
+  </pattern>
+<pattern id="smearing-hatch-FF6600" patternUnits="userSpaceOnUse" width="40" height="40" patternTransform="rotate(45)">
+    <line x1="0" y1="0" x2="0" y2="40" stroke="#FF6600" stroke-width="0" stroke-opacity="0.5" />
+  </pattern>
+</defs>
 <rect x="0" y="0" width="6000" height="15000" fill="white" stroke="#333333" stroke-width="1" />
 <g id="grid">
 <circle cx="125" cy="14812.5" r="4" fill="#999999" />
@@ -6136,6 +6147,140 @@
 <line x1="0" y1="0" x2="0" y2="15000" stroke="#666666" stroke-width="2" />
 <line x1="3000" y1="0" x2="3000" y2="15000" stroke="#666666" stroke-width="2" />
 <line x1="6000" y1="0" x2="6000" y2="15000" stroke="#666666" stroke-width="2" />
+</g>
+<g id="smearing-zones">
+<g class="smearing-zone" data-label="A1">
+  <rect x="1375" y="12562.5" width="500" height="375" fill="#FF0000" fill-opacity="0.2" />
+  <rect x="1375" y="12562.5" width="500" height="375" fill="url(#smearing-hatch-FF0000)" />
+  <rect x="1375" y="12562.5" width="500" height="375" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
+  <text x="1375" y="12942.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A1</text>
+</g>
+<g class="smearing-zone" data-label="A2">
+  <rect x="1125" y="11062.5" width="625" height="500" fill="#FF0000" fill-opacity="0.2" />
+  <rect x="1125" y="11062.5" width="625" height="500" fill="url(#smearing-hatch-FF0000)" />
+  <rect x="1125" y="11062.5" width="625" height="500" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
+  <text x="1125" y="11567.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A2</text>
+</g>
+<g class="smearing-zone" data-label="A3">
+  <rect x="2250" y="8437.5" width="500" height="375" fill="#FF0000" fill-opacity="0.2" />
+  <rect x="2250" y="8437.5" width="500" height="375" fill="url(#smearing-hatch-FF0000)" />
+  <rect x="2250" y="8437.5" width="500" height="375" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
+  <text x="2250" y="8817.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A3</text>
+</g>
+<g class="smearing-zone" data-label="A4">
+  <rect x="750" y="7437.5" width="625" height="375" fill="#FF0000" fill-opacity="0.2" />
+  <rect x="750" y="7437.5" width="625" height="375" fill="url(#smearing-hatch-FF0000)" />
+  <rect x="750" y="7437.5" width="625" height="375" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
+  <text x="750" y="7817.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A4</text>
+</g>
+<g class="smearing-zone" data-label="A5">
+  <rect x="1000" y="3000" width="1000" height="562.5" fill="#FF0000" fill-opacity="0.2" />
+  <rect x="1000" y="3000" width="1000" height="562.5" fill="url(#smearing-hatch-FF0000)" />
+  <rect x="1000" y="3000" width="1000" height="562.5" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
+  <text x="1000" y="3567.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A5</text>
+</g>
+<g class="smearing-zone" data-label="A6">
+  <rect x="1125" y="2062.5" width="375" height="375" fill="#FF0000" fill-opacity="0.2" />
+  <rect x="1125" y="2062.5" width="375" height="375" fill="url(#smearing-hatch-FF0000)" />
+  <rect x="1125" y="2062.5" width="375" height="375" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
+  <text x="1125" y="2442.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A6</text>
+</g>
+<g class="smearing-zone" data-label="A1">
+  <rect x="4375" y="12562.5" width="500" height="375" fill="#FF0000" fill-opacity="0.2" />
+  <rect x="4375" y="12562.5" width="500" height="375" fill="url(#smearing-hatch-FF0000)" />
+  <rect x="4375" y="12562.5" width="500" height="375" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
+  <text x="4375" y="12942.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A1</text>
+</g>
+<g class="smearing-zone" data-label="A2">
+  <rect x="4125" y="11062.5" width="625" height="500" fill="#FF0000" fill-opacity="0.2" />
+  <rect x="4125" y="11062.5" width="625" height="500" fill="url(#smearing-hatch-FF0000)" />
+  <rect x="4125" y="11062.5" width="625" height="500" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
+  <text x="4125" y="11567.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A2</text>
+</g>
+<g class="smearing-zone" data-label="A3">
+  <rect x="5250" y="8437.5" width="500" height="375" fill="#FF0000" fill-opacity="0.2" />
+  <rect x="5250" y="8437.5" width="500" height="375" fill="url(#smearing-hatch-FF0000)" />
+  <rect x="5250" y="8437.5" width="500" height="375" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
+  <text x="5250" y="8817.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A3</text>
+</g>
+<g class="smearing-zone" data-label="A4">
+  <rect x="3750" y="7437.5" width="625" height="375" fill="#FF0000" fill-opacity="0.2" />
+  <rect x="3750" y="7437.5" width="625" height="375" fill="url(#smearing-hatch-FF0000)" />
+  <rect x="3750" y="7437.5" width="625" height="375" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
+  <text x="3750" y="7817.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A4</text>
+</g>
+<g class="smearing-zone" data-label="A5">
+  <rect x="4000" y="3000" width="1000" height="562.5" fill="#FF0000" fill-opacity="0.2" />
+  <rect x="4000" y="3000" width="1000" height="562.5" fill="url(#smearing-hatch-FF0000)" />
+  <rect x="4000" y="3000" width="1000" height="562.5" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
+  <text x="4000" y="3567.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A5</text>
+</g>
+<g class="smearing-zone" data-label="A6">
+  <rect x="4125" y="2062.5" width="375" height="375" fill="#FF0000" fill-opacity="0.2" />
+  <rect x="4125" y="2062.5" width="375" height="375" fill="url(#smearing-hatch-FF0000)" />
+  <rect x="4125" y="2062.5" width="375" height="375" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
+  <text x="4125" y="2442.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A6</text>
+</g>
+<g class="smearing-zone" data-label="A1">
+  <rect x="125" y="13437.5" width="500" height="500" fill="#00AAFF" fill-opacity="0.2" />
+  <rect x="125" y="13437.5" width="500" height="500" fill="url(#smearing-hatch-00AAFF)" />
+  <rect x="125" y="13437.5" width="500" height="500" fill="none" stroke="#00AAFF" stroke-width="10" stroke-opacity="0.3" />
+  <text x="125" y="13942.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A1</text>
+</g>
+<g class="smearing-zone" data-label="A2">
+  <rect x="625" y="9937.5" width="625" height="375" fill="#00AAFF" fill-opacity="0.2" />
+  <rect x="625" y="9937.5" width="625" height="375" fill="url(#smearing-hatch-00AAFF)" />
+  <rect x="625" y="9937.5" width="625" height="375" fill="none" stroke="#00AAFF" stroke-width="10" stroke-opacity="0.3" />
+  <text x="625" y="10317.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A2</text>
+</g>
+<g class="smearing-zone" data-label="A3">
+  <rect x="125" y="9062.5" width="500" height="500" fill="#00AAFF" fill-opacity="0.2" />
+  <rect x="125" y="9062.5" width="500" height="500" fill="url(#smearing-hatch-00AAFF)" />
+  <rect x="125" y="9062.5" width="500" height="500" fill="none" stroke="#00AAFF" stroke-width="10" stroke-opacity="0.3" />
+  <text x="125" y="9567.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A3</text>
+</g>
+<g class="smearing-zone" data-label="A1">
+  <rect x="3125" y="13437.5" width="500" height="500" fill="#00AAFF" fill-opacity="0.2" />
+  <rect x="3125" y="13437.5" width="500" height="500" fill="url(#smearing-hatch-00AAFF)" />
+  <rect x="3125" y="13437.5" width="500" height="500" fill="none" stroke="#00AAFF" stroke-width="10" stroke-opacity="0.3" />
+  <text x="3125" y="13942.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A1</text>
+</g>
+<g class="smearing-zone" data-label="A2">
+  <rect x="3625" y="9937.5" width="625" height="375" fill="#00AAFF" fill-opacity="0.2" />
+  <rect x="3625" y="9937.5" width="625" height="375" fill="url(#smearing-hatch-00AAFF)" />
+  <rect x="3625" y="9937.5" width="625" height="375" fill="none" stroke="#00AAFF" stroke-width="10" stroke-opacity="0.3" />
+  <text x="3625" y="10317.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A2</text>
+</g>
+<g class="smearing-zone" data-label="A3">
+  <rect x="3125" y="9062.5" width="500" height="500" fill="#00AAFF" fill-opacity="0.2" />
+  <rect x="3125" y="9062.5" width="500" height="500" fill="url(#smearing-hatch-00AAFF)" />
+  <rect x="3125" y="9062.5" width="500" height="500" fill="none" stroke="#00AAFF" stroke-width="10" stroke-opacity="0.3" />
+  <text x="3125" y="9567.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A3</text>
+</g>
+<g class="smearing-zone" data-label="A3">
+  <rect x="3875" y="14562.5" width="500" height="375" fill="#FF6600" fill-opacity="0.2" />
+  <rect x="3875" y="14562.5" width="500" height="375" fill="url(#smearing-hatch-FF6600)" />
+  <rect x="3875" y="14562.5" width="500" height="375" fill="none" stroke="#FF6600" stroke-width="10" stroke-opacity="0.3" />
+  <text x="3875" y="14942.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF6600" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A3</text>
+</g>
+<g class="smearing-zone" data-label="A4">
+  <rect x="2375" y="13562.5" width="625" height="375" fill="#FF6600" fill-opacity="0.2" />
+  <rect x="2375" y="13562.5" width="625" height="375" fill="url(#smearing-hatch-FF6600)" />
+  <rect x="2375" y="13562.5" width="625" height="375" fill="none" stroke="#FF6600" stroke-width="10" stroke-opacity="0.3" />
+  <text x="2375" y="13942.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF6600" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A4</text>
+</g>
+<g class="smearing-zone" data-label="A5">
+  <rect x="2625" y="9125" width="1000" height="562.5" fill="#FF6600" fill-opacity="0.2" />
+  <rect x="2625" y="9125" width="1000" height="562.5" fill="url(#smearing-hatch-FF6600)" />
+  <rect x="2625" y="9125" width="1000" height="562.5" fill="none" stroke="#FF6600" stroke-width="10" stroke-opacity="0.3" />
+  <text x="2625" y="9692.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF6600" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A5</text>
+</g>
+<g class="smearing-zone" data-label="A6">
+  <rect x="2750" y="8187.5" width="375" height="375" fill="#FF6600" fill-opacity="0.2" />
+  <rect x="2750" y="8187.5" width="375" height="375" fill="url(#smearing-hatch-FF6600)" />
+  <rect x="2750" y="8187.5" width="375" height="375" fill="none" stroke="#FF6600" stroke-width="10" stroke-opacity="0.3" />
+  <text x="2750" y="8567.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF6600" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A6</text>
+</g>
 </g>
 <g id="arrows">
 <polygon points="2250,14452.5 2375,14437.5 2250,14422.5" fill="#FF0000" />

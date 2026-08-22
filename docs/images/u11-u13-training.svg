@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="3160mm" height="9160mm" viewBox="-80 -80 3160 9160">
+<defs>
+<pattern id="smearing-hatch-00AAFF" patternUnits="userSpaceOnUse" width="40" height="40" patternTransform="rotate(45)">
+    <line x1="0" y1="0" x2="0" y2="40" stroke="#00AAFF" stroke-width="0" stroke-opacity="0.5" />
+  </pattern>
+</defs>
 <rect x="0" y="0" width="3000" height="9000" fill="white" stroke="#333333" stroke-width="1" />
 <g id="grid">
 <circle cx="125" cy="8812.5" r="4" fill="#999999" />
@@ -1847,6 +1852,26 @@
 <line x1="0" y1="0" x2="3000" y2="0" stroke="#666666" stroke-width="2" />
 <line x1="0" y1="0" x2="0" y2="9000" stroke="#666666" stroke-width="2" />
 <line x1="3000" y1="0" x2="3000" y2="9000" stroke="#666666" stroke-width="2" />
+</g>
+<g id="smearing-zones">
+<g class="smearing-zone" data-label="A1">
+  <rect x="125" y="7437.5" width="500" height="500" fill="#00AAFF" fill-opacity="0.2" />
+  <rect x="125" y="7437.5" width="500" height="500" fill="url(#smearing-hatch-00AAFF)" />
+  <rect x="125" y="7437.5" width="500" height="500" fill="none" stroke="#00AAFF" stroke-width="10" stroke-opacity="0.3" />
+  <text x="125" y="7942.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A1</text>
+</g>
+<g class="smearing-zone" data-label="A2">
+  <rect x="625" y="3937.5" width="625" height="375" fill="#00AAFF" fill-opacity="0.2" />
+  <rect x="625" y="3937.5" width="625" height="375" fill="url(#smearing-hatch-00AAFF)" />
+  <rect x="625" y="3937.5" width="625" height="375" fill="none" stroke="#00AAFF" stroke-width="10" stroke-opacity="0.3" />
+  <text x="625" y="4317.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A2</text>
+</g>
+<g class="smearing-zone" data-label="A3">
+  <rect x="125" y="3062.5" width="500" height="500" fill="#00AAFF" fill-opacity="0.2" />
+  <rect x="125" y="3062.5" width="500" height="500" fill="url(#smearing-hatch-00AAFF)" />
+  <rect x="125" y="3062.5" width="500" height="500" fill="none" stroke="#00AAFF" stroke-width="10" stroke-opacity="0.3" />
+  <text x="125" y="3567.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A3</text>
+</g>
 </g>
 <g id="holds">
 <g transform="translate(875, 8562.5) rotate(180) scale(0.8981963703628045) translate(-42.327007, -34.167942)" data-source="u11-u13" data-hold="1" data-composed="1" class="hold"><path fill="#00AAFF" d="M 37.223937,68.459132 C 34.504305,68.344202 31.724453,67.403956 25.999404,64.662595 22.572635,63.021735 12.02303,55.635495 10.401811,53.742042 10.011619,53.286331 9.403807,52.725355 9.0511174,52.495429 7.8991975,51.744471 5.3323619,48.710374 4.3082592,46.889191 3.7570409,45.908947 3.0097994,44.606924 2.6477213,43.995804 0.78939636,40.859294 -0.06187351,34.135925 0.90327654,30.218089 1.129649,29.299175 1.2955625,28.405072 1.271974,28.231192 1.2484309,28.057304 1.4556883,27.43584 1.732648,26.850143 2.0096067,26.264446 2.2136151,25.640185 2.1860001,25.462897 1.9936435,24.22797 6.1617968,18.705191 8.9558921,16.492828 9.4803151,16.07759 10.11279,15.496492 10.361393,15.201497 c 0.248601,-0.294994 1.316498,-1.175056 2.373112,-1.955693 1.056613,-0.780638 2.190369,-1.624672 2.519464,-1.875633 1.255425,-0.957351 4.247088,-2.9269868 4.50735,-2.967526 0.149704,-0.023318 0.393476,-0.2084476 0.541726,-0.4114006 0.148252,-0.202952 0.962826,-0.7366521 1.810183,-1.1860018 0.847349,-0.4493481 2.482429,-1.3462587 3.633515,-1.9931348 8.895975,-4.99928752 12.462292,-5.47135382 17.792358,-2.3551399 0.869765,0.5085032 1.675462,0.9098979 1.790446,0.8919877 0.60868,-0.09481 4.796431,3.4500789 6.462246,5.4702366 1.334997,1.6189638 3.378182,4.6778128 3.695757,5.5328858 0.180962,0.487277 0.460381,1.005703 0.620909,1.15206 0.338194,0.308335 2.033688,3.932927 2.958047,6.323683 1.984632,5.132992 3.351424,15.056332 2.52752,18.35047 -0.134159,0.536361 -0.323029,1.469516 -0.419716,2.073679 -0.781952,4.885882 -3.852505,11.127244 -7.974384,16.209139 -3.291306,4.057885 -3.367105,4.131397 -6.719998,6.517409 -4.089458,2.910172 -5.975132,3.61926 -9.255991,3.480614 z" xmlns="http://www.w3.org/2000/svg"/>

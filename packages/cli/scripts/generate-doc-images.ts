@@ -14,7 +14,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { type Config, generateSvg, composeAllRoutes } from '@voie-vitesse/core';
+import { type Config, generateSvg, composeAllRoutes, composeAllSmearingZones } from '@voie-vitesse/core';
 import { loadRoutes } from '../src/reference-routes/index.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
@@ -46,8 +46,12 @@ async function render(configName: string, showArrow: boolean): Promise<string> {
     readFileSync(join(ROOT, 'data', `${configName}.json`), 'utf-8')
   ) as Config;
 
-  const holds = composeAllRoutes(config.routes, loadRoutes());
-  return generateSvg(config, holds, showArrow ? { showArrow: true } : undefined);
+  const routes = loadRoutes();
+  const holds = composeAllRoutes(config.routes, routes);
+  // Same pipeline as the CLI, so the illustrations cannot drift from its output
+  const zones = composeAllSmearingZones(config.routes, routes, holds);
+
+  return generateSvg(config, holds, showArrow ? { showArrow: true } : {}, zones);
 }
 
 async function main(): Promise<void> {

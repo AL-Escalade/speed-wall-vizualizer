@@ -10,7 +10,7 @@
 
 import { readFile } from 'fs/promises';
 import { resolve, basename, dirname, join } from 'path';
-import { type Config, type OutputFormat, generateSvg, composeAllRoutes, getRouteColorMap, DEFAULT_COLOR_TAG } from '@voie-vitesse/core';
+import { type Config, type OutputFormat, generateSvg, composeAllRoutes, composeAllSmearingZones, getRouteColorMap, DEFAULT_COLOR_TAG } from '@voie-vitesse/core';
 import { writeOutput, formatFromPath, getExtension } from './output/index.js';
 import { getAvailableRouteNames, getReferenceRoute, loadRoutes } from './reference-routes/index.js';
 
@@ -185,9 +185,13 @@ async function main(): Promise<void> {
     const allHolds = composeAllRoutes(config.routes, referenceRoutes);
     console.log(`Total holds: ${allHolds.length}`);
 
+    // Compose smearing zones, like the web viewer does
+    const smearingZones = composeAllSmearingZones(config.routes, referenceRoutes, allHolds);
+    console.log(`Smearing zones: ${smearingZones.length}`);
+
     // Generate SVG
     console.log('Generating SVG...');
-    const svgContent = await generateSvg(config, allHolds);
+    const svgContent = await generateSvg(config, allHolds, {}, smearingZones);
 
     // Determine output path and format
     let { output: outputPath, format } = args;
