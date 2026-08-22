@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { useRoutesStore, type HoldPosition } from './routesStore';
+// Aliased: the store exposes a same-named selector that these tests also use
+import { getRouteColorMap as normalizeRouteColorMap, validateRouteColorTags } from '@voie-vitesse/core';
 
 // Known expected values from route data for specific assertions
 const EXPECTED_ROUTE_NAMES = ['ifsc', 'ifsc-10m', 'training', 'u11-u13', 'u11-u13-comp', 'u12-u14', 'u12-u14-comp', 'u11-u13-de-it', 'u15', 'u15-it', 'u13-u15-in', 'u13-de'] as const;
@@ -159,9 +161,76 @@ describe('routesStore', () => {
       expect(getRouteColor('ifsc')).toBe(IFSC_COLOR);
     });
 
+    it('should return the first declared color of a multi-color route', () => {
+      const { getRouteColor } = useRoutesStore.getState();
+      expect(getRouteColor('u15-it')).toBe('#FF0000');
+    });
+
     it('should return undefined for unknown route', () => {
       const { getRouteColor } = useRoutesStore.getState();
       expect(getRouteColor('unknown-route')).toBeUndefined();
+    });
+  });
+
+  describe('getRouteColorMap', () => {
+    it('should normalize a single-color route under the default tag', () => {
+      const { getRouteColorMap } = useRoutesStore.getState();
+      expect(getRouteColorMap('ifsc')).toEqual({ DEFAULT: IFSC_COLOR });
+    });
+
+    it('should preserve declaration order for a multi-color route', () => {
+      const { getRouteColorMap } = useRoutesStore.getState();
+      const colorMap = getRouteColorMap('u15-it');
+
+      assertDefined(colorMap, 'u15-it color map should exist');
+      expect(Object.keys(colorMap)).toEqual(['RED', 'DARKGREEN']);
+      expect(colorMap).toEqual({ RED: '#FF0000', DARKGREEN: '#006400' });
+    });
+
+    it('should return undefined for unknown route', () => {
+      const { getRouteColorMap } = useRoutesStore.getState();
+      expect(getRouteColorMap('unknown-route')).toBeUndefined();
+    });
+  });
+
+  describe('route data integrity', () => {
+    it.each(EXPECTED_ROUTE_NAMES)('should declare valid colors and tags for %s', (name) => {
+      const { getRoute } = useRoutesStore.getState();
+      const route = getRoute(name);
+
+      assertDefined(route, `${name} route should exist`);
+      const colorMap = normalizeRouteColorMap(route);
+
+      expect(Object.keys(colorMap).length).toBeGreaterThan(0);
+      for (const color of Object.values(colorMap)) {
+        expect(color).toMatch(/^#[0-9A-Fa-f]{6}$/);
+      }
+      // Tags fall back silently at render time, so this is the only real guard
+      expect(validateRouteColorTags(route)).toEqual([]);
+    });
+
+    // Regression guard: an end-anchored @LABEL regex would silently drop every
+    // hold carrying a trailing #COLORTAG, breaking the from/to dropdowns and the
+    // default toHold of new sections. Covers EVERY route, so a newly tagged one
+    // is protected without anyone remembering to extend this list.
+    it.each(EXPECTED_ROUTE_NAMES)('should keep every tagged hold of %s in the label list', (name) => {
+      const { getHoldLabels, getLastHoldLabel, getRoute } = useRoutesStore.getState();
+      const route = getRoute(name);
+
+      assertDefined(route, `${name} route should exist`);
+      // Length equality is the real guard: dropping a tagged hold shortens the list
+      expect(getHoldLabels(name)).toHaveLength(route.holds.length);
+      // Every route ends on its finish pad (u15 names it PAD-U15)
+      expect(getLastHoldLabel(name)).toMatch(/^PAD/);
+    });
+
+    it('should cover at least one tagged route, so the guard above is meaningful', () => {
+      const { getRoute } = useRoutesStore.getState();
+      const tagged = EXPECTED_ROUTE_NAMES.filter((name) =>
+        getRoute(name)?.holds.some((h) => h.includes(' #'))
+      );
+
+      expect(tagged.length).toBeGreaterThanOrEqual(6);
     });
   });
 });

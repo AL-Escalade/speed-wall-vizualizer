@@ -4,10 +4,12 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { WallConfig } from '@voie-vitesse/core';
+import { type WallConfig, type RouteColorMap, getRouteColorMap, getDefaultColorTag } from '@voie-vitesse/core';
 import type { Section, SavedConfiguration, DisplayOptions, LanguageSetting } from './types';
 import type { CoordinateSystemId } from '@/constants/routes';
 import { getConfigFingerprint } from '@/utils/urlConfig';
+import { migrateSectionColors } from '@/utils/sectionColors';
+import { useRoutesStore } from './routesStore';
 
 // Import route data to get default colors
 import ifscData from '../../../../data/routes/ifsc.json';
@@ -21,8 +23,11 @@ const DEFAULT_WALL: WallConfig = {
   panelsHeight: 10,
 };
 
-/** Get IFSC color from route config */
-const IFSC_COLOR = ifscData.color;
+/** Get IFSC default color from route config (handles both the string and map forms) */
+const IFSC_COLOR = (() => {
+  const colorMap = getRouteColorMap(ifscData as { color: string | RouteColorMap });
+  return colorMap[getDefaultColorTag({ color: colorMap })];
+})();
 
 /** Parse first hold position from route data */
 function parseFirstHoldPosition(holds: string[]): { side: 'SN' | 'DX'; column: string; row: number } {
@@ -61,6 +66,7 @@ function createDefaultConfiguration(): SavedConfiguration {
         fromHold: 'P1',
         toHold: 'PAD',
         color: IFSC_COLOR,
+        colors: {},
         anchor: IFSC_FIRST_HOLD,
       },
       {
@@ -71,12 +77,40 @@ function createDefaultConfiguration(): SavedConfiguration {
         fromHold: 'P1',
         toHold: 'PAD',
         color: IFSC_COLOR,
+        colors: {},
         anchor: IFSC_FIRST_HOLD,
       },
     ],
     createdAt: Date.now(),
     updatedAt: Date.now(),
   };
+}
+
+/** Find a section of the active configuration */
+function findSection(state: Pick<ConfigState, 'configurations' | 'activeConfigId'>, id: string): Section | undefined {
+  return state.configurations
+    .find((c) => c.id === state.activeConfigId)
+    ?.sections.find((s) => s.id === id);
+}
+
+/**
+ * Build a section update that rewrites its color overrides and keeps the
+ * `color` mirror in sync, so no caller can forget the invariant.
+ * @param section - The section being updated, or undefined if it vanished
+ * @param update - Transforms the current overrides into the new ones
+ */
+function applySectionColors(
+  section: Section | undefined,
+  update: (colors: Record<string, string>) => Record<string, string>
+): Partial<Omit<Section, 'id'>> {
+  if (!section) return {};
+
+  const colors = update(section.colors ?? {});
+  const routeColorMap = useRoutesStore.getState().getRouteColorMap(section.source);
+  if (!routeColorMap) return { colors };
+
+  const defaultTag = getDefaultColorTag({ color: routeColorMap });
+  return { colors, color: colors[defaultTag] ?? routeColorMap[defaultTag] };
 }
 
 interface ConfigState {
@@ -100,6 +134,10 @@ interface ConfigState {
   addSection: (section: Omit<Section, 'id'>) => string;
   /** Update a section */
   updateSection: (id: string, updates: Partial<Omit<Section, 'id'>>) => void;
+  /** Merge per-color-tag overrides into a section */
+  setSectionColors: (id: string, patch: Record<string, string>) => void;
+  /** Drop a section's color overrides, falling back to its route's colors */
+  resetSectionColors: (id: string) => void;
   /** Remove a section */
   removeSection: (id: string) => void;
   /** Import configuration from JSON */
@@ -226,6 +264,17 @@ export const useConfigStore = create<ConfigState>()(
               : c
           ),
         }));
+      },
+
+      setSectionColors: (id: string, patch: Record<string, string>) => {
+        get().updateSection(id, applySectionColors(
+          findSection(get(), id),
+          (colors) => ({ ...colors, ...patch })
+        ));
+      },
+
+      resetSectionColors: (id: string) => {
+        get().updateSection(id, applySectionColors(findSection(get(), id), () => ({})));
       },
 
       removeSection: (id: string) => {
@@ -379,8 +428,20 @@ export const useConfigStore = create<ConfigState>()(
       name: 'voie-vitesse-config',
       version: 1,
       onRehydrateStorage: () => (state) => {
+        if (!state) return;
+
+        // Bring sections saved before multi-color routes up to the per-tag model.
+        // migrateSectionColors is idempotent, so running it on every load is safe
+        // and avoids a `version` bump, which without a `migrate` function would
+        // make zustand discard every saved configuration.
+        const { getRouteColorMap: lookupColorMap } = useRoutesStore.getState();
+        state.configurations = state.configurations.map((config) => ({
+          ...config,
+          sections: config.sections.map((s) => migrateSectionColors(s, lookupColorMap)),
+        }));
+
         // Create default configuration if none exists
-        if (state && state.configurations.length === 0) {
+        if (state.configurations.length === 0) {
           const defaultConfig = createDefaultConfiguration();
           state.configurations = [defaultConfig];
           state.activeConfigId = defaultConfig.id;

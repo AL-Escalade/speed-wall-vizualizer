@@ -210,6 +210,7 @@ function SectionList() {
       fromHold: firstLabel ?? DEFAULT_HOLDS.FIRST,
       toHold: lastLabel ?? DEFAULT_HOLDS.LAST,
       color: routeColor ?? DEFAULT_SECTION_COLOR,
+      colors: {},
       anchor: firstPos ?? DEFAULT_ANCHOR,
     });
 

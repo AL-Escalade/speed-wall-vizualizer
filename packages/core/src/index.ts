@@ -38,17 +38,21 @@ export type {
   HoldTypesConfig,
   ColumnSystemId,
   ColumnSystem,
+  RouteColorMap,
 } from './types.js';
 
 // Column coordinate systems
 export { COLUMN_SYSTEMS, DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM, VIRTUAL_COLUMNS, VIRTUAL_ROWS } from './types.js';
+
+// Hold colors
+export { DEFAULT_COLOR_TAG } from './types.js';
 
 // SVG Generation
 export { generateSvg } from './svg-generator.js';
 export type { SvgOptions } from './svg-generator.js';
 
 // Route Composition
-export { composeAllRoutes, composeRoute, extractHolds, parseHold, getRouteHolds, composeAllSmearingZones, composeSmearingZones, extractSmearingZones } from './route-composer.js';
+export { composeAllRoutes, composeRoute, extractHolds, parseHold, getRouteHolds, composeAllSmearingZones, composeSmearingZones, extractSmearingZones, getRouteColorMap, getDefaultColorTag, validateRouteColorTags } from './route-composer.js';
 export type { ComposedHold } from './route-composer.js';
 
 // Hold SVG Parsing

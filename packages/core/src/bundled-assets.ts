@@ -579,7 +579,8 @@ export const HOLD_TYPES_CONFIG: HoldTypesConfig = {
       "height": 250
     },
     "defaultOrientation": 0,
-    "showArrow": false
+    "showArrow": false,
+    "color": "#1A1A1A"
   },
   "BIG-DE15": {
     "description": "Grande prise de main pour U15 (Allemagne)",

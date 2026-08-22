@@ -45,7 +45,7 @@ describe('SectionHeader', () => {
       expect(colorIndicator).toHaveStyle({ backgroundColor: '#FF0000' });
     });
 
-    it('should render displayColor when provided', () => {
+    it('should render displayColors when provided', () => {
       const { container } = renderWithIntl(
         <SectionHeader
           section={mockSection}
@@ -53,12 +53,47 @@ describe('SectionHeader', () => {
           onToggle={() => {}}
           onRename={() => {}}
           onRemove={() => {}}
-          displayColor="#00FF00"
+          displayColors={['#00FF00']}
         />
       );
 
       const colorIndicator = container.querySelector('.rounded-full');
       expect(colorIndicator).toHaveStyle({ backgroundColor: '#00FF00' });
+    });
+
+    it('should render several display colors as hard-stop bands', () => {
+      const { container } = renderWithIntl(
+        <SectionHeader
+          section={mockSection}
+          isExpanded={false}
+          onToggle={() => {}}
+          onRename={() => {}}
+          onRemove={() => {}}
+          displayColors={['#FF0000', '#006400']}
+        />
+      );
+
+      // jsdom normalizes hex colors to rgb() in serialized styles
+      const style = container.querySelector('.rounded-full')?.getAttribute('style');
+      expect(style).toContain('linear-gradient');
+      expect(style).toContain('rgb(255, 0, 0) 0.00% 50.00%');
+      expect(style).toContain('rgb(0, 100, 0) 50.00% 100.00%');
+    });
+
+    it('should fall back to the section color when displayColors is empty', () => {
+      const { container } = renderWithIntl(
+        <SectionHeader
+          section={mockSection}
+          isExpanded={false}
+          onToggle={() => {}}
+          onRename={() => {}}
+          onRemove={() => {}}
+          displayColors={[]}
+        />
+      );
+
+      const colorIndicator = container.querySelector('.rounded-full');
+      expect(colorIndicator).toHaveStyle({ backgroundColor: '#FF0000' });
     });
 
     it('should render rename button', () => {

@@ -834,4 +834,63 @@ describe('configStore', () => {
       expect(state.configurations[0].language).toBe('auto');
     });
   });
+
+  describe('rehydration', () => {
+    /** Seed localStorage the way zustand/persist serializes it, then rehydrate */
+    const rehydrateWith = async (sections: unknown[]) => {
+      localStorage.setItem('voie-vitesse-config', JSON.stringify({
+        version: 1,
+        state: {
+          configurations: [{
+            id: 'cfg', name: 'Saved', wall: { lanes: 2, panelsHeight: 10 },
+            sections, createdAt: 1, updatedAt: 1,
+          }],
+          activeConfigId: 'cfg',
+        },
+      }));
+      await useConfigStore.persist.rehydrate();
+      return useConfigStore.getState().configurations[0].sections[0];
+    };
+
+    const legacySection = (color: string) => ({
+      id: 's', name: 'S', source: 'u15-it', lane: 0, fromHold: 'F1', toHold: 'PAD', color,
+    });
+
+    afterEach(() => {
+      localStorage.clear();
+    });
+
+    it('should migrate a section saved before multi-color routes', async () => {
+      // #008000 is u15-it's pre-feature color, so it was never customized
+      const section = await rehydrateWith([legacySection('#008000')]);
+
+      expect(section.colors).toEqual({});
+      expect(section.color).toBe('#FF0000');
+    });
+
+    it('should pin a deliberately chosen color across every tag', async () => {
+      const section = await rehydrateWith([legacySection('#FF6600')]);
+
+      expect(section.colors).toEqual({ RED: '#FF6600', DARKGREEN: '#FF6600' });
+    });
+
+    it('should be idempotent across two rehydrations', async () => {
+      const first = await rehydrateWith([legacySection('#008000')]);
+      const second = await rehydrateWith([{ ...first }]);
+
+      expect(second).toEqual(first);
+    });
+
+    it('should seed a default configuration when none is stored', async () => {
+      localStorage.setItem('voie-vitesse-config', JSON.stringify({
+        version: 1,
+        state: { configurations: [], activeConfigId: null },
+      }));
+      await useConfigStore.persist.rehydrate();
+
+      const { configurations, activeConfigId } = useConfigStore.getState();
+      expect(configurations).toHaveLength(1);
+      expect(activeConfigId).toBe(configurations[0].id);
+    });
+  });
 });

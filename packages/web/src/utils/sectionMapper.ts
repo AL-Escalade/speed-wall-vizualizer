@@ -33,6 +33,7 @@ export interface WebSection {
   fromHold: number | string;
   toHold: number | string;
   color: string;
+  colors?: Record<string, string>;
   anchor?: AnchorPosition;
   excludeHolds?: HoldLabel[];
 }
@@ -40,6 +41,9 @@ export interface WebSection {
 /**
  * Convert web app section to core RouteSegment format.
  * Panel number is always 1 (bottom panel) since first hold starts at the bottom.
+ *
+ * Emits exactly one of `colors` or `color`: the core resolver switches on the
+ * presence of `colors`, so sending both would make `colors: {}` ambiguous.
  *
  * @param section - The web app section to convert
  * @returns The core RouteSegment format
@@ -58,9 +62,9 @@ export function sectionToSegment(section: WebSection): RouteSegment {
     fromHold: section.fromHold,
     toHold: section.toHold,
     laneOffset: section.lane,
-    color: section.color,
     anchor,
     excludeHolds: section.excludeHolds,
+    ...(section.colors === undefined ? { color: section.color } : { colors: section.colors }),
   };
 }
 

@@ -13,8 +13,23 @@ interface SectionHeaderProps {
   onToggle: () => void;
   onRename: (name: string) => void;
   onRemove: () => void;
-  /** Optional display color for immediate visual feedback during color picker drag */
-  displayColor?: string;
+  /**
+   * Optional display colors for immediate visual feedback during color picker
+   * drag. Several colors are shown as hard-stop bands in a single swatch.
+   */
+  displayColors?: string[];
+}
+
+/** Build the swatch fill: a flat color, or hard-stop bands for a multi-color section */
+function buildSwatchBackground(colors: string[]): string {
+  if (colors.length === 1) return colors[0];
+
+  const bands = colors.map((color, i) => {
+    const from = ((i * 100) / colors.length).toFixed(2);
+    const to = (((i + 1) * 100) / colors.length).toFixed(2);
+    return `${color} ${from}% ${to}%`;
+  });
+  return `linear-gradient(90deg, ${bands.join(', ')})`;
 }
 
 export const SectionHeader = memo(function SectionHeader({
@@ -23,7 +38,7 @@ export const SectionHeader = memo(function SectionHeader({
   onToggle,
   onRename,
   onRemove,
-  displayColor,
+  displayColors,
 }: SectionHeaderProps) {
   const intl = useIntl();
   const [isEditing, setIsEditing] = useState(false);
@@ -63,7 +78,7 @@ export const SectionHeader = memo(function SectionHeader({
       </button>
       <div
         className="w-5 h-5 rounded-full border border-base-300 flex-shrink-0"
-        style={{ backgroundColor: displayColor ?? section.color }}
+        style={{ background: buildSwatchBackground(displayColors?.length ? displayColors : [section.color]) }}
       />
       {isEditing ? (
         <div className="flex gap-1 flex-1" onClick={(e) => e.stopPropagation()}>

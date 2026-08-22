@@ -2,6 +2,40 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { validateConfiguration } from './configValidation';
 import type { SavedConfiguration } from '@/store';
 
+describe('validateConfiguration migration', () => {
+  // Pins the migration to this entry point: deleting the migrateSectionColors
+  // call in validateConfiguration must fail a test, not just pass silently
+  // `colors` is omitted rather than set to undefined: JSON.parse never yields an
+  // explicitly-undefined value, so an absent key is what a real import looks like
+  const imported = (color: string, colors?: Record<string, string>) => ({
+    id: 'i', name: 'Imported', wall: { lanes: 2, panelsHeight: 10 },
+    sections: [{
+      id: 's', name: 'S', source: 'u15-it', lane: 0, fromHold: 'F1', toHold: 'PAD', color,
+      ...(colors === undefined ? {} : { colors }),
+    }],
+  });
+
+  const sectionOf = (data: unknown) => {
+    const result = validateConfiguration(data);
+    expect(result.success).toBe(true);
+    return result.success ? result.data.sections[0] : undefined;
+  };
+
+  it('should adopt the route colors for an export predating multi-color routes', () => {
+    // #008000 is u15-it's pre-feature color, so the section was never customized
+    expect(sectionOf(imported('#008000'))).toMatchObject({ colors: {}, color: '#FF0000' });
+  });
+
+  it('should pin a deliberately chosen color across every tag', () => {
+    expect(sectionOf(imported('#FF6600'))?.colors).toEqual({ RED: '#FF6600', DARKGREEN: '#FF6600' });
+  });
+
+  it('should accept and preserve an export carrying per-tag overrides', () => {
+    expect(sectionOf(imported('#FF0000', { DARKGREEN: '#123456' }))?.colors)
+      .toEqual({ DARKGREEN: '#123456' });
+  });
+});
+
 describe('validateConfiguration', () => {
   const validConfig: SavedConfiguration = {
     id: 'test-id',

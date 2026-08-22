@@ -21,16 +21,20 @@ describe('parseHold (CLI-specific behavior)', () => {
   });
 
   it('should throw for invalid panel ID', () => {
-    expect(() => parseHold('XX1 BIG A1 B2', COLUMN_SYSTEMS.ABC)).toThrow('Invalid panel ID');
+    expect(() => parseHold('XX1 BIG A1 B2', COLUMN_SYSTEMS.ABC)).toThrow('Invalid panel identifier');
   });
 
   it('should throw for invalid position format', () => {
-    expect(() => parseHold('SN1 BIG 1A B2', COLUMN_SYSTEMS.ABC)).toThrow('Invalid position');
+    expect(() => parseHold('SN1 BIG 1A B2', COLUMN_SYSTEMS.ABC)).toThrow('Invalid insert position format');
   });
 
   it('should validate columns against the specified column system', () => {
     // Column L is invalid in ABC system (only A-K)
     expect(() => parseHold('SN1 BIG L1 A2', COLUMN_SYSTEMS.ABC)).toThrow();
+  });
+
+  it('should parse the color tag', () => {
+    expect(parseHold('SN1 BIG A1 B2 @M1 #DARKGREEN', COLUMN_SYSTEMS.ABC).colorTag).toBe('DARKGREEN');
   });
 });
 
@@ -115,6 +119,25 @@ describe('getReferenceRoute', () => {
   it('should return undefined for unknown route', () => {
     const route = getReferenceRoute('non-existent-route-xyz');
     expect(route).toBeUndefined();
+  });
+
+  it('should preserve smearing zones so their color tags can be validated', () => {
+    const route = getReferenceRoute('u15-it');
+
+    expect(route).toBeDefined();
+    expect(route!.smearingZones?.length).toBeGreaterThan(0);
+    expect(route!.smearingZones?.[0]).toMatchObject({ label: expect.any(String) as unknown as string });
+  });
+
+  it('should load a multi-color route with its tagged holds', () => {
+    const route = getReferenceRoute('u15-it');
+
+    expect(route).toBeDefined();
+    expect(route!.color).toEqual({ RED: '#FF0000', DARKGREEN: '#006400' });
+
+    const holds = getRouteHolds(route!);
+    expect(holds.find(h => h.label === 'H1')?.colorTag).toBeUndefined();
+    expect(holds.find(h => h.label === 'G1')?.colorTag).toBe('DARKGREEN');
   });
 });
 

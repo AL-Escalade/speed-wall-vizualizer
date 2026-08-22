@@ -30,7 +30,14 @@ bun run lint
 
 # Regenerate bundled assets (after modifying hold SVGs)
 bun run generate:assets
+
+# Regenerate README illustrations (after ANY change affecting the rendering)
+bun run generate:doc-images
 ```
+
+Any change that influences the final rendering - SVG generator, grid, hold
+assets, or reference route data - must be accompanied by regenerated
+`docs/images/*.svg`. Leaving them stale is worse than a noisy diff.
 
 ## Architecture
 
@@ -65,9 +72,35 @@ bun run generate:assets
 
 ### Hold Format
 
-Holds use compact string format: `"PANEL TYPE POSITION ORIENTATION [@LABEL] [SCALE]"`
+Holds use compact string format: `"PANEL TYPE POSITION ORIENTATION [@LABEL] [SCALE] [#COLORTAG]"`
 - Example: `"DX2 BIG F1 D3 @M1"` - BIG hold at F1 on DX2, pointing to D3, labeled M1
 - Cross-panel orientation: `"SN5 FOOT H1 SN4:H10 @P6"` - orientation target on different panel
+- Color tag: `"DX1 FOOT C3 C4 @G1 #DARKGREEN"` - hold painted with the route's DARKGREEN
+
+The optional trailing tokens can appear in any order.
+
+### Hold Colors
+
+A route declares either a single color or a map whose **first key is the default**
+applied to untagged holds:
+
+```jsonc
+"color": "#FF0000"                                     // all holds
+"color": { "RED": "#FF0000", "DARKGREEN": "#006400" }  // per #COLORTAG
+```
+
+Resolution order: an explicit `#COLORTAG` wins, then a color forced by the hold
+type (`STOP` pads are always dark, see `assets/holds/holds.json`), then the
+route's default color.
+
+A config segment overrides colors two ways, and the resolver switches on which
+one is **present**, not on its content:
+- `colors: { TAG: "#..." }` - per-tag; a tag with no entry follows the route.
+  `colors: {}` therefore means "route colors, no override".
+- `color: "#..."` - legacy uniform override, ignored when `colors` is present.
+
+Undeclared tags fall back to the default color rather than throwing; use
+`validateRouteColorTags()` to catch typos in route data.
 
 ### Column Coordinate Systems
 

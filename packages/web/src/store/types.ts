@@ -32,8 +32,17 @@ export interface Section {
   fromHold: number | string;
   /** Last hold (1-based index or label) */
   toHold: number | string;
-  /** Color for this section */
+  /**
+   * Effective color of the source route's default color tag.
+   * Mirror of `colors`, kept so older builds can still read exports and links.
+   */
   color: string;
+  /**
+   * Per-color-tag overrides, sparse: a tag without an entry follows the route.
+   * `{}` means "follow the route entirely"; `undefined` means the section
+   * predates multi-color routes and still needs migrating.
+   */
+  colors?: Record<string, string>;
   /** Optional anchor position for custom placement */
   anchor?: AnchorPosition;
   /** Hold labels to exclude from this section */
