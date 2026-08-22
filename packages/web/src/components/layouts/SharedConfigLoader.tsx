@@ -42,7 +42,7 @@ export function SharedConfigLoader() {
 
   if (error) {
     return (
-      <div className="h-screen flex flex-col items-center justify-center gap-4 p-4">
+      <div className="h-dvh flex flex-col items-center justify-center gap-4 p-4">
         <div className="alert alert-error max-w-md">
           <span>{error}</span>
         </div>
@@ -57,7 +57,7 @@ export function SharedConfigLoader() {
   }
 
   return (
-    <div className="h-screen flex items-center justify-center">
+    <div className="h-dvh flex items-center justify-center">
       <span className="loading loading-spinner loading-lg" />
     </div>
   );

@@ -11,9 +11,9 @@ export function MobileLayout() {
   const activeTab = useMobileTab((s) => s.activeTab);
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-dvh flex flex-col">
       <Header />
-      <div className="flex-1 relative min-h-0 pb-14 overflow-hidden">
+      <div className="flex-1 relative min-h-0 overflow-hidden">
         {/* Sidebar visible only on config tab */}
         <div className={`absolute inset-0 overflow-y-auto ${activeTab === 'config' ? '' : 'hidden'}`}>
           <Sidebar />

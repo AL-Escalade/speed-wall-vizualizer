@@ -30,7 +30,7 @@ describe('DesktopLayout', () => {
 
     // Root container should have flex column layout
     const root = container.firstChild as HTMLElement;
-    expect(root.className).toContain('h-screen');
+    expect(root.className).toContain('h-dvh');
     expect(root.className).toContain('flex');
     expect(root.className).toContain('flex-col');
   });
