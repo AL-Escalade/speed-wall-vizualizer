@@ -9,6 +9,7 @@ import type { Section, SavedConfiguration, DisplayOptions, LanguageSetting } fro
 import type { CoordinateSystemId } from '@/constants/routes';
 import { getConfigFingerprint } from '@/utils/urlConfig';
 import { migrateSectionColors } from '@/utils/sectionColors';
+import { CONFIG_SCHEMA_VERSION, migrateSectionSource } from '@/utils/configMigrations';
 import { useRoutesStore } from './routesStore';
 
 // Import route data to get default colors
@@ -426,14 +427,25 @@ export const useConfigStore = create<ConfigState>()(
     }),
     {
       name: 'voie-vitesse-config',
-      version: 1,
+      version: CONFIG_SCHEMA_VERSION,
+      // Runs before onRehydrateStorage, so the color migration below still sees
+      // the route each section actually referred to when it was saved
+      migrate: (persisted, fromVersion) => {
+        const state = persisted as { configurations?: SavedConfiguration[] };
+        return {
+          ...state,
+          configurations: (state.configurations ?? []).map((config) => ({
+            ...config,
+            sections: config.sections.map((s) => migrateSectionSource(s, fromVersion)),
+          })),
+        };
+      },
       onRehydrateStorage: () => (state) => {
         if (!state) return;
 
         // Bring sections saved before multi-color routes up to the per-tag model.
-        // migrateSectionColors is idempotent, so running it on every load is safe
-        // and avoids a `version` bump, which without a `migrate` function would
-        // make zustand discard every saved configuration.
+        // migrateSectionColors is idempotent, so it runs on every load rather
+        // than from `migrate`, which zustand only calls on a version change.
         const { getRouteColorMap: lookupColorMap } = useRoutesStore.getState();
         state.configurations = state.configurations.map((config) => ({
           ...config,

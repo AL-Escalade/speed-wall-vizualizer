@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { validateConfiguration } from './configValidation';
 import type { SavedConfiguration } from '@/store';
+import { CONFIG_SCHEMA_VERSION } from './configMigrations';
 
 describe('validateConfiguration migration', () => {
   // Pins the migration to this entry point: deleting the migrateSectionColors
@@ -22,8 +23,19 @@ describe('validateConfiguration migration', () => {
   };
 
   it('should adopt the route colors for an export predating multi-color routes', () => {
-    // #008000 is u15-it's pre-feature color, so the section was never customized
+    // #008000 is the pre-feature color of the route u15-it then designated,
+    // so the section was never customized
     expect(sectionOf(imported('#008000'))).toMatchObject({ colors: {}, color: '#FF0000' });
+  });
+
+  it('should rename a route id that changed meaning', () => {
+    expect(sectionOf(imported('#008000'))?.source).toBe('u15-de');
+  });
+
+  it('should leave the route id of a versioned export alone', () => {
+    const versioned = { ...imported('#008000'), schemaVersion: CONFIG_SCHEMA_VERSION };
+
+    expect(sectionOf(versioned)?.source).toBe('u15-it');
   });
 
   it('should pin a deliberately chosen color across every tag', () => {

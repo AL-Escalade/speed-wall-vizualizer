@@ -9,6 +9,7 @@ import {
   type ShareableConfig,
 } from './urlConfig';
 import type { SavedConfiguration } from '@/store';
+import { CONFIG_SCHEMA_VERSION } from './configMigrations';
 
 // Mock crypto.randomUUID with proper UUID format
 beforeEach(() => {
@@ -309,11 +310,28 @@ describe('hydrateShareableConfig migration', () => {
   });
 
   it('should adopt the route colors for a link predating multi-color routes', () => {
-    // #008000 is u15-it's pre-feature color, so the section was never customized
+    // #008000 is the pre-feature color of the route u15-it then designated,
+    // so the section was never customized
     const hydrated = hydrateShareableConfig(share('#008000'));
 
     expect(hydrated.sections[0].colors).toEqual({});
     expect(hydrated.sections[0].color).toBe('#FF0000');
+  });
+
+  it('should rename a route id that changed meaning', () => {
+    expect(hydrateShareableConfig(share('#008000')).sections[0].source).toBe('u15-de');
+  });
+
+  it('should leave the route id of a versioned link alone', () => {
+    const versioned = { ...share('#008000'), schemaVersion: CONFIG_SCHEMA_VERSION };
+
+    expect(hydrateShareableConfig(versioned).sections[0].source).toBe('u15-it');
+  });
+
+  it('should stamp the current version on the links it produces', () => {
+    const config = hydrateShareableConfig(share('#008000'));
+
+    expect(extractShareableConfig(config).schemaVersion).toBe(CONFIG_SCHEMA_VERSION);
   });
 
   it('should pin a deliberately chosen color across every tag', () => {

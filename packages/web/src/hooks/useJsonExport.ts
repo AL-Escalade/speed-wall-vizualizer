@@ -4,6 +4,7 @@
 
 import { useCallback } from 'react';
 import { useConfigStore } from '@/store';
+import { CONFIG_SCHEMA_VERSION } from '@/utils/configMigrations';
 
 interface UseJsonExportResult {
   exportJson: () => boolean;
@@ -19,7 +20,7 @@ export function useJsonExport(): UseJsonExportResult {
       return false;
     }
 
-    const dataStr = JSON.stringify(config, null, 2);
+    const dataStr = JSON.stringify({ ...config, schemaVersion: CONFIG_SCHEMA_VERSION }, null, 2);
     const blob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

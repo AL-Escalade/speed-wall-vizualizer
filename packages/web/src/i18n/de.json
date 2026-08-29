@@ -137,9 +137,11 @@
   "route.u11u13comp": "U11/U13 [FR] (Wettkampf)",
   "route.u12u14": "U12/U14 [FR] (Training)",
   "route.u12u14comp": "U12/U14 [FR] (Wettkampf)",
-  "route.u11u13deit": "U11/U13 [AT/DE/IT]",
+  "route.u11u13de": "U11/U13 [AT/DE]",
+  "route.u11u13it": "U11/U13 [IT]",
   "route.u15": "U15 [FR]",
-  "route.u15it": "U15 [AT/DE/IT/CA/CH]",
+  "route.u15de": "U15 [AT/DE/CA/CH]",
+  "route.u15it": "U15 [IT]",
   "route.u13u15in": "U13/U15 [IN]",
   "route.u13de": "U13 [CA/US]",
 

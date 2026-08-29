@@ -5,6 +5,7 @@
 import { type } from 'arktype';
 import type { SavedConfiguration } from '@/store/types';
 import { migrateSectionColors } from '@/utils/sectionColors';
+import { migrateSectionSource } from '@/utils/configMigrations';
 import { useRoutesStore } from '@/store/routesStore';
 
 /** Anchor position schema */
@@ -46,6 +47,8 @@ const ImportedConfigurationSchema = type({
   'createdAt?': 'number',
   'updatedAt?': 'number',
   'language?': "'auto' | 'fr' | 'de' | 'it' | 'en'",
+  // Absent in exports produced before route ids could be renamed
+  'schemaVersion?': 'number',
 });
 
 type ImportedConfiguration = typeof ImportedConfigurationSchema.infer;
@@ -75,9 +78,12 @@ export function validateConfiguration(data: unknown):
   // section colors here rather than at import time, so the fingerprint computed
   // by importConfiguration matches an already-migrated twin in localStorage
   const { getRouteColorMap } = useRoutesStore.getState();
+  const { schemaVersion, ...config } = validated;
   const normalized: SavedConfiguration = {
-    ...validated,
-    sections: validated.sections.map((s) => migrateSectionColors(s, getRouteColorMap)),
+    ...config,
+    sections: validated.sections.map((s) =>
+      migrateSectionColors(migrateSectionSource(s, schemaVersion), getRouteColorMap)
+    ),
     createdAt: validated.createdAt ?? now,
     updatedAt: validated.updatedAt ?? now,
   };

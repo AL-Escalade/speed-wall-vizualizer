@@ -125,6 +125,6 @@ Routes declare their system via `columns` field.
 - Build uses TypeScript 7 (stable) through the standard `tsc` binary
 - Package manager is Bun — use `bun install`/`bun run`, not npm/npx
 - Run `bun run build` before `bun run dev:web` — the web app depends on core's compiled output
-- Config changes must be backward-compatible (or include migration) — users have configs in localStorage, may import old exported files, or follow URLs containing configurations
+- Config changes must be backward-compatible (or include migration) — users have configs in localStorage, may import old exported files, or follow URLs containing configurations. Anything that cannot be replayed idempotently (renaming a route id, reusing one for different data) goes through `packages/web/src/utils/configMigrations.ts`: bump `CONFIG_SCHEMA_VERSION`, describe the step there, and it applies at all three entry points
 - When adding user-visible strings in the web app, add translations to all 4 locale files in `packages/web/src/i18n/`
 - Web tests mock `window.matchMedia` and `ResizeObserver` in `packages/web/src/test/setup.ts`
