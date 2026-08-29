@@ -23,9 +23,13 @@ export type PanelSide = typeof PANEL_SIDES[keyof typeof PANEL_SIDES];
 /**
  * Where the official route plans bundled with the repository are served from.
  * Routes name a file under docs/reference-routes/ in their `reference` field.
+ *
+ * The /raw/ form serves the PDF itself rather than GitHub's file viewer. It
+ * cannot be shortened to raw.githubusercontent.com: the PDFs are tracked by Git
+ * LFS, and that host would return the LFS pointer instead of the document.
  */
 export const REFERENCE_ROUTES_BASE_URL =
-  'https://github.com/AL-Escalade/speed-wall-vizualizer/blob/main/docs/reference-routes';
+  'https://github.com/AL-Escalade/speed-wall-vizualizer/raw/main/docs/reference-routes';
 
 /** Route source identifiers */
 export const ROUTE_SOURCES = {
