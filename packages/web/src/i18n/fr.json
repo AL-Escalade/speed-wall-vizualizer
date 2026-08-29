@@ -47,6 +47,7 @@
   "section.rename": "Renommer",
   "section.delete": "Supprimer",
   "section.sourceRoute": "Voie source",
+  "section.officialPlan": "Plan officiel",
   "section.lane": "Couloir",
   "section.laneNumber": "Couloir {number}",
   "section.firstHold": "Première prise",

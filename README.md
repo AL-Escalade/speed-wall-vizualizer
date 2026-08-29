@@ -102,18 +102,18 @@ Both full U15 routes are on the wall, along with 2 full U11/U13 routes. Between 
 
 ## Available reference routes
 
-- `ifsc`: Official IFSC route
-- `u15`: U15 category (FFME)
-- `u11-u13`: U11-U13 category (FFME - training)
-- `u11-u13-comp`: U11-U13 category (FFME - competition)
-- `u12-u14`: U12-U14 category (FFME - training)
-- `u12-u14-comp`: U12-U14 category (FFME - competition)
-- `u11-u13-de`: U11-U13 category (Austria/Germany) - 10m
-- `u11-u13-it`: U11-U13 category (Italy - FASI) - 10m
-- `u15-de`: U15 category (Austria/Germany/Canada/Switzerland)
-- `u15-it`: U15 category (Italy - FASI)
-- `u13-u15-in`: U13-U15 category (India/AKCH) - 15m
-- `u13-de`: U13 category (Canada/USA) - 10m
+- `ifsc`: Official IFSC route — [official plan](docs/reference-routes/ifsc-speed-licence-rules-walls-2022-02-01.pdf)
+- `u15`: U15 category (FFME) — [official plan](docs/reference-routes/ffme-u15-speed-route-2025-10-06.pdf)
+- `u11-u13`: U11-U13 category (FFME - training) — [official plan](docs/reference-routes/ffme-u11-u13-speed-route-2025-12-12.pdf)
+- `u11-u13-comp`: U11-U13 category (FFME - competition) — [official plan](docs/reference-routes/ffme-u11-u13-speed-route-2025-12-12.pdf)
+- `u12-u14`: U12-U14 category (FFME - training) — [official plan](docs/reference-routes/ffme-u12-u14-speed-route-2024-10-16.pdf)
+- `u12-u14-comp`: U12-U14 category (FFME - competition) — [official plan](docs/reference-routes/ffme-u12-u14-speed-route-2024-10-16.pdf)
+- `u11-u13-de`: U11-U13 category (Austria/Germany) - 10m — [official plan](docs/reference-routes/germany-u11-u13-speed-route-2025.pdf)
+- `u11-u13-it`: U11-U13 category (Italy - FASI) - 10m — [official plan](docs/reference-routes/fasi-regolamento-agonistico-giovanile-2026-v5.pdf)
+- `u15-de`: U15 category (Austria/Germany/Canada/Switzerland) — [official plan](docs/reference-routes/germany-u15-speed-route-2025.pdf)
+- `u15-it`: U15 category (Italy - FASI) — [official plan](docs/reference-routes/fasi-regolamento-agonistico-giovanile-2026-v5.pdf)
+- `u13-u15-in`: U13-U15 category (India/AKCH) - 15m — [official plan](docs/reference-routes/india-imf-climbing-manual-2026.pdf)
+- `u13-de`: U13 category (Canada/USA) - 10m — [official plan](docs/reference-routes/usa-u15-10m-speed-route-2024-11-20.pdf)
 - `training`: Combined U15 and IFSC route
 
 ## Reference PDFs

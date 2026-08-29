@@ -20,6 +20,13 @@ export const PANEL_SIDES = {
 
 export type PanelSide = typeof PANEL_SIDES[keyof typeof PANEL_SIDES];
 
+/**
+ * Where the official route plans bundled with the repository are served from.
+ * Routes name a file under docs/reference-routes/ in their `reference` field.
+ */
+export const REFERENCE_ROUTES_BASE_URL =
+  'https://github.com/AL-Escalade/speed-wall-vizualizer/blob/main/docs/reference-routes';
+
 /** Route source identifiers */
 export const ROUTE_SOURCES = {
   TRAINING: 'training',

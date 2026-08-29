@@ -47,6 +47,7 @@
   "section.rename": "Rinomina",
   "section.delete": "Elimina",
   "section.sourceRoute": "Via sorgente",
+  "section.officialPlan": "Piano ufficiale",
   "section.lane": "Corsia",
   "section.laneNumber": "Corsia {number}",
   "section.firstHold": "Prima presa",

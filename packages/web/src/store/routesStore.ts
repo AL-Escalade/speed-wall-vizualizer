@@ -6,6 +6,7 @@
 import { create } from 'zustand';
 import { type ReferenceRoute, type ReferenceRoutes, type RouteColorMap, getRouteColorMap, getDefaultColorTag } from '@voie-vitesse/core';
 import type { HoldLabel } from './types';
+import { REFERENCE_ROUTES_BASE_URL } from '@/constants/routes';
 
 // Import route data from single source of truth
 import ifscData from '../../../../data/routes/ifsc.json';
@@ -50,6 +51,7 @@ function buildRoutes(): ReferenceRoutes {
       columns: (data as { columns?: string }).columns,
       holds: data.holds,
       smearingZones: (data as { smearingZones?: ReferenceRoute['smearingZones'] }).smearingZones,
+      reference: (data as { reference?: string }).reference,
     };
   }
 
@@ -114,6 +116,8 @@ interface RoutesState {
   getRouteColor: (name: string) => string | undefined;
   /** Get the route's tag -> color map, normalized for single-color routes */
   getRouteColorMap: (name: string) => RouteColorMap | undefined;
+  /** Get the URL of the route's official plan, undefined when it has no reference */
+  getRouteReferenceUrl: (name: string) => string | undefined;
 }
 
 export const useRoutesStore = create<RoutesState>()((_set, get) => ({
@@ -167,5 +171,10 @@ export const useRoutesStore = create<RoutesState>()((_set, get) => ({
   getRouteColorMap: (name: string) => {
     const route = get().routes[name.toLowerCase()];
     return route ? getRouteColorMap(route) : undefined;
+  },
+
+  getRouteReferenceUrl: (name: string) => {
+    const { reference } = get().routes[name.toLowerCase()] ?? {};
+    return reference ? `${REFERENCE_ROUTES_BASE_URL}/${reference}` : undefined;
   },
 }));

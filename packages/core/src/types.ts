@@ -160,6 +160,8 @@ export interface ReferenceRoute {
   holds: string[];
   /** Smearing zones (areas for friction-based foot placements) */
   smearingZones?: SmearingZone[];
+  /** File name of the official route plan in docs/reference-routes/, when one exists */
+  reference?: string;
 }
 
 /** All reference routes */

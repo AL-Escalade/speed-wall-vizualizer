@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { useRoutesStore, type HoldPosition } from './routesStore';
 // Aliased: the store exposes a same-named selector that these tests also use
 import { getRouteColorMap as normalizeRouteColorMap, validateRouteColorTags } from '@voie-vitesse/core';
+import { REFERENCE_ROUTES_BASE_URL } from '@/constants/routes';
 
 // Known expected values from route data for specific assertions
 const EXPECTED_ROUTE_NAMES = ['ifsc', 'ifsc-10m', 'training', 'u11-u13', 'u11-u13-comp', 'u12-u14', 'u12-u14-comp', 'u11-u13-de', 'u11-u13-it', 'u15', 'u15-de', 'u15-it', 'u13-u15-in', 'u13-de'] as const;
@@ -190,6 +191,24 @@ describe('routesStore', () => {
     it('should return undefined for unknown route', () => {
       const { getRouteColorMap } = useRoutesStore.getState();
       expect(getRouteColorMap('unknown-route')).toBeUndefined();
+    });
+  });
+
+  describe('getRouteReferenceUrl', () => {
+    it('should build the URL of the bundled official plan', () => {
+      const { getRouteReferenceUrl } = useRoutesStore.getState();
+      expect(getRouteReferenceUrl('u15-de'))
+        .toBe(`${REFERENCE_ROUTES_BASE_URL}/germany-u15-speed-route-2025.pdf`);
+    });
+
+    it('should return undefined for a route with no published plan', () => {
+      const { getRouteReferenceUrl } = useRoutesStore.getState();
+      expect(getRouteReferenceUrl('training')).toBeUndefined();
+    });
+
+    it('should return undefined for unknown route', () => {
+      const { getRouteReferenceUrl } = useRoutesStore.getState();
+      expect(getRouteReferenceUrl('unknown-route')).toBeUndefined();
     });
   });
 

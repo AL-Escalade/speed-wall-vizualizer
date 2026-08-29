@@ -2,6 +2,7 @@
   "$schema": "../../schemas/route.schema.json",
   "name": "ifsc",
   "description": "IFSC Official Speed Route",
+  "reference": "ifsc-speed-licence-rules-walls-2022-02-01.pdf",
   "holdTypes": {
     "BIG": { "width": 460, "height": 350 },
     "FOOT": { "width": 70, "height": 78 }

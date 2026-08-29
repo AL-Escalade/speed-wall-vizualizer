@@ -2,6 +2,7 @@
   "$schema": "../../schemas/route.schema.json",
   "name": "u13-de",
   "description": "Youth C/D 10m Speed Route (Canada/USA; Bavarian-derived)",
+  "reference": "usa-u15-10m-speed-route-2024-11-20.pdf",
   "columns": "ABCDEFGHILM",
   "color": {
     "RED": "#FF0000",

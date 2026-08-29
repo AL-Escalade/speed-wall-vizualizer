@@ -8,6 +8,13 @@ import {
   getAvailableRouteNames,
 } from './index.js';
 import { COLUMN_SYSTEMS, type ReferenceRoute } from '@voie-vitesse/core';
+import { existsSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const REFERENCE_ROUTES_DIR = join(
+  dirname(fileURLToPath(import.meta.url)), '../../../../docs/reference-routes'
+);
 
 // Note: parseHold is tested extensively in @voie-vitesse/core (route-composer.test.ts)
 // These tests focus on CLI-specific behavior differences
@@ -127,6 +134,27 @@ describe('getReferenceRoute', () => {
     expect(route).toBeDefined();
     expect(route!.smearingZones?.length).toBeGreaterThan(0);
     expect(route!.smearingZones?.[0]).toMatchObject({ label: expect.any(String) as unknown as string });
+  });
+
+  it('should expose the official plan a route references', () => {
+    const route = getReferenceRoute('u15-de');
+
+    expect(route?.reference).toBe('germany-u15-speed-route-2025.pdf');
+  });
+
+  // A reference naming a file that is not committed would render a dead link in
+  // the web app, where the route data ships without the PDFs next to it
+  it('should reference only PDFs bundled in docs/reference-routes', () => {
+    const routes = loadRoutes();
+    const referenced = [...new Set(
+      Object.values(routes).map((r) => r.reference).filter((r) => r !== undefined)
+    )];
+    const missing = referenced.filter(
+      (file) => !existsSync(join(REFERENCE_ROUTES_DIR, file))
+    );
+
+    expect(referenced.length).toBeGreaterThan(0);
+    expect(missing).toEqual([]);
   });
 
   it('should load a multi-color route with its tagged holds', () => {

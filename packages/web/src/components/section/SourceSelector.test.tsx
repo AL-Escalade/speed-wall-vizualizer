@@ -108,4 +108,30 @@ describe('SourceSelector', () => {
     expect(options[1]).toHaveValue('u15');
     expect(options[2]).toHaveValue('training');
   });
+
+  it('should link to the official plan of the selected route', () => {
+    renderWithIntl(
+      <SourceSelector
+        value="ifsc"
+        routeNames={ROUTE_NAMES}
+        referenceUrl="https://example.test/ifsc.pdf"
+        onChange={() => {}}
+      />
+    );
+
+    expect(screen.getByRole('link', { name: 'Plan officiel' }))
+      .toHaveAttribute('href', 'https://example.test/ifsc.pdf');
+  });
+
+  it('should render no link for a route without an official plan', () => {
+    renderWithIntl(
+      <SourceSelector
+        value="training"
+        routeNames={ROUTE_NAMES}
+        onChange={() => {}}
+      />
+    );
+
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
+  });
 });

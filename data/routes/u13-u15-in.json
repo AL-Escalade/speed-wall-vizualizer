@@ -2,6 +2,7 @@
   "$schema": "../../schemas/route.schema.json",
   "name": "u13-u15-in",
   "description": "U13-U15 Speed Route (India/AKCH) - 15m",
+  "reference": "india-imf-climbing-manual-2026.pdf",
   "holdTypes": {
     "BIG": { "width": 460, "height": 350 },
     "FOOT": { "width": 70, "height": 78 }
