@@ -28,13 +28,15 @@ const PLAIN_PLANS = [
   'base',
   'ifsc',
   'u11-u13-comp',
-  'u11-u13-de-it',
+  'u11-u13-de',
+  'u11-u13-it',
   'u11-u13-training',
   'u12-u14-comp',
   'u12-u14-training',
   'u13-de',
   'u13-u15-in',
   'u15',
+  'u15-de',
   'u15-it',
 ];
 

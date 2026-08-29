@@ -7,6 +7,7 @@ import type { SavedConfiguration } from '@/store';
 import type { HoldLabel } from '@/store/types';
 import { ROUTES } from './routes';
 import { migrateSectionColors } from '@/utils/sectionColors';
+import { CONFIG_SCHEMA_VERSION, migrateSectionSource } from '@/utils/configMigrations';
 import { useRoutesStore } from '@/store/routesStore';
 
 /**
@@ -14,6 +15,8 @@ import { useRoutesStore } from '@/store/routesStore';
  * Excludes id, name, createdAt, updatedAt which are local-only
  */
 export interface ShareableConfig {
+  /** Schema version. Absent in links shared before route ids could be renamed. */
+  schemaVersion?: number;
   wall: {
     lanes: number;
     panelsHeight: number;
@@ -48,6 +51,7 @@ export interface ShareableConfig {
  */
 export function extractShareableConfig(config: SavedConfiguration): ShareableConfig {
   return {
+    schemaVersion: CONFIG_SCHEMA_VERSION,
     wall: config.wall,
     sections: config.sections.map((s) => ({
       name: s.name,
@@ -91,6 +95,9 @@ function isValidShareableConfig(data: unknown): data is ShareableConfig {
   if (!data || typeof data !== 'object') return false;
 
   const config = data as Record<string, unknown>;
+
+  // Additive: links shared before route ids could be renamed carry no version
+  if (config.schemaVersion !== undefined && typeof config.schemaVersion !== 'number') return false;
 
   // Validate wall
   if (!config.wall || typeof config.wall !== 'object') return false;
@@ -165,7 +172,10 @@ export function hydrateShareableConfig(config: ShareableConfig): SavedConfigurat
     name: 'Configuration partagée',
     wall: config.wall,
     sections: config.sections.map((s) =>
-      migrateSectionColors({ ...s, id: crypto.randomUUID() }, getRouteColorMap)
+      migrateSectionColors(
+        migrateSectionSource({ ...s, id: crypto.randomUUID() }, config.schemaVersion),
+        getRouteColorMap
+      )
     ),
     showArrow: config.showArrow,
     displayOptions: config.displayOptions,

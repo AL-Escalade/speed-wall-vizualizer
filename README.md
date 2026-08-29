@@ -60,7 +60,11 @@ Both full U15 routes are on the wall, along with 2 full U11/U13 routes. Between 
 
 <img src="docs/images/u15.svg" alt="U15 route" width="150">
 
-### U15 route (Austria/Germany/Italy/Canada/Switzerland)
+### U15 route (Austria/Germany/Canada/Switzerland)
+
+<img src="docs/images/u15-de.svg" alt="U15 DE route" width="150">
+
+### U15 route (Italy - FASI)
 
 <img src="docs/images/u15-it.svg" alt="U15 IT route" width="150">
 
@@ -80,9 +84,13 @@ Both full U15 routes are on the wall, along with 2 full U11/U13 routes. Between 
 
 <img src="docs/images/u12-u14-comp.svg" alt="U12-U14 competition route" width="150">
 
-### U11-U13 route (Austria/Germany/Italy) - 10m
+### U11-U13 route (Austria/Germany) - 10m
 
-<img src="docs/images/u11-u13-de-it.svg" alt="U11-U13 DE/IT route" width="150">
+<img src="docs/images/u11-u13-de.svg" alt="U11-U13 DE route" width="150">
+
+### U11-U13 route (Italy - FASI) - 10m
+
+<img src="docs/images/u11-u13-it.svg" alt="U11-U13 IT route" width="150">
 
 ### U13 route (Canada/USA) - 10m
 
@@ -100,8 +108,10 @@ Both full U15 routes are on the wall, along with 2 full U11/U13 routes. Between 
 - `u11-u13-comp`: U11-U13 category (FFME - competition)
 - `u12-u14`: U12-U14 category (FFME - training)
 - `u12-u14-comp`: U12-U14 category (FFME - competition)
-- `u11-u13-de-it`: U11-U13 category (Austria/Germany/Italy) - 10m
-- `u15-it`: U15 category (Austria/Germany/Italy/Canada/Switzerland)
+- `u11-u13-de`: U11-U13 category (Austria/Germany) - 10m
+- `u11-u13-it`: U11-U13 category (Italy - FASI) - 10m
+- `u15-de`: U15 category (Austria/Germany/Canada/Switzerland)
+- `u15-it`: U15 category (Italy - FASI)
 - `u13-u15-in`: U13-U15 category (India/AKCH) - 15m
 - `u13-de`: U13 category (Canada/USA) - 10m
 - `training`: Combined U15 and IFSC route

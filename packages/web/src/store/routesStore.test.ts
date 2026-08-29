@@ -4,7 +4,7 @@ import { useRoutesStore, type HoldPosition } from './routesStore';
 import { getRouteColorMap as normalizeRouteColorMap, validateRouteColorTags } from '@voie-vitesse/core';
 
 // Known expected values from route data for specific assertions
-const EXPECTED_ROUTE_NAMES = ['ifsc', 'ifsc-10m', 'training', 'u11-u13', 'u11-u13-comp', 'u12-u14', 'u12-u14-comp', 'u11-u13-de-it', 'u15', 'u15-it', 'u13-u15-in', 'u13-de'] as const;
+const EXPECTED_ROUTE_NAMES = ['ifsc', 'ifsc-10m', 'training', 'u11-u13', 'u11-u13-comp', 'u12-u14', 'u12-u14-comp', 'u11-u13-de', 'u11-u13-it', 'u15', 'u15-de', 'u15-it', 'u13-u15-in', 'u13-de'] as const;
 const IFSC_HOLD_COUNT = 32;
 const U12_U14_HOLD_COUNT = 17;
 const IFSC_COLOR = '#FF0000';

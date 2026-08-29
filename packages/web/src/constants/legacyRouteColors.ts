@@ -7,6 +7,12 @@
  *
  * Editing a value here would make migrateSectionColors() misread the saved
  * configurations of users who have not loaded the new version yet.
+ *
+ * Two cases still require an entry to move or appear. A renamed route takes its
+ * previous id's value with it, because migrateSectionSource() rewrites the id
+ * before this table is read. A route added after the multi-color feature has no
+ * history to preserve: it carries its own default color, so that a section
+ * declaring that color reads as inherited.
  */
 export const LEGACY_ROUTE_COLORS: Record<string, string> = {
   ifsc: '#FF0000',
@@ -16,9 +22,13 @@ export const LEGACY_ROUTE_COLORS: Record<string, string> = {
   'u11-u13-comp': '#00AAFF',
   'u12-u14': '#00AAFF',
   'u12-u14-comp': '#00AAFF',
-  'u11-u13-de-it': '#008000',
+  // Was 'u11-u13-de-it'
+  'u11-u13-de': '#008000',
+  'u11-u13-it': '#FF0000',
   u15: '#FF0000',
-  'u15-it': '#008000',
+  // Was 'u15-it'
+  'u15-de': '#008000',
+  'u15-it': '#FF0000',
   'u13-u15-in': '#FF6600',
   'u13-de': '#32CD32',
 };

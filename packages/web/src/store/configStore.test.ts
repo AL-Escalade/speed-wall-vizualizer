@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { useConfigStore } from './configStore';
 import type { SavedConfiguration } from './types';
+import { CONFIG_SCHEMA_VERSION } from '@/utils/configMigrations';
 
 // Mock crypto.randomUUID with proper UUID format
 beforeEach(() => {
@@ -837,9 +838,9 @@ describe('configStore', () => {
 
   describe('rehydration', () => {
     /** Seed localStorage the way zustand/persist serializes it, then rehydrate */
-    const rehydrateWith = async (sections: unknown[]) => {
+    const rehydrateWith = async (sections: unknown[], version = 1) => {
       localStorage.setItem('voie-vitesse-config', JSON.stringify({
-        version: 1,
+        version,
         state: {
           configurations: [{
             id: 'cfg', name: 'Saved', wall: { lanes: 2, panelsHeight: 10 },
@@ -861,11 +862,24 @@ describe('configStore', () => {
     });
 
     it('should migrate a section saved before multi-color routes', async () => {
-      // #008000 is u15-it's pre-feature color, so it was never customized
+      // #008000 is the pre-feature color of the route u15-it then designated,
+      // so the section was never customized
       const section = await rehydrateWith([legacySection('#008000')]);
 
       expect(section.colors).toEqual({});
       expect(section.color).toBe('#FF0000');
+    });
+
+    it('should rename a route id that changed meaning', async () => {
+      const section = await rehydrateWith([legacySection('#008000')]);
+
+      expect(section.source).toBe('u15-de');
+    });
+
+    it('should leave the route id of a current configuration alone', async () => {
+      const section = await rehydrateWith([legacySection('#008000')], CONFIG_SCHEMA_VERSION);
+
+      expect(section.source).toBe('u15-it');
     });
 
     it('should pin a deliberately chosen color across every tag', async () => {

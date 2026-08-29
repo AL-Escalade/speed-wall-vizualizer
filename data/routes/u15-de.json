@@ -1,7 +1,7 @@
 {
   "$schema": "../../schemas/route.schema.json",
-  "name": "u15-it",
-  "description": "U15 Speed Route (Italy, FASI) - 15m",
+  "name": "u15-de",
+  "description": "U15 Speed Route (Austria/Germany/Canada/Switzerland) - 15m",
   "holdTypes": {
     "BIG": { "width": 460, "height": 350 },
     "FOOT": { "width": 70, "height": 78 },
@@ -51,17 +51,15 @@
     "SN2 FOOT-DE15 I5 H5 @G4 #DARKGREEN",
     "DX4 FOOT-DE15 C10 B10 @G5 #DARKGREEN",
     "SN4 FOOT-DE15 L4 I4 @G6 #DARKGREEN",
-    "SN7 FOOT-DE15 M9 L9 @G7 #DARKGREEN",
-    "SN9 FOOT-DE15 M5 L5 @G8 #DARKGREEN",
+    "SN5 FOOT-DE15 M10 L10 @G7 #DARKGREEN",
+    "DX8 FOOT-DE15 A9 SN8:M9 @G8 #DARKGREEN",
+    "DX9 FOOT-DE15 B5 A5 @G9 #DARKGREEN",
+    "DX10 FOOT-DE15 E3 D4 @G10 #DARKGREEN",
     "DX1 BIG-DE15 F9 H8 @I1 #DARKGREEN",
     "DX1 BIG-DE15 G10 I9 @I2 #DARKGREEN",
     "DX2 BIG-DE15 C4 A4 @I3 #DARKGREEN",
     "SN3 BIG-DE15 I1 SN2:I10 @I4 #DARKGREEN",
     "SN3 BIG-DE15 M6 L5 @I5 #DARKGREEN",
-    "SN5 BIG-DE15 L10 I10 @I6 #DARKGREEN",
-    "SN7 BIG-DE15 I1 H1 @I7 #DARKGREEN",
-    "SN8 BIG-DE15 M9 M8 @I8 #DARKGREEN",
-    "DX10 BIG-DE15 C3 C2 @I9 #DARKGREEN",
     "DX10 STOP A8 A8 @PAD"
   ],
   "smearingZones": [
@@ -72,6 +70,33 @@
       "columnOffset": 0,
       "row": 1,
       "width": 4,
+      "height": 3
+    },
+    {
+      "label": "R4",
+      "panel": "SN5",
+      "column": "F",
+      "columnOffset": 0,
+      "row": 9,
+      "width": 5,
+      "height": 3
+    },
+    {
+      "label": "R5",
+      "panel": "SN8",
+      "column": "H",
+      "columnOffset": 0,
+      "row": 7,
+      "width": 8,
+      "height": 4.5
+    },
+    {
+      "label": "R6",
+      "panel": "SN9",
+      "column": "I",
+      "columnOffset": 0,
+      "row": 4,
+      "width": 3,
       "height": 3
     }
   ]
