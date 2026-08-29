@@ -14,6 +14,11 @@
       "type": "string",
       "description": "Human-readable description of the route"
     },
+    "reference": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+\\.pdf$",
+      "description": "File name of the official route plan in docs/reference-routes/"
+    },
     "holdTypes": {
       "type": "object",
       "description": "Override dimensions for hold types (optional)",

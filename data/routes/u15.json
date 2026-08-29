@@ -2,6 +2,7 @@
   "$schema": "../../schemas/route.schema.json",
   "name": "u15",
   "description": "U15 Speed Route (FFME) - V2 06/10/2025",
+  "reference": "ffme-u15-speed-route-2025-10-06.pdf",
   "holdTypes": {
     "BIG": { "width": 460, "height": 350 },
     "FOOT": { "width": 70, "height": 78 }

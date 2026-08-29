@@ -47,6 +47,7 @@
   "section.rename": "Rename",
   "section.delete": "Delete",
   "section.sourceRoute": "Source route",
+  "section.officialPlan": "Official plan",
   "section.lane": "Lane",
   "section.laneNumber": "Lane {number}",
   "section.firstHold": "First hold",

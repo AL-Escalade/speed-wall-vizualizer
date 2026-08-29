@@ -47,7 +47,7 @@ export const SectionItem = memo(function SectionItem({
       resetSectionColors: s.resetSectionColors,
     }))
   );
-  const { getRouteNames, getHoldLabels, getFirstHoldLabel, getLastHoldLabel, getFirstHoldPosition, getRouteColor, getRouteColorMap } = useRoutesStore(
+  const { getRouteNames, getHoldLabels, getFirstHoldLabel, getLastHoldLabel, getFirstHoldPosition, getRouteColor, getRouteColorMap, getRouteReferenceUrl } = useRoutesStore(
     useShallow((s) => ({
       getRouteNames: s.getRouteNames,
       getHoldLabels: s.getHoldLabels,
@@ -56,6 +56,7 @@ export const SectionItem = memo(function SectionItem({
       getFirstHoldPosition: s.getFirstHoldPosition,
       getRouteColor: s.getRouteColor,
       getRouteColorMap: s.getRouteColorMap,
+      getRouteReferenceUrl: s.getRouteReferenceUrl,
     }))
   );
   const routeNames = getRouteNames();
@@ -235,6 +236,7 @@ export const SectionItem = memo(function SectionItem({
           <SourceSelector
             value={section.source}
             routeNames={routeNames}
+            referenceUrl={getRouteReferenceUrl(section.source)}
             onChange={handleSourceChange}
           />
 

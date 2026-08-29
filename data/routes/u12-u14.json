@@ -1,7 +1,8 @@
 {
   "$schema": "../../schemas/route.schema.json",
   "name": "u12-u14",
-  "description": "U12-U14 Speed Route (FFME) - Training setup - V2 15/11/2024",
+  "description": "U12-U14 Speed Route (FFME) - Training setup - V5 16/10/2024",
+  "reference": "ffme-u12-u14-speed-route-2024-10-16.pdf",
   "columns": "ABCDEFGHIKL",
   "color": "#00AAFF",
   "holdScales": {

@@ -2,6 +2,7 @@
   "$schema": "../../schemas/route.schema.json",
   "name": "u15-it",
   "description": "U15 Speed Route (Italy, FASI) - 15m",
+  "reference": "fasi-regolamento-agonistico-giovanile-2026-v5.pdf",
   "holdTypes": {
     "BIG": { "width": 460, "height": 350 },
     "FOOT": { "width": 70, "height": 78 },

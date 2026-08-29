@@ -2,6 +2,7 @@
   "$schema": "../../schemas/route.schema.json",
   "name": "u15-de",
   "description": "U15 Speed Route (Austria/Germany/Canada/Switzerland) - 15m",
+  "reference": "germany-u15-speed-route-2025.pdf",
   "holdTypes": {
     "BIG": { "width": 460, "height": 350 },
     "FOOT": { "width": 70, "height": 78 },

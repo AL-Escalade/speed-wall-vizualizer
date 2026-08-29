@@ -41,6 +41,7 @@ function loadRouteFromFile(filePath: string): ReferenceRoute {
     // Was dropped, so CLI output never showed smearing zones while the web app
     // did, and validateRouteColorTags below could not see their color tags
     smearingZones: data.smearingZones,
+    reference: data.reference,
   };
 
   // Undeclared tags fall back to the default color rather than throwing, so
