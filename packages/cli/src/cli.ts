@@ -10,15 +10,19 @@
 
 import { readFile } from 'fs/promises';
 import { resolve, basename, dirname, join } from 'path';
-import { type Config, type OutputFormat, generateSvg, composeAllRoutes, composeAllSmearingZones, getRouteColorMap, DEFAULT_COLOR_TAG } from '@voie-vitesse/core';
+import { type Config, type OutputFormat, type HoldLabelLanguage, generateSvg, composeAllRoutes, composeAllSmearingZones, getRouteColorMap, DEFAULT_COLOR_TAG } from '@voie-vitesse/core';
 import { writeOutput, formatFromPath, getExtension } from './output/index.js';
 import { getAvailableRouteNames, getReferenceRoute, loadRoutes } from './reference-routes/index.js';
+import { parseLanguage } from './hold-label-language.js';
 
 /** CLI arguments */
 interface CliArgs {
   config: string;
   output?: string;
   format?: OutputFormat;
+  lang: HoldLabelLanguage;
+  /** Raw --lang value, validated only once --help and --list-routes are ruled out */
+  langInput?: string;
   help?: boolean;
   listRoutes?: boolean;
 }
@@ -29,6 +33,7 @@ interface CliArgs {
 function parseArgs(args: string[]): CliArgs {
   const result: CliArgs = {
     config: '',
+    lang: 'fr',
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -49,6 +54,10 @@ function parseArgs(args: string[]): CliArgs {
       case '--format':
       case '-f':
         result.format = (next?.toLowerCase() || 'svg') as OutputFormat;
+        i++;
+        break;
+      case '--lang':
+        result.langInput = next ?? '';
         i++;
         break;
       case '--help':
@@ -77,6 +86,7 @@ Options:
   -o, --output <file>   Output file (default: wall.svg)
   -f, --format <fmt>    Output format: svg, png, pdf (default: svg)
   -l, --list-routes     List available reference routes
+      --lang <lang>     Hold label language: fr, en, de, it (default: fr)
   -h, --help            Show this help message
 
 Configuration file format:
@@ -172,6 +182,17 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
+  // Validated here rather than in parseArgs so that a bad --lang still leaves
+  // --help and --list-routes reachable — they are what the user tries next.
+  if (args.langInput !== undefined) {
+    try {
+      args.lang = parseLanguage(args.langInput);
+    } catch (error) {
+      console.error('Error:', (error as Error).message);
+      process.exit(1);
+    }
+  }
+
   try {
     console.log(`Loading configuration from: ${args.config}`);
     const config = await loadConfig(args.config);
@@ -191,7 +212,7 @@ async function main(): Promise<void> {
 
     // Generate SVG
     console.log('Generating SVG...');
-    const svgContent = await generateSvg(config, allHolds, {}, smearingZones);
+    const svgContent = await generateSvg(config, allHolds, { holdLabelLanguage: args.lang }, smearingZones);
 
     // Determine output path and format
     let { output: outputPath, format } = args;

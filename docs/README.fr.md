@@ -192,7 +192,14 @@ Chaque prise est définie par :
 - **Position** : Coordonnées sur la grille (ex: `F10`, `C2`)
 - **Orientation** : Direction de la flèche (ex: `E2`, `DX2:C2`)
 
-Exemple : `"DX1 BIG F10 DX2:C2 @N1"` place une prise BIG en F10 sur DX1, orientée vers C2 sur DX2, avec le label "N1".
+Exemple : `"DX1 BIG F10 DX2:C2 @N1"` place une prise BIG en F10 sur DX1, orientée vers C2 sur DX2, avec le label `N1`.
+
+Le préfixe du label stocké dans la donnée de voie est un **rôle** : `M`/`H` main,
+`P`/`F` pied, `N`/`I` main ajoutée, `Q`/`G`/`R` pied ajouté, `PAD` pad d'arrivée.
+Le préfixe réellement affiché sur le plan dépend de la langue : la prise ci-dessus
+s'affiche `N1` en français et en italien, `I1` en anglais et en allemand. La CLI
+le choisit avec `--lang <fr|en|de|it>` (défaut `fr`) ; l'application web suit la
+langue de l'interface.
 
 ## Licence
 

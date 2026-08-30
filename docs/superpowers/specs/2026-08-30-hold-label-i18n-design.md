@@ -203,13 +203,43 @@ projet.
    voie chargée par `loadRoutes()`, chaque `@LABEL` résout un rôle connu ; le
    message d'échec nomme la voie et le label fautif. C'est ce test qui rend
    acceptable l'espace de noms global des préfixes.
+
+   **Correction** : la rédaction initiale affirmait que ce test passait sans
+   exception sur les 13 voies. C'était faux. `training.json` et `u15.json`
+   portent `SN8 STOP D7 D7 @PAD-U15`, qui distingue le pad U15 du pad IFSC sur
+   les voies portant les deux. Le tiret le fait échouer au motif, il est donc
+   rendu verbatim — identiquement dans les quatre langues. Le test l'exempte par
+   une allowlist d'une entrée, documentée sur place. Le motif reste volontairement
+   strict : l'élargir pour absorber ce cas ne changerait aucun rendu et
+   affaiblirait la détection des vraies coquilles.
 4. `packages/web/src/components/section/HoldRangeSelector.test.tsx` et
    `ExcludeHoldsSelector.test.tsx` — en anglais, le texte affiché est `H1` **et
    la valeur reste `M1`**. Ces cas protègent la compatibilité des configurations
    partagées et doivent être nommés en conséquence.
 
-Hors périmètre : les labels de zones d'adhérence (`smearingZones`, `Z1`) restent
-inchangés — ce sont des identifiants de zone, pas des rôles de prise.
+## Zones d'adhérence — révision de l'exclusion
+
+La rédaction initiale excluait les zones d'adhérence au motif que « ce sont des
+identifiants de zone, pas des rôles de prise ». Vérification faite dans les
+données, c'était faux : les plans français et italiens numérotent leurs zones
+`A1…A6` (Adhérence, Aderenza), les plans allemands `R3…R6` (Reibung). C'est
+exactement le clivage linguistique que ce changement existe pour supprimer, et
+ne traiter que les prises rendait `docs/images/u15-de.svg` bilingue — prises
+françaises, zones allemandes — là où elle était cohéremment allemande avant.
+
+Les zones sont donc traduites, dans un **espace de noms séparé** :
+`packages/core/src/smearing-zone-label.ts`, rôle unique `SMEARING_ZONE`,
+préfixes `A` (fr, it), `R` (de), `S` (en, pour *smearing* — le seul préfixe de
+tout le design que n'appuie aucun plan officiel, aucune voie anglophone
+n'existant).
+
+Les deux tables ne doivent jamais fusionner : `R` désigne un pied ajouté sur une
+prise (voie indienne) et une zone d'adhérence en allemand. Elles ne coexistent
+que parce que prises et zones ne se croisent pas.
+
+Le rendu suit la même règle que les prises : l'attribut `data-label` conserve le
+label brut, seul le `<text>` est traduit. Un test de validation jumeau vérifie
+que chaque `zone.label` des voies livrées résout un rôle connu.
 
 ## Documentation
 

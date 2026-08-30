@@ -1,7 +1,22 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, act } from '@testing-library/react';
 import { Viewer } from './Viewer';
-import { renderWithIntl } from '@/test/intlWrapper';
+import { generateSvg } from '@voie-vitesse/core';
+import { renderWithIntl, renderWithLocale } from '@/test/intlWrapper';
+
+// Partial mock: the real store module (mocked below with importOriginal) pulls
+// in other core exports, so only the generation entry points are replaced.
+vi.mock('@voie-vitesse/core', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@voie-vitesse/core')>();
+  return {
+    ...actual,
+    generateSvg: vi.fn(),
+    composeAllRoutes: vi.fn().mockReturnValue([]),
+    composeAllSmearingZones: vi.fn().mockReturnValue([]),
+  };
+});
+
+const generateSvgMock = vi.mocked(generateSvg);
 
 // Mock the viewer store to track zoom function calls
 const mockZoomIn = vi.fn();
@@ -29,6 +44,9 @@ let configStoreState: { configurations: typeof mockConfig[]; activeConfigId: str
 
 vi.mock('@/store', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/store')>();
+  // Stable identity: a fresh object per render would change the generation
+  // effect's `routes` dependency on every pass and loop forever.
+  const routesState = { routes: {} };
   return {
     ...actual,
     useViewerStore: vi.fn((selector) =>
@@ -49,7 +67,7 @@ vi.mock('@/store', async (importOriginal) => {
       selector(configStoreState)
     ),
     useRoutesStore: vi.fn((selector) =>
-      selector({ routes: {} })
+      selector(routesState)
     ),
     DEFAULT_DISPLAY_OPTIONS: {
       gridColor: '#999999',
@@ -68,11 +86,55 @@ vi.mock('@/store', async (importOriginal) => {
 describe('Viewer', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    generateSvgMock.mockResolvedValue('<svg viewBox="0 0 200 400"></svg>');
     // Reset config store state
     configStoreState = {
       configurations: [],
       activeConfigId: null,
     };
+  });
+
+  // Guards the wiring itself: without this, dropping `holdLabelLanguage` from
+  // the options object or from the effect deps leaves the whole suite green
+  // while every non-French user sees a French plan.
+  describe('hold label language', () => {
+    beforeEach(() => {
+      const config = { ...mockConfig, sections: [{ id: 'section-1', source: 'ifsc', lane: 0 }] };
+      configStoreState = {
+        configurations: [config as unknown as typeof mockConfig],
+        activeConfigId: config.id,
+      };
+    });
+
+    it('should render the wall with hold labels in the interface language', async () => {
+      renderWithLocale(<Viewer />, 'en');
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(generateSvgMock).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
+        expect.objectContaining({ holdLabelLanguage: 'en' }),
+        expect.anything()
+      );
+    });
+
+    it('should render French hold labels under the French interface', async () => {
+      renderWithLocale(<Viewer />, 'fr');
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(generateSvgMock).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
+        expect.objectContaining({ holdLabelLanguage: 'fr' }),
+        expect.anything()
+      );
+    });
   });
 
   describe('structure', () => {

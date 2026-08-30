@@ -9,6 +9,7 @@ import { useIntl } from 'react-intl';
 import { ArrowLeft } from 'lucide-react';
 import { generateSvg, composeAllRoutes, composeAllSmearingZones, type Config } from '@voie-vitesse/core';
 import { useConfigStore, useRoutesStore, useViewerStore, DEFAULT_DISPLAY_OPTIONS } from '@/store';
+import { useHoldLabelLanguage } from '@/i18n/useHoldLabelLanguage';
 import { sectionToSegment, normalizeSvgForWeb } from '@/utils/sectionMapper';
 import { generateAndDownloadPdf } from '@/utils/pdfGenerator';
 import { usePrintLayout, type PrintConfig as PrintConfigType, type Lane } from '@/hooks/usePrintLayout';
@@ -17,6 +18,7 @@ import { useIsMobile } from '@/hooks/useMediaQuery';
 
 export function PrintPage() {
   const intl = useIntl();
+  const holdLabelLanguage = useHoldLabelLanguage();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const config = useConfigStore((s) =>
@@ -119,6 +121,7 @@ export function PrintPage() {
           gridColor: displayOptions.gridColor,
           labelFontSize: displayOptions.labelFontSize,
           holdLabelFontSize: displayOptions.holdLabelFontSize,
+          holdLabelLanguage,
         }, composedSmearingZones);
 
         if (!isCancelled) {
@@ -157,7 +160,7 @@ export function PrintPage() {
     return () => {
       isCancelled = true;
     };
-  }, [config, routes, showSmearingZones, intl]);
+  }, [config, routes, showSmearingZones, holdLabelLanguage, intl]);
 
   // Reset selected page only when total pages changes or layout becomes null
   const totalPages = layout?.layout.totalPages ?? 0;

@@ -102,6 +102,57 @@ one is **present**, not on its content:
 Undeclared tags fall back to the default color rather than throwing; use
 `validateRouteColorTags()` to catch typos in route data.
 
+### Hold Labels
+
+A label prefix is **presentation, not data**: it encodes a semantic role, and each
+route file writes it in its own federation's convention.
+
+| Prefix written in route data | Role |
+|---|---|
+| `M`, `H` | `HAND` |
+| `P`, `F` | `FOOT` |
+| `N`, `I` | `ADDED_HAND` |
+| `Q`, `G`, `R` | `ADDED_FOOT` |
+| `PAD` | `PAD` |
+
+| Role | fr | en | de | it |
+|---|---|---|---|---|
+| `HAND` | M | H | H | M |
+| `FOOT` | P | F | F | P |
+| `ADDED_HAND` | N | I | I | N |
+| `ADDED_FOOT` | Q | G | G | Q |
+| `PAD` | PAD | PAD | PAD | PAD |
+
+`formatHoldLabel(label, language)` (`packages/core/src/hold-label.ts`) swaps the
+prefix and keeps the numeric index verbatim (`M12` → `H12`). Prefixes of every
+language are table entries, so an already-translated label re-translates
+(`H1` → `M1` in fr) — that is what uniformises the DE/IT/IN routes. An unknown
+prefix renders verbatim rather than throwing: a mislabelled plan must stay
+readable, and the reference-route test is what flags the typo.
+
+Smearing zone labels are translated the same way, through a **separate table**
+in `packages/core/src/smearing-zone-label.ts`: `A` in the French and Italian
+plans (Adhérence, Aderenza), `R` in the German ones (Reibung), `S` in English
+(smearing, the one prefix no official plan backs). Never merge the two tables —
+`R` means `ADDED_FOOT` on a hold and a zone on a zone; they coexist only because
+the namespaces do not meet.
+
+The language comes from `SvgOptions.holdLabelLanguage` (default `'fr'`), fed by
+`useHoldLabelLanguage()` in the web app and by `--lang <fr|en|de|it>` in the CLI
+(default `fr`, which keeps `docs/images/*.svg` in the project's language). It
+governs hold and zone labels; coordinate labels (A-L, 1-10) are never translated.
+
+`@PAD-U15` in `training.json` and `u15.json` is a bare identifier, not a prefix
+plus an index: it fails the pattern, renders verbatim in all four languages, and
+is allowlisted in the reference-route test.
+
+**Raw value = identity, displayed text = translation.** The label written in
+route data is the identity stored by `fromHold`, `toHold` and `excludeHolds`;
+translate only the text shown to the user, never a form value or stored state.
+That is what keeps a config shared by URL pointing at the same holds across
+languages. Route data and `schemas/route.schema.json` are unchanged by this, and
+no config migration is involved.
+
 ### Column Coordinate Systems
 
 Three systems exist (letters differ after I):

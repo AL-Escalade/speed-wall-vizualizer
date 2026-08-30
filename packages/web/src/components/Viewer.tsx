@@ -8,6 +8,7 @@ import { generateSvg, composeAllRoutes, composeAllSmearingZones, type Config } f
 import { useShallow } from 'zustand/react/shallow';
 import { useIntl } from 'react-intl';
 import { useConfigStore, useRoutesStore, useViewerStore, DEFAULT_DISPLAY_OPTIONS } from '@/store';
+import { useHoldLabelLanguage } from '@/i18n/useHoldLabelLanguage';
 import { sectionToSegment, normalizeSvgForWeb } from '@/utils/sectionMapper';
 import { setExportSvgContent } from '@/utils/exportSvgRef';
 import { useTouchGestures } from '@/hooks/useTouchGestures';
@@ -18,6 +19,7 @@ import { ZoomIn, ZoomOut, Home } from 'lucide-react';
 
 export function Viewer() {
   const intl = useIntl();
+  const holdLabelLanguage = useHoldLabelLanguage();
   const config = useConfigStore((s) =>
     s.configurations.find((c) => c.id === s.activeConfigId) ?? null
   );
@@ -130,6 +132,7 @@ export function Viewer() {
           labelFontSize: displayOptions.labelFontSize,
           holdLabelFontSize: displayOptions.holdLabelFontSize,
           coordinateDisplaySystem,
+          holdLabelLanguage,
         }, composedSmearingZones);
 
         if (!isCancelled) {
@@ -152,7 +155,7 @@ export function Viewer() {
     return () => {
       isCancelled = true;
     };
-  }, [config, routes, showSmearingZones, intl]);
+  }, [config, routes, showSmearingZones, holdLabelLanguage, intl]);
 
   // Push SVG content to module-level ref for export (avoids DOM injection)
   useEffect(() => {
