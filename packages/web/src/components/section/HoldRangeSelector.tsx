@@ -4,11 +4,14 @@
 
 import { memo } from 'react';
 import { useIntl } from 'react-intl';
+import { formatHoldLabel, type HoldLabelLanguage } from '@voie-vitesse/core';
+import { useHoldLabelLanguage } from '@/i18n/useHoldLabelLanguage';
 
 interface HoldSelectorProps {
   label: string;
   value: string | number;
   holdLabels: string[];
+  holdLabelLanguage: HoldLabelLanguage;
   onValueChange: (value: string) => void;
 }
 
@@ -16,6 +19,7 @@ const HoldSelector = memo(function HoldSelector({
   label,
   value,
   holdLabels,
+  holdLabelLanguage,
   onValueChange,
 }: HoldSelectorProps) {
   return (
@@ -28,9 +32,10 @@ const HoldSelector = memo(function HoldSelector({
         value={String(value)}
         onChange={(e) => onValueChange(e.target.value)}
       >
+        {/* Value stays the raw route label (configuration identity), only the text is translated */}
         {holdLabels.map((holdLabel) => (
           <option key={holdLabel} value={holdLabel}>
-            {holdLabel}
+            {formatHoldLabel(holdLabel, holdLabelLanguage)}
           </option>
         ))}
       </select>
@@ -54,18 +59,21 @@ export const HoldRangeSelector = memo(function HoldRangeSelector({
   onToChange,
 }: HoldRangeSelectorProps) {
   const intl = useIntl();
+  const holdLabelLanguage = useHoldLabelLanguage();
   return (
     <div className="grid grid-cols-2 gap-2">
       <HoldSelector
         label={intl.formatMessage({ id: 'section.firstHold' })}
         value={fromHold}
         holdLabels={holdLabels}
+        holdLabelLanguage={holdLabelLanguage}
         onValueChange={onFromChange}
       />
       <HoldSelector
         label={intl.formatMessage({ id: 'section.lastHold' })}
         value={toHold}
         holdLabels={holdLabels}
+        holdLabelLanguage={holdLabelLanguage}
         onValueChange={onToChange}
       />
     </div>

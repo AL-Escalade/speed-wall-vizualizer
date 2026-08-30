@@ -47,6 +47,14 @@ export { COLUMN_SYSTEMS, DEFAULT_COLUMN_SYSTEM, CANONICAL_COLUMN_SYSTEM, VIRTUAL
 // Hold colors
 export { DEFAULT_COLOR_TAG } from './types.js';
 
+// Hold labels
+export { parseHoldLabel, formatHoldLabel, DEFAULT_HOLD_LABEL_LANGUAGE } from './hold-label.js';
+export type { HoldRole, HoldLabelLanguage } from './hold-label.js';
+
+// Smearing zone labels (a namespace of their own: R is a hold role and a zone prefix)
+export { parseSmearingZoneLabel, formatSmearingZoneLabel } from './smearing-zone-label.js';
+export type { SmearingZoneRole } from './smearing-zone-label.js';
+
 // SVG Generation
 export { generateSvg } from './svg-generator.js';
 export type { SvgOptions } from './svg-generator.js';

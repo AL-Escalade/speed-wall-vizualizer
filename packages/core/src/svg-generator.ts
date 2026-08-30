@@ -7,6 +7,8 @@ import { GRID, PANEL, PANELS_PER_LANE, ROWS, PANEL_NUMBERS, getInsertPosition, g
 import { calculateHoldRotation } from './rotation.js';
 import { loadHoldSvg, getHoldDimensions, getHoldDefaultOrientation, getHoldShowArrow } from './hold-svg-parser.js';
 import type { ComposedHold } from './route-composer.js';
+import { formatHoldLabel, type HoldLabelLanguage } from './hold-label.js';
+import { formatSmearingZoneLabel } from './smearing-zone-label.js';
 
 /**
  * Determine the visual arrow direction after rotation
@@ -108,6 +110,8 @@ export interface SvgOptions {
   coordinateDisplaySystem?: ColumnSystem;
   /** Show smearing zones (default: true) */
   showSmearingZones?: boolean;
+  /** Language for hold and smearing zone labels, not for coordinates (default: 'fr') */
+  holdLabelLanguage?: HoldLabelLanguage;
 }
 
 const DEFAULT_OPTIONS: Required<SvgOptions> = {
@@ -122,6 +126,7 @@ const DEFAULT_OPTIONS: Required<SvgOptions> = {
   showArrow: false,
   coordinateDisplaySystem: DEFAULT_COLUMN_SYSTEM,
   showSmearingZones: true,
+  holdLabelLanguage: 'fr',
 };
 
 /**
@@ -252,7 +257,8 @@ function generateGrid(
 async function generateHold(
   hold: ComposedHold,
   wallDimensions: Dimensions,
-  holdLabelFontSize: number
+  holdLabelFontSize: number,
+  holdLabelLanguage: HoldLabelLanguage
 ): Promise<{ holdSvg: string; labelSvg: string; arrowSvg: string | null }> {
   // Get hold dimensions from central configuration
   const baseDimensions = getHoldDimensions(hold.type);
@@ -332,7 +338,9 @@ async function generateHold(
   const holdSvg = `<g transform="${transform}" ${dataAttrs} class="hold">${elements.join('\n')}</g>`;
 
   // Generate label (use label if defined, otherwise composedHoldNumber)
-  const labelText = hold.label ?? String(hold.composedHoldNumber);
+  const labelText = hold.label === undefined
+    ? String(hold.composedHoldNumber)
+    : formatHoldLabel(hold.label, holdLabelLanguage);
 
   // Determine arrow direction and find corresponding label zone
   const arrowDirection = getArrowDirection(hold.type, rotation);
@@ -452,7 +460,8 @@ function generateHatchPattern(color: string): string {
 function generateSmearingZones(
   zones: ComposedSmearingZone[],
   wallDimensions: Dimensions,
-  labelFontSize: number
+  labelFontSize: number,
+  labelLanguage: HoldLabelLanguage
 ): { defs: string; elements: string } {
   if (zones.length === 0) {
     return { defs: '', elements: '' };
@@ -513,7 +522,7 @@ function generateSmearingZones(
     // Label BELOW the zone (in SVG coords, y increases downward)
     const labelX = svgX;
     const labelY = svgY + heightMm + SMEARING_ZONE_LABEL_MARGIN; // Below the rectangle
-    elements.push(`  <text x="${labelX}" y="${labelY}" font-size="${labelFontSize}" font-family="'Lucida Grande', sans-serif" fill="${zone.color}" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">${zone.label}</text>`);
+    elements.push(`  <text x="${labelX}" y="${labelY}" font-size="${labelFontSize}" font-family="'Lucida Grande', sans-serif" fill="${zone.color}" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">${formatSmearingZoneLabel(zone.label, labelLanguage)}</text>`);
 
     elements.push(`</g>`);
   }
@@ -549,7 +558,8 @@ export async function generateSvg(
   const { defs: zoneDefs, elements: zoneElements } = generateSmearingZones(
     zonesToRender,
     wallDimensions,
-    opts.holdLabelFontSize
+    opts.holdLabelFontSize,
+    opts.holdLabelLanguage
   );
 
   // Add defs section if we have patterns
@@ -582,7 +592,7 @@ export async function generateSvg(
   const holdResults: { holdSvg: string; labelSvg: string; arrowSvg: string | null }[] = [];
   for (const hold of holds) {
     // eslint-disable-next-line no-await-in-loop
-    const result = await generateHold(hold, wallDimensions, opts.holdLabelFontSize);
+    const result = await generateHold(hold, wallDimensions, opts.holdLabelFontSize, opts.holdLabelLanguage);
     holdResults.push(result);
   }
 

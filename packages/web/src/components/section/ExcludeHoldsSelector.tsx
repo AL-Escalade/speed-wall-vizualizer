@@ -4,7 +4,9 @@
 
 import { memo, useCallback, useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
+import { formatHoldLabel } from '@voie-vitesse/core';
 import type { HoldLabel } from '@/store/types';
+import { useHoldLabelLanguage } from '@/i18n/useHoldLabelLanguage';
 
 interface ExcludeHoldsSelectorProps {
   holdLabels: HoldLabel[];
@@ -18,6 +20,7 @@ export const ExcludeHoldsSelector = memo(function ExcludeHoldsSelector({
   onChange,
 }: ExcludeHoldsSelectorProps) {
   const intl = useIntl();
+  const holdLabelLanguage = useHoldLabelLanguage();
   const [isOpen, setIsOpen] = useState(false);
 
   // Filter out stale holds that are no longer in the current range
@@ -36,9 +39,10 @@ export const ExcludeHoldsSelector = memo(function ExcludeHoldsSelector({
     [validExcludeHolds, onChange]
   );
 
+  // Displayed text only: the excluded holds are stored with their raw route labels
   const summary =
     validExcludeHolds.length > 0
-      ? validExcludeHolds.join(', ')
+      ? validExcludeHolds.map((label) => formatHoldLabel(label, holdLabelLanguage)).join(', ')
       : intl.formatMessage({ id: 'section.excludeHoldsPlaceholder' });
 
   return (
@@ -66,7 +70,8 @@ export const ExcludeHoldsSelector = memo(function ExcludeHoldsSelector({
                   checked={validExcludeHolds.includes(label)}
                   onChange={() => handleToggle(label)}
                 />
-                <span className="text-xs">{label}</span>
+                {/* State and callbacks keep the raw route label, only the text is translated */}
+                <span className="text-xs">{formatHoldLabel(label, holdLabelLanguage)}</span>
               </label>
             ))}
           </div>

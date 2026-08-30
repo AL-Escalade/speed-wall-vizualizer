@@ -4,7 +4,7 @@ import { PrintPage } from './PrintPage';
 import type { SavedConfiguration } from '@/store';
 import { generateSvg } from '@voie-vitesse/core';
 import { generateAndDownloadPdf } from '@/utils/pdfGenerator';
-import { renderWithIntl } from '@/test/intlWrapper';
+import { renderWithIntl, renderWithLocale } from '@/test/intlWrapper';
 
 // Mock react-router-dom
 const mockNavigate = vi.fn();
@@ -370,6 +370,41 @@ describe('PrintPage', () => {
       // Component renders successfully with mobile flag
       // On mobile, the title says "Impression" instead of "Impression multi-pages"
       expect(screen.getByText('Impression')).toBeInTheDocument();
+    });
+  });
+
+  // Guards the wiring itself: without these, dropping `holdLabelLanguage` from
+  // the options object or from the effect deps leaves the whole suite green
+  // while every non-French user prints a French plan.
+  describe('hold label language', () => {
+    it('should print the plan with hold labels in the interface language', async () => {
+      renderWithLocale(<PrintPage />, 'en');
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(generateSvgMock).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
+        expect.objectContaining({ holdLabelLanguage: 'en' }),
+        expect.anything()
+      );
+    });
+
+    it('should print French hold labels under the French interface', async () => {
+      renderWithLocale(<PrintPage />, 'fr');
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(generateSvgMock).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
+        expect.objectContaining({ holdLabelLanguage: 'fr' }),
+        expect.anything()
+      );
     });
   });
 });

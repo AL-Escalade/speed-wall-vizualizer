@@ -7,7 +7,7 @@ import {
   getReferenceRoute,
   getAvailableRouteNames,
 } from './index.js';
-import { COLUMN_SYSTEMS, type ReferenceRoute } from '@voie-vitesse/core';
+import { COLUMN_SYSTEMS, parseHoldLabel, parseSmearingZoneLabel, type ReferenceRoute } from '@voie-vitesse/core';
 import { existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -193,5 +193,56 @@ describe('clearRoutesCache', () => {
     const second = loadRoutes();
     // Both should be valid but may be different objects
     expect(Object.keys(first).length).toBe(Object.keys(second).length);
+  });
+});
+
+// The prefix → role table in the core is a single global namespace shared by
+// every route, whatever convention its author wrote it in (M/P/N/Q, H/F/I/G,
+// and the Indian route's R). That is only acceptable while no route smuggles in
+// a prefix the table does not know, so check the shipped data.
+describe('hold labels of the shipped reference routes', () => {
+  beforeEach(() => {
+    clearRoutesCache();
+  });
+
+  // `PAD-U15` distinguishes the U15 pad from the IFSC one in routes carrying
+  // both. It is a bare identifier, not a role prefix followed by an index, so
+  // it renders verbatim and identically in the four languages.
+  const LABELS_WITHOUT_ROLE = ['PAD-U15'];
+
+  it('should resolve every label of every route to a known hold role', () => {
+    const routes = loadRoutes();
+    const unknown: string[] = [];
+
+    for (const [name, route] of Object.entries(routes)) {
+      for (const hold of getRouteHolds(route)) {
+        if (hold.label === undefined || LABELS_WITHOUT_ROLE.includes(hold.label)) {
+          continue;
+        }
+        if (parseHoldLabel(hold.label) === undefined) {
+          unknown.push(`${name}: @${hold.label}`);
+        }
+      }
+    }
+
+    expect(Object.keys(routes).length).toBeGreaterThan(0);
+    expect(unknown).toEqual([]);
+  });
+
+  // Same guardrail for the zones, in their own namespace: `A` in the French and
+  // Italian plans (Adherence/Aderenza), `R` in the German ones (Reibung).
+  it('should resolve every smearing zone label of every route to a known role', () => {
+    const routes = loadRoutes();
+    const unknown: string[] = [];
+
+    for (const [name, route] of Object.entries(routes)) {
+      for (const zone of route.smearingZones ?? []) {
+        if (parseSmearingZoneLabel(zone.label) === undefined) {
+          unknown.push(`${name}: ${zone.label}`);
+        }
+      }
+    }
+
+    expect(unknown).toEqual([]);
   });
 });

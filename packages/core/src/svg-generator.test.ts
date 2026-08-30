@@ -129,6 +129,47 @@ describe('generateSvg', () => {
     expect(svg).toContain('M1');
   });
 
+  it('should translate the hold label into the requested language', async () => {
+    const labeledHold: ComposedHold = {
+      ...basicHold,
+      label: 'M1',
+    };
+    const svg = await generateSvg(basicConfig, [labeledHold], { holdLabelLanguage: 'en' });
+    expect(svg).toContain('>H1<');
+    expect(svg).not.toContain('>M1<');
+  });
+
+  it('should render the hold label in French when no language is given', async () => {
+    const labeledHold: ComposedHold = {
+      ...basicHold,
+      label: 'M1',
+    };
+    const svg = await generateSvg(basicConfig, [labeledHold]);
+    expect(svg).toContain('>M1<');
+    expect(svg).not.toContain('>H1<');
+  });
+
+  it('should render in the default language when the option is explicitly undefined', async () => {
+    // `{ ...DEFAULT_OPTIONS, ...options }` lets an explicit undefined win over the
+    // default, which a caller reaches with `{ holdLabelLanguage: prefs?.lang }`.
+    const labeledHold: ComposedHold = {
+      ...basicHold,
+      label: 'M1',
+    };
+    const svg = await generateSvg(basicConfig, [labeledHold], { holdLabelLanguage: undefined });
+    expect(svg).toContain('>M1<');
+  });
+
+  it('should render an empty label as empty rather than as the hold number', async () => {
+    const labeledHold: ComposedHold = {
+      ...basicHold,
+      label: '',
+    };
+    // Coordinate labels also emit ">1<", so they are turned off to isolate the hold's own label
+    const svg = await generateSvg(basicConfig, [labeledHold], { showCoordinateLabels: false });
+    expect(svg).not.toMatch(/>1</);
+  });
+
   it('should use composedHoldNumber as label when label is not defined', async () => {
     const svg = await generateSvg(basicConfig, [basicHold]);
     // The label should contain the composed hold number (1)
@@ -190,6 +231,21 @@ describe('generateSvg', () => {
     it('should include zone label', async () => {
       const svg = await generateSvg(basicConfig, [basicHold], { showSmearingZones: true }, [basicZone]);
       expect(svg).toContain('Z1');
+    });
+
+    // Without this the plan renders in two languages at once: French hold
+    // labels beside the German zone labels the DE routes are written with.
+    it('should translate the zone label into the requested language', async () => {
+      const germanZone: ComposedSmearingZone = { ...basicZone, label: 'R3' };
+      const svg = await generateSvg(basicConfig, [basicHold], { showSmearingZones: true, holdLabelLanguage: 'fr' }, [germanZone]);
+      expect(svg).toContain('>A3</text>');
+      expect(svg).not.toContain('>R3</text>');
+    });
+
+    it('should keep the raw zone label as the data attribute identity', async () => {
+      const germanZone: ComposedSmearingZone = { ...basicZone, label: 'R3' };
+      const svg = await generateSvg(basicConfig, [basicHold], { showSmearingZones: true, holdLabelLanguage: 'fr' }, [germanZone]);
+      expect(svg).toContain('data-label="R3"');
     });
 
     it('should handle zone with columnOffset', async () => {

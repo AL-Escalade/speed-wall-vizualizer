@@ -192,7 +192,13 @@ Each hold is defined by:
 - **Position**: Grid coordinates (e.g., `F10`, `C2`)
 - **Orientation**: Arrow direction (e.g., `E2`, `DX2:C2`)
 
-Example: `"DX1 BIG F10 DX2:C2 @N1"` places a BIG hold at F10 on DX1, oriented toward C2 on DX2, with label "N1".
+Example: `"DX1 BIG F10 DX2:C2 @N1"` places a BIG hold at F10 on DX1, oriented toward C2 on DX2, with label `N1`.
+
+The label prefix stored in route data is a **role**: `M`/`H` hand, `P`/`F` foot,
+`N`/`I` added hand, `Q`/`G`/`R` added foot, `PAD` finish pad. The prefix actually
+displayed on the plan depends on the language: the hold above shows as `N1` in
+French and Italian, `I1` in English and German. The CLI selects it with
+`--lang <fr|en|de|it>` (default `fr`); the web app follows the interface language.
 
 ## License
 
