@@ -127,7 +127,7 @@ jobs:
           path: dist
 
       - name: SFTP Deploy
-        uses: milanmk/actions-file-deployer@master
+        uses: milanmk/actions-file-deployer@b204fec5b826c391b116c40b789df470a4fb6870 # 1.18
         with:
           remote-protocol: sftp
           remote-host: ftp.cluster015.hosting.ovh.net
