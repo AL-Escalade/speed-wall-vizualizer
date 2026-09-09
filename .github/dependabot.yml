@@ -1,63 +1,79 @@
 version: 2
 updates:
-  # Root workspace dependencies
+  # One entry for the whole Bun workspace.
+  #
+  # There is a single `bun.lock` at the root, and the root package.json declares
+  # `workspaces: ["packages/*"]`, so Dependabot resolves the entire dependency
+  # graph from "/" and edits the child `packages/*/package.json` directly.
+  # Adding per-package entries here does NOT extend coverage — it duplicates it:
+  # every shared dependency then gets one PR per entry (see PRs #169-#173, where
+  # the "/" and "/packages/cli" entries opened identical pdfkit bumps).
+  # Keep this as the only npm entry, and express batching through `groups`,
+  # which are scoped to a single entry.
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
     groups:
+      # typescript sits in all four manifests, @types/node in three
+      typescript:
+        patterns:
+          - "typescript"
+          - "@types/node"
+      # PDF generation stack in packages/cli: svg-to-pdfkit is a pdfkit plugin
+      # and both carry separate @types packages that must move in lockstep
+      pdfkit:
+        patterns:
+          - "pdfkit"
+          - "@types/pdfkit"
+          - "svg-to-pdfkit"
+          - "@types/svg-to-pdfkit"
       oxlint:
         patterns:
           - "oxlint"
           - "oxlint-tsgolint"
+      # vite (web) and vitest (root) share the same Rollup/Vite core
       vite:
         patterns:
           - "vite"
           - "vitest"
           - "@vitest/*"
-    # Align @types/node with Node.js 24 (from .nvmrc)
-    ignore:
-      - dependency-name: "@types/node"
-        update-types: ["version-update:semver-major"]
-
-  # Core package
-  - package-ecosystem: "npm"
-    directory: "/packages/core"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 5
-    ignore:
-      - dependency-name: "@types/node"
-        update-types: ["version-update:semver-major"]
-
-  # CLI package
-  - package-ecosystem: "npm"
-    directory: "/packages/cli"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 5
-    ignore:
-      - dependency-name: "@types/node"
-        update-types: ["version-update:semver-major"]
-
-  # Web package
-  - package-ecosystem: "npm"
-    directory: "/packages/web"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 5
-    groups:
+          - "@vitejs/*"
       react:
         patterns:
           - "react"
           - "react-dom"
           - "@types/react"
           - "@types/react-dom"
-      vite:
+      tailwind:
         patterns:
-          - "vite"
-          - "@vitejs/*"
+          - "tailwindcss"
+          - "@tailwindcss/*"
+          - "daisyui"
+          - "postcss"
+          - "autoprefixer"
+      testing-library:
+        patterns:
+          - "@testing-library/*"
+    # Align @types/node with Node.js 24 (from .nvmrc)
     ignore:
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
+
+  # GitHub Actions used by .github/workflows/
+  #
+  # Grouped into a single PR: these are CI plumbing, and a bump of one action
+  # is rarely reviewable in isolation from the others.
+  #
+  # NOTE: milanmk/actions-file-deployer is pinned to @master, a mutable ref.
+  # Dependabot cannot track a branch pin, so that action is NOT covered here.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      github-actions:
+        patterns:
+          - "*"
