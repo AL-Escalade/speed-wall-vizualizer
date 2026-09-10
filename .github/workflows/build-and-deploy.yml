@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -26,7 +26,7 @@ jobs:
           bun-version: '1.3.11'
 
       - name: Cache Bun install cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.bun/install/cache
           key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
@@ -42,7 +42,7 @@ jobs:
 
       - name: Commit dependency fixes
         if: github.actor == 'dependabot[bot]'
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: 'chore: update workspace dependency metadata'
           file_pattern: 'bun.lock packages/*/package.json'
@@ -65,7 +65,7 @@ jobs:
         run: cp coverage/cobertura-coverage.xml cobertura-coverage.xml
 
       - name: Code Coverage Report
-        uses: clearlyip/code-coverage-report-action@v5
+        uses: clearlyip/code-coverage-report-action@v7
         id: code_coverage_report
         if: github.event_name == 'pull_request'
         with:
@@ -77,7 +77,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add coverage PR comment
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         if: github.event_name == 'pull_request' && steps.code_coverage_report.outputs.file != ''
         with:
           recreate: true
@@ -91,7 +91,7 @@ jobs:
           echo "name=code-coverage-$SAFE_NAME" >> $GITHUB_OUTPUT
 
       - name: Upload coverage artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.coverage_artifact.outputs.name }}
           path: cobertura-coverage.xml
@@ -105,7 +105,7 @@ jobs:
 
       - name: Upload build artifacts
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: web-dist
           path: packages/web/dist
@@ -118,10 +118,10 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: web-dist
           path: dist
