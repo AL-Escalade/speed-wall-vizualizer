@@ -27,11 +27,11 @@
     "test:ui": "vitest --ui"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "^4.1.9",
+    "@vitest/coverage-v8": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.5.3",
     "oxlint": "^1.74.0",
     "oxlint-tsgolint": "^7.0.2001",
     "typescript": "^7.0.2",
-    "vitest": "^4.0.15"
+    "vitest": "^5.0.0"
   }
 }
