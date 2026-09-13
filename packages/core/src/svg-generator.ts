@@ -118,8 +118,8 @@ export interface SvgOptions {
 
 /** Hold label font size used when the option is missing or invalid */
 const DEFAULT_HOLD_LABEL_FONT_SIZE = 40;
-/** Largest hold label font size: placement cost grows with it */
-const MAX_HOLD_LABEL_FONT_SIZE = 1000;
+/** Largest hold label font size: the web slider maximum. Placement cost explodes above it — most labels fall back and each fallback scans every direction. */
+const MAX_HOLD_LABEL_FONT_SIZE = 200;
 /** Color of a hold (and its label) whose route gives none */
 const FALLBACK_HOLD_COLOR = '#FF0000';
 

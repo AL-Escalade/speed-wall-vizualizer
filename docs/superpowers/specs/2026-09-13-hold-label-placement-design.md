@@ -255,8 +255,9 @@ Conséquences assumées :
 ### 3. Rendu
 
 **Normalisation de la taille** : `generateSvg` normalise `holdLabelFontSize` —
-une valeur non finie ou `≤ 0` devient 40 (défaut), une valeur `> 1000` devient
-1000 (borne de coût : le nombre de pas croît avec la taille). La même valeur
+une valeur non finie ou `≤ 0` devient 40 (défaut), une valeur `> 200` devient
+200 (maximum du curseur ; au-delà, la plupart des étiquettes passent en repli
+et le coût explose : 15 s à 1000 px sur IFSC + U15-DE). La même valeur
 normalisée est passée aux étiquettes des zones d'adhérence.
 
 **Deux temps** :
@@ -355,8 +356,7 @@ TDD, fichiers co-localisés, Vitest.
     `center` et `angle` du placement ;
   - étiquette vide : aucun `<text>`, et la voisine garde le même placement qu'en
     son absence ;
-  - `holdLabelFontSize` = 850, `NaN` et `0` rendent sans lever ; `NaN` et `0`
-    donnent la taille 40 ;
+  - `holdLabelFontSize` = 850 et 5000 donnent 200 ; `NaN` et `0` donnent 40 ;
   - `id="hold-labels"` conservé.
 - Régression voies de référence — `packages/cli/src/reference-routes/label-placement.test.ts`
   (les voies se chargent côté cli ; core est importé compilé). Configuration :

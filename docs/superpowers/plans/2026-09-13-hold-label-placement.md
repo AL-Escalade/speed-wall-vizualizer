@@ -20,7 +20,7 @@
 - Les tests du projet `cli` importent `@voie-vitesse/core` **compilé** : lancer `bun run build:core` avant eux dès que core a changé.
 - Toute modification du rendu s'accompagne de `docs/images/*.svg` régénérées (`bun run generate:doc-images`).
 - Aucune nouvelle chaîne visible dans le web (sinon : traduire dans les 4 fichiers `packages/web/src/i18n/*.json`).
-- Constantes de la spec, à reprendre à l'identique : largeur `0,65 em` par caractère, marge `0,15 em`, pas `5 mm`, fenêtre `2 × fontSize`, éventail `22,5°`, repli `≤ 1,05 × min + 1 mm²`, epsilon d'aire `1e-6 mm²`, `8` segments par Bézier, taille normalisée `40` (invalide) / `1000` (max).
+- Constantes de la spec, à reprendre à l'identique : largeur `0,65 em` par caractère, marge `0,15 em`, pas `5 mm`, fenêtre `2 × fontSize`, éventail `22,5°`, repli `≤ 1,05 × min + 1 mm²`, epsilon d'aire `1e-6 mm²`, `8` segments par Bézier, taille normalisée `40` (invalide) / `200` (max, curseur).
 - Chaque message de commit se termine par :
 
   ```

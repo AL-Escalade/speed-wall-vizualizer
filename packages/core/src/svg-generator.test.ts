@@ -253,14 +253,21 @@ describe('generateSvg', () => {
     });
 
     it('leaves a hold with an empty label out of the placement', async () => {
-      const placements = await layoutHoldLabels(WALL, [holdPointingTo('BIG', 1, 1), { ...holdPointingTo('FOOT', 1, 1), position: { column: 'B', row: 5 }, label: '' }]);
+      const holds: ComposedHold[] = [holdPointingTo('BIG', 1, 1), { ...holdPointingTo('FOOT', 1, 1), position: { column: 'B', row: 5 }, label: '' }];
+      const placements = await layoutHoldLabels(WALL, holds);
       expect(placements).toHaveLength(1);
       expect(placements[0].holdIndex).toBe(0);
+
+      const svg = await generateSvg(WALL, holds);
+      const [, group] = /<g id="hold-labels">([\s\S]*?)<\/g>/.exec(svg)!;
+      expect(group.match(/<text/g)).toHaveLength(1);
+      expect(group).toContain('>M12<');
     });
 
     it.each([
-      [850, '850'],
-      [5000, '1000'],
+      [150, '150'],
+      [5000, '200'],
+      [850, '200'],
       [Number.NaN, '40'],
       [0, '40'],
     ])('normalises a hold label font size of %s to %s', async (fontSize, expected) => {
