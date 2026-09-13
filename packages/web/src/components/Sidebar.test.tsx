@@ -75,5 +75,16 @@ describe('Sidebar', () => {
       expect(screen.getByText("Afficher les flèches d'orientation")).toBeInTheDocument();
       expect(screen.getByText('Couleur de la grille')).toBeInTheDocument();
     });
+
+    it('should let hold labels grow up to 200px', () => {
+      renderWithIntl(<Sidebar />);
+      fireEvent.click(screen.getByText("Options d'affichage"));
+
+      const slider = screen
+        .getByText('Taille des noms de prises')
+        .closest('.form-control')
+        ?.querySelector('input[type="range"]');
+      expect(slider).toHaveAttribute('max', '200');
+    });
   });
 });

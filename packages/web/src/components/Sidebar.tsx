@@ -392,7 +392,7 @@ function DisplayOptions() {
             <input
               type="range"
               min="20"
-              max="80"
+              max="200"
               step="5"
               className="range range-sm"
               value={displayOptions.holdLabelFontSize ?? DEFAULT_DISPLAY_OPTIONS.holdLabelFontSize}
