@@ -68,6 +68,7 @@ describe('hold label placement on the reference routes', () => {
     };
     const forward = await byHold(IFSC_AND_U15_DE);
     const backward = await byHold(reversed);
+    expect(forward.size).toBeGreaterThan(0);
     expect(backward.size).toBe(forward.size);
     for (const [key, placement] of forward) {
       expect(backward.get(key)?.center.x, key).toBeCloseTo(placement.center.x, 6);
