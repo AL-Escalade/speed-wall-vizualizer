@@ -2,14 +2,22 @@
  * Parser for hold SVG files
  *
  * Hold SVG files must contain:
- * - A <path> or <g> element with id="prise" for the hold shape
+ * - A <path> or <g> element with id="prise" for the hold shape, or a
+ *   <rect inkscape:label="pad"> for uncolored holds (STOP)
  * - A <circle> or <ellipse> element with id="insert" for the anchor point
+ *
+ * Label zones (<text inkscape:label="label-up|down|left|right|label">) give a
+ * direction and an angle, not a position: the tspan x/y is the text centre
+ * (text-anchor: middle is required), the label is pushed from the insert
+ * toward it, and the <text> transform is the text angle. Font size, baseline
+ * and style of the zone are ignored.
  */
 
 import { DOMParser, XMLSerializer, type Document, type Element } from '@xmldom/xmldom';
 import type { HoldSvgData, Point, Dimensions, HoldTypeConfig, HoldTypesConfig, LabelZones, ArrowDirection } from './types.js';
 import { HOLD_SVG_CONTENT, HOLD_TYPES_CONFIG } from './bundled-assets.js';
-import { applyMatrix, matrixRotation, parseTransformList } from './svg-transform.js';
+import { applyMatrix, matrixRotation, multiplyMatrices, parseTransformList, IDENTITY_MATRIX, type Matrix } from './svg-transform.js';
+import { flattenFirstSubpath } from './hold-outline.js';
 
 /** Cache for loaded SVG data */
 const svgCache = new Map<string, HoldSvgData>();
@@ -348,8 +356,91 @@ function extractAllVisualElements(doc: Document): string[] {
 }
 
 // ============================================================================
+// Outline Extraction
+// ============================================================================
+
+function pathPolygon(path: Element, matrix: Matrix): Point[] {
+  return flattenFirstSubpath(path.getAttribute('d') ?? '').map((p) => applyMatrix(matrix, p));
+}
+
+/** Transforms from `root` (included) down to `element` (included) */
+function chainMatrix(root: Element, element: Element): Matrix {
+  const chain: Element[] = [];
+  let node: Element | null = element;
+  while (node !== null) {
+    chain.unshift(node);
+    node = node === root ? null : (node.parentNode as Element | null);
+  }
+  return chain.reduce(
+    (matrix, current) => multiplyMatrices(matrix, parseTransformList(current.getAttribute('transform'))),
+    IDENTITY_MATRIX
+  );
+}
+
+/** The pad rect, grown by half its stroke on each side */
+function padPolygon(pad: Element): Point[] {
+  const x = parseFloat(pad.getAttribute('x') ?? '0');
+  const y = parseFloat(pad.getAttribute('y') ?? '0');
+  const width = parseFloat(pad.getAttribute('width') ?? '0');
+  const height = parseFloat(pad.getAttribute('height') ?? '0');
+  const strokeInStyle = /stroke-width\s*:\s*([\d.]+)/.exec(pad.getAttribute('style') ?? '');
+  const stroke = strokeInStyle ? parseFloat(strokeInStyle[1]) : parseFloat(pad.getAttribute('stroke-width') ?? '0');
+  const half = stroke / 2;
+  const matrix = parseTransformList(pad.getAttribute('transform'));
+  return [
+    { x: x - half, y: y - half },
+    { x: x + width + half, y: y - half },
+    { x: x + width + half, y: y + height + half },
+    { x: x - half, y: y + height + half },
+  ].map((p) => applyMatrix(matrix, p));
+}
+
+/**
+ * Extract the hold outline, in the asset frame.
+ * - <path> prise: its first subpath, through its own transform
+ * - <g> prise: one polygon per descendant <path>, through the transforms
+ *   from the <g> (included) down to the path (included)
+ * - no prise (STOP): the "pad" rect
+ * Parent group transforms are ignored, exactly as the rendering ignores them.
+ */
+function extractOutline(doc: Document): Point[][] {
+  const prise = findElementByIdOrLabelMultiTag(doc, ['path', 'g'], 'prise');
+  if (prise !== null && prise.tagName === 'path') {
+    return [pathPolygon(prise, parseTransformList(prise.getAttribute('transform')))];
+  }
+  if (prise !== null) {
+    const polygons: Point[][] = [];
+    const paths = prise.getElementsByTagName('path');
+    for (let i = 0; i < paths.length; i++) {
+      polygons.push(pathPolygon(paths[i], chainMatrix(prise, paths[i])));
+    }
+    return polygons;
+  }
+  const pad = findElementByIdOrLabel(doc, 'rect', 'pad');
+  if (pad === null) {
+    throw new Error('Hold SVG has neither a "prise" shape nor a "pad" rect to outline');
+  }
+  return [padPolygon(pad)];
+}
+
+// ============================================================================
 // Label Zones Extraction
 // ============================================================================
+
+/**
+ * Effective text-anchor of a zone: the tspan's own value, else the text's
+ * (style first, then attribute); SVG's default is start.
+ */
+function effectiveTextAnchor(text: Element, tspan: Element | null): string {
+  const elements = tspan === null ? [text] : [tspan, text];
+  for (const element of elements) {
+    const inStyle = /text-anchor\s*:\s*([a-z]+)/i.exec(element.getAttribute('style') ?? '');
+    if (inStyle) return inStyle[1];
+    const attribute = element.getAttribute('text-anchor');
+    if (attribute) return attribute;
+  }
+  return 'start';
+}
 
 /**
  * Extract label zones from SVG document
@@ -376,12 +467,29 @@ function extractLabelZones(doc: Document): LabelZones {
     const zoneKey = labelMap[inkscapeLabel];
     if (!zoneKey) continue;
 
-    // Clone and clean the text element
+    const tspan = textElement.getElementsByTagName('tspan').item(0);
+    if (effectiveTextAnchor(textElement, tspan) !== 'middle') {
+      throw new Error(`Label zone "${inkscapeLabel}" must be centred (text-anchor: middle)`);
+    }
+    const positioned = tspan ?? textElement;
+    const position = {
+      x: parseFloat(positioned.getAttribute('x') ?? ''),
+      y: parseFloat(positioned.getAttribute('y') ?? ''),
+    };
+    if (Number.isNaN(position.x) || Number.isNaN(position.y)) {
+      throw new Error(`Label zone "${inkscapeLabel}" has no x/y position`);
+    }
+    const matrix = parseTransformList(textElement.getAttribute('transform'));
+
+    // Clone and clean the text element (legacy rendering)
     const clone = textElement.cloneNode(true) as Element;
-    removeUnwantedAttributes(clone, false); // Keep id for text elements? No, remove it
     removeUnwantedAttributes(clone, true);
 
-    zones[zoneKey] = { element: elementToString(clone) };
+    zones[zoneKey] = {
+      element: elementToString(clone),
+      anchor: applyMatrix(matrix, position),
+      angle: matrixRotation(matrix),
+    };
   }
 
   return zones;
@@ -401,6 +509,7 @@ export function parseHoldSvg(svgContent: string): HoldSvgData {
   const insertCenter = extractInsertCenter(doc, 'insert');
   const { element: pathElement, rotation: svgRotation } = extractPathElement(doc, 'prise');
   const labelZones = extractLabelZones(doc);
+  const outline = extractOutline(doc);
 
   // If no "prise" element, extract all visual elements (uncolored)
   // Otherwise, just extract circles/ellipses (inserts, screw holes)
@@ -415,6 +524,7 @@ export function parseHoldSvg(svgContent: string): HoldSvgData {
     viewBox,
     svgRotation,
     labelZones,
+    outline,
   };
 }
 
@@ -437,7 +547,12 @@ export async function loadHoldSvg(holdType: string): Promise<HoldSvgData> {
     throw new Error(`Unknown hold type: ${holdType}. Available types: ${Object.keys(HOLD_SVG_CONTENT).join(', ')}`);
   }
 
-  const svgData = parseHoldSvg(content);
+  let svgData: HoldSvgData;
+  try {
+    svgData = parseHoldSvg(content);
+  } catch (error) {
+    throw new Error(`Invalid hold SVG "${upperType}": ${(error as Error).message}`, { cause: error });
+  }
   svgCache.set(upperType, svgData);
 
   return svgData;

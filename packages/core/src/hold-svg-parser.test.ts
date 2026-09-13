@@ -12,6 +12,7 @@ import {
   clearHoldTypesConfigCache,
 } from './hold-svg-parser.js';
 import { HOLD_SVG_CONTENT, HOLD_TYPES_CONFIG } from './bundled-assets.js';
+import { aabb, polygonArea } from './polygon-clip.js';
 
 describe('parseHoldSvg', () => {
   it('should parse BIG hold SVG correctly', () => {
@@ -323,5 +324,108 @@ describe('clearHoldTypesConfigCache', () => {
     // After clearing, they should still be equal (same data)
     expect(first).toEqual(second);
     // But might be different references (depends on implementation)
+  });
+});
+
+describe('hold outlines', () => {
+  // Reference areas (asset units², first subpath, 8 segments per Bézier),
+  // measured independently during the spec review
+  it.each([
+    ['BIG', 18417.3],
+    ['FOOT', 3024.3],
+    ['BIG-DE15', 4123.8],
+    ['FOOT-DE15', 300.5],
+  ])('outlines the whole %s shape', (type, expectedArea) => {
+    const { outline } = parseHoldSvg(HOLD_SVG_CONTENT[type]);
+    expect(outline).toHaveLength(1);
+    expect(Math.abs(polygonArea(outline[0]) - expectedArea) / expectedArea).toBeLessThan(0.01);
+  });
+
+  it('keeps the outer contour of the compound BIG path', () => {
+    const box = aabb(parseHoldSvg(HOLD_SVG_CONTENT.BIG).outline[0]);
+    expect(box.minX).toBeCloseTo(20.2, 1);
+    expect(box.minY).toBeCloseTo(10.5, 1);
+    expect(box.maxX).toBeCloseTo(199.84, 1);
+    expect(box.maxY).toBeCloseTo(274.14, 1);
+  });
+
+  it('outlines the STOP pad, stroke included, when there is no prise', () => {
+    const [pad] = parseHoldSvg(HOLD_SVG_CONTENT.STOP).outline;
+    const expected = [
+      { x: -0.6325, y: -4.1514784 },
+      { x: 250.6325, y: -4.1514784 },
+      { x: 250.6325, y: 247.1135216 },
+      { x: -0.6325, y: 247.1135216 },
+    ];
+    pad.forEach((corner, i) => {
+      expect(corner.x).toBeCloseTo(expected[i].x, 3);
+      expect(corner.y).toBeCloseTo(expected[i].y, 3);
+    });
+  });
+
+  it('composes the transforms of a <g> prise down to each path', () => {
+    const svg = `<?xml version="1.0"?>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <circle id="insert" cx="50" cy="50" r="5"/>
+        <g id="prise" transform="translate(10,0)">
+          <path d="M0,0 L10,0 L10,10 Z" transform="scale(2)"/>
+        </g>
+      </svg>`;
+    expect(parseHoldSvg(svg).outline).toEqual([[{ x: 10, y: 0 }, { x: 30, y: 0 }, { x: 30, y: 20 }]]);
+  });
+
+  it('throws when there is neither a prise nor a pad to outline', () => {
+    const svg = `<?xml version="1.0"?>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <circle id="insert" cx="50" cy="50" r="5"/>
+      </svg>`;
+    expect(() => parseHoldSvg(svg)).toThrow('neither a "prise" shape nor a "pad" rect');
+  });
+});
+
+describe('label zone anchors', () => {
+  it('reads the anchor and angle of an Inkscape zone', () => {
+    const { labelZones } = parseHoldSvg(HOLD_SVG_CONTENT.BIG);
+    expect(labelZones.down?.anchor.x).toBeCloseTo(145.535, 2);
+    expect(labelZones.down?.anchor.y).toBeCloseTo(227.620, 2);
+    expect(labelZones.down?.angle).toBeCloseTo(-41.2205, 4);
+  });
+
+  it('reads scale(-1) as a half turn', () => {
+    const { labelZones } = parseHoldSvg(HOLD_SVG_CONTENT.FOOT);
+    expect(labelZones.right?.angle).toBeCloseTo(180, 6);
+    expect(labelZones.right?.anchor.x).toBeCloseTo(36.4947, 3);
+    expect(labelZones.right?.anchor.y).toBeCloseTo(-11.1164, 3);
+  });
+
+  it('centres the STOP label under its insert', () => {
+    const { labelZones, insertCenter } = parseHoldSvg(HOLD_SVG_CONTENT.STOP);
+    expect(labelZones.default?.anchor.x).toBeCloseTo(insertCenter.x, 3);
+    expect(labelZones.default?.anchor.y).toBeGreaterThan(insertCenter.y);
+    expect(labelZones.default?.angle).toBe(0);
+  });
+
+  it('throws when a zone is not centred on its anchor', () => {
+    const svg = `<?xml version="1.0"?>
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 100 100">
+        <circle id="insert" cx="50" cy="50" r="5"/>
+        <path id="prise" d="M10 10L90 10L90 90Z"/>
+        <text inkscape:label="label" x="5" y="5" style="text-anchor:start"><tspan x="5" y="5">M1</tspan></text>
+      </svg>`;
+    expect(() => parseHoldSvg(svg)).toThrow('must be centred (text-anchor: middle)');
+  });
+});
+
+describe('loadHoldSvg errors', () => {
+  it('names the hold type when its SVG is invalid', async () => {
+    HOLD_SVG_CONTENT.BROKEN = `<?xml version="1.0"?>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <circle id="insert" cx="50" cy="50" r="5"/>
+      </svg>`;
+    try {
+      await expect(loadHoldSvg('BROKEN')).rejects.toThrow('Invalid hold SVG "BROKEN"');
+    } finally {
+      delete HOLD_SVG_CONTENT.BROKEN;
+    }
   });
 });
