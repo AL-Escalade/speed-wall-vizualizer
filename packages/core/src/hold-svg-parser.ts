@@ -481,12 +481,7 @@ function extractLabelZones(doc: Document): LabelZones {
     }
     const matrix = parseTransformList(textElement.getAttribute('transform'));
 
-    // Clone and clean the text element (legacy rendering)
-    const clone = textElement.cloneNode(true) as Element;
-    removeUnwantedAttributes(clone, true);
-
     zones[zoneKey] = {
-      element: elementToString(clone),
       anchor: applyMatrix(matrix, position),
       angle: matrixRotation(matrix),
     };

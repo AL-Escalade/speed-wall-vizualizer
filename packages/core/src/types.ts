@@ -225,8 +225,6 @@ export type ArrowDirection = 'up' | 'down' | 'left' | 'right';
 
 /** Label zone drawn in a hold asset */
 export interface LabelZone {
-  /** The cleaned text element (legacy rendering, removed once placement lands) */
-  element: string;
   /** Text centre in the asset frame: gives the push direction from the insert */
   anchor: Point;
   /** Text rotation in the asset frame, in SVG degrees (clockwise) */

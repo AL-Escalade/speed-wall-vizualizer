@@ -56,8 +56,12 @@ export { parseSmearingZoneLabel, formatSmearingZoneLabel } from './smearing-zone
 export type { SmearingZoneRole } from './smearing-zone-label.js';
 
 // SVG Generation
-export { generateSvg } from './svg-generator.js';
+export { generateSvg, layoutHoldLabels } from './svg-generator.js';
 export type { SvgOptions } from './svg-generator.js';
+
+// Hold label placement
+export { placeHoldLabels, labelBox } from './label-placement.js';
+export type { LabelRequest, LabelPlacement } from './label-placement.js';
 
 // Route Composition
 export { composeAllRoutes, composeRoute, extractHolds, parseHold, getRouteHolds, composeAllSmearingZones, composeSmearingZones, extractSmearingZones, getRouteColorMap, getDefaultColorTag, validateRouteColorTags } from './route-composer.js';
