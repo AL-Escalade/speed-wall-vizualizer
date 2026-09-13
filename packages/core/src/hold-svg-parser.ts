@@ -9,6 +9,7 @@
 import { DOMParser, XMLSerializer, type Document, type Element } from '@xmldom/xmldom';
 import type { HoldSvgData, Point, Dimensions, HoldTypeConfig, HoldTypesConfig, LabelZones, ArrowDirection } from './types.js';
 import { HOLD_SVG_CONTENT, HOLD_TYPES_CONFIG } from './bundled-assets.js';
+import { applyMatrix, matrixRotation, parseTransformList } from './svg-transform.js';
 
 /** Cache for loaded SVG data */
 const svgCache = new Map<string, HoldSvgData>();
@@ -191,90 +192,6 @@ function extractViewBox(doc: Document): Dimensions {
 }
 
 // ============================================================================
-// Transform Parsing (String-based - kept as-is)
-// ============================================================================
-
-/**
- * Parse a transform matrix from a transform attribute
- * Supports: matrix(a,b,c,d,e,f), translate(x,y), rotate(angle), scale(x,y)
- */
-function parseTransformMatrix(transform: string | null): [number, number, number, number, number, number] | null {
-  if (!transform) return null;
-
-  // Handle matrix(a,b,c,d,e,f)
-  const matrixMatch = transform.match(/matrix\s*\(\s*([0-9.e+-]+)\s*,\s*([0-9.e+-]+)\s*,\s*([0-9.e+-]+)\s*,\s*([0-9.e+-]+)\s*,\s*([0-9.e+-]+)\s*,\s*([0-9.e+-]+)\s*\)/i);
-  if (matrixMatch) {
-    return [
-      parseFloat(matrixMatch[1]),
-      parseFloat(matrixMatch[2]),
-      parseFloat(matrixMatch[3]),
-      parseFloat(matrixMatch[4]),
-      parseFloat(matrixMatch[5]),
-      parseFloat(matrixMatch[6]),
-    ];
-  }
-
-  // Handle translate(x, y)
-  const translateMatch = transform.match(/translate\s*\(\s*([0-9.e+-]+)\s*(?:,\s*([0-9.e+-]+))?\s*\)/i);
-  if (translateMatch) {
-    const tx = parseFloat(translateMatch[1]);
-    const ty = translateMatch[2] ? parseFloat(translateMatch[2]) : 0;
-    return [1, 0, 0, 1, tx, ty];
-  }
-
-  // Handle rotate(angle)
-  const rotateMatch = transform.match(/rotate\s*\(\s*([0-9.e+-]+)\s*\)/i);
-  if (rotateMatch) {
-    const angle = (parseFloat(rotateMatch[1]) * Math.PI) / 180;
-    const cos = Math.cos(angle);
-    const sin = Math.sin(angle);
-    return [cos, sin, -sin, cos, 0, 0];
-  }
-
-  return null;
-}
-
-/**
- * Apply a transform matrix to a point
- */
-function applyTransform(point: Point, matrix: [number, number, number, number, number, number]): Point {
-  const [a, b, c, d, e, f] = matrix;
-  return {
-    x: a * point.x + c * point.y + e,
-    y: b * point.x + d * point.y + f,
-  };
-}
-
-/**
- * Extract rotation angle from a transform matrix
- */
-function extractRotationFromMatrix(matrix: [number, number, number, number, number, number]): number {
-  const [a, b] = matrix;
-  const radians = Math.atan2(b, a);
-  return radians * (180 / Math.PI);
-}
-
-/**
- * Extract rotation from a transform attribute string
- */
-function extractRotation(transform: string | null): number {
-  if (!transform) return 0;
-
-  const matrix = parseTransformMatrix(transform);
-  if (matrix) {
-    return extractRotationFromMatrix(matrix);
-  }
-
-  // Handle rotate(angle) directly
-  const rotateMatch = transform.match(/rotate\s*\(\s*([0-9.e+-]+)/i);
-  if (rotateMatch) {
-    return parseFloat(rotateMatch[1]);
-  }
-
-  return 0;
-}
-
-// ============================================================================
 // Circle Extraction
 // ============================================================================
 
@@ -296,20 +213,12 @@ function extractInsertCenter(doc: Document, insertId: string): Point {
     throw new Error(`Element "${insertId}" missing cx or cy attributes`);
   }
 
-  let center: Point = {
+  const center: Point = {
     x: parseFloat(cx),
     y: parseFloat(cy),
   };
 
-  const transform = element.getAttribute('transform');
-  if (transform) {
-    const matrix = parseTransformMatrix(transform);
-    if (matrix) {
-      center = applyTransform(center, matrix);
-    }
-  }
-
-  return center;
+  return applyMatrix(parseTransformList(element.getAttribute('transform')), center);
 }
 
 /**
@@ -378,8 +287,7 @@ function extractPathElement(doc: Document, pathId: string): { element: string | 
   }
 
   // Extract rotation from transform before cleaning
-  const transform = element.getAttribute('transform');
-  const rotation = extractRotation(transform);
+  const rotation = matrixRotation(parseTransformList(element.getAttribute('transform')));
 
   // Clone and clean the element
   const clone = element.cloneNode(true) as Element;

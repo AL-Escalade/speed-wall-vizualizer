@@ -148,7 +148,7 @@ describe('parseHoldSvg', () => {
       </svg>`;
     const svgData = parseHoldSvg(svgWithRotateCenter);
 
-    expect(svgData.svgRotation).toBe(45);
+    expect(svgData.svgRotation).toBeCloseTo(45, 9);
   });
 
   it('should simplify compound paths in child elements of prise group', () => {
@@ -166,15 +166,13 @@ describe('parseHoldSvg', () => {
     expect(svgData.pathElement).not.toContain('M60 60');
   });
 
-  it('should return 0 rotation for unrecognized transform', () => {
+  it('should throw for a transform it cannot represent', () => {
     const svgWithSkew = `<?xml version="1.0"?>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
         <circle id="insert" cx="50" cy="50" r="5"/>
         <path id="prise" d="M10 10L90 90Z" transform="skewX(10)"/>
       </svg>`;
-    const svgData = parseHoldSvg(svgWithSkew);
-
-    expect(svgData.svgRotation).toBe(0);
+    expect(() => parseHoldSvg(svgWithSkew)).toThrow('Unsupported transform "skewX(10)"');
   });
 });
 
