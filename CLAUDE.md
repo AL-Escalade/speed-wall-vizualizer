@@ -153,6 +153,34 @@ That is what keeps a config shared by URL pointing at the same holds across
 languages. Route data and `schemas/route.schema.json` are unchanged by this, and
 no config migration is involved.
 
+### Hold Label Placement
+
+Hold labels are placed by `packages/core/src/label-placement.ts`, not drawn at a
+fixed spot. Each label starts from its hold's **insert** and is pushed outward
+until its box (text width estimated at 0.65 em per character, plus a 0.15 em
+margin) clears its own hold outline — a hard guarantee — then the other holds
+and the labels already placed:
+
+1. along the **ray** from the insert toward the asset's Inkscape anchor;
+2. if the ray is blocked for `2 × fontSize` past lift-off, along a **fan** of
+   directions around it (±22.5°, ±45°, … 180°);
+3. otherwise at the first position within 5 % of the least overlap.
+
+Labels are placed top of the wall first, so the result does not depend on the
+order of the sections. `layoutHoldLabels()` returns the placements (direction,
+distance, fallback, overlaps) for tests and debugging.
+
+In a hold asset, a `label-up|down|left|right` (or `label`) zone is a
+**direction and an angle**, not a position: its tspan x/y is the text centre and
+`text-anchor: middle` is required (`parseHoldSvg` throws otherwise); the
+`<text>` transform gives the text angle; font size, baseline and style are
+ignored. The hold outline is the first subpath of the `prise` path (or the
+`pad` rect for STOP); path commands outside `M L H V C S Z` and transforms
+outside `matrix translate rotate scale` throw.
+
+Smearing zone labels share `holdLabelFontSize` but are not placed: they can
+cover holds when the labels are large.
+
 ### Column Coordinate Systems
 
 Three systems exist (letters differ after I):
