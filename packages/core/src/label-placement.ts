@@ -242,12 +242,13 @@ function placeLabel(request: LabelRequest, fontSize: number, obstacles: Obstacle
 /**
  * Place hold labels, top of the wall first (then left to right, then by hold
  * index), so the result does not depend on the order of the sections.
- * @param requests - Labels to place (holds with an empty text are left out)
+ * @param requests - Labels to place; the caller must leave out holds with an empty text
  * @param outlines - Outlines of every hold, indexed by holdIndex
  * @param fontSize - Label font size, in mm
  * @returns Placements, in the order of `requests`
  */
 export function placeHoldLabels(requests: LabelRequest[], outlines: Point[][][], fontSize: number): LabelPlacement[] {
+  if (!Number.isFinite(fontSize) || fontSize <= 0) throw new RangeError(`Label font size must be a positive number, got ${fontSize}`);
   const holdObstacles = outlines.map((polygons, index) => ({ index, polygons, box: aabb(polygons.flat()) }));
   const labelObstacles: Obstacle[] = [];
   const order = requests

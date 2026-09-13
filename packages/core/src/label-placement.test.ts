@@ -102,6 +102,10 @@ describe('placeHoldLabels', () => {
     expect(backward[1]).toEqual(forward[0]);
     expect(backward[0]).toEqual(forward[1]);
   });
+
+  it.each([Number.NaN, 0, -5])('rejects a non-positive font size of %s', (fontSize) => {
+    expect(() => placeHoldLabels([DOWN], [[HOLD]], fontSize)).toThrow(RangeError);
+  });
 });
 
 describe('labelBox', () => {
