@@ -1,4 +1,4 @@
-#!/usr/bin/env npx tsx
+#!/usr/bin/env bun
 /**
  * Script to generate bundled-assets.ts from assets/holds/ directory
  * This ensures a single source of truth for hold SVGs and configuration

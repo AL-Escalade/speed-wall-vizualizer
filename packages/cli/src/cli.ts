@@ -1,11 +1,11 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 /**
  * CLI for generating speed climbing wall visualizations
  *
  * Usage:
- *   tsx src/cli.ts --config wall-config.json
- *   tsx src/cli.ts --config wall-config.json --output wall.svg
- *   tsx src/cli.ts --config wall-config.json --output wall.png --format png
+ *   bun src/cli.ts --config wall-config.json
+ *   bun src/cli.ts --config wall-config.json --output wall.svg
+ *   bun src/cli.ts --config wall-config.json --output wall.png --format png
  */
 
 import { readFile } from 'fs/promises';
@@ -79,7 +79,7 @@ function parseArgs(args: string[]): CliArgs {
  */
 function printUsage(): void {
   console.log(`
-Usage: tsx src/cli.ts [options]
+Usage: bun src/cli.ts [options]
 
 Options:
   -c, --config <file>   Configuration file (JSON)
