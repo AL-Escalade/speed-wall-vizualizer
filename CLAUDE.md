@@ -158,17 +158,27 @@ no config migration is involved.
 Hold labels are placed by `packages/core/src/label-placement.ts`, not drawn at a
 fixed spot. Each label starts from its hold's **insert** and is pushed outward
 until its box (text width estimated at 0.65 em per character, plus a 0.15 em
-margin) clears its own hold outline — a hard guarantee — then the other holds
-and the labels already placed:
+margin) clears its own hold outline — a hard guarantee — then the other holds,
+the zone labels already placed and, when `HoldLabelContext.inserts` is given,
+any candidate nearer another hold's insert than its own:
 
 1. along the **ray** from the insert toward the asset's Inkscape anchor;
 2. if the ray is blocked for `2 × fontSize` past lift-off, along a **fan** of
    directions around it (±22.5°, ±45°, … 180°);
-3. otherwise at the first position within 5 % of the least overlap.
+3. otherwise at the first position within 5 % of the least overlap, preferring
+   a position that still satisfies the association rule when one exists.
+
+**Association rule**: a candidate is free only if its centre is strictly closer
+to its own hold's insert than to the insert of every other hold — two holds
+sharing an insert (within 1 mm) never block each other. `layoutLabels()`/
+`generateSvg()` always pass every hold's insert, so the rule is always
+enforced there; `placeHoldLabels()` called without a `context` (e.g. existing
+unit tests) keeps its old, unassociated behavior.
 
 Labels are placed top of the wall first, so the result does not depend on the
 order of the sections. `layoutHoldLabels()` returns the placements (direction,
-distance, fallback, overlaps) for tests and debugging.
+distance, fallback, overlaps) for tests and debugging; `layoutLabels()` returns
+both hold and zone-label placements.
 
 In a hold asset, a `label-up|down|left|right` (or `label`) zone is a
 **direction and an angle**, not a position: its tspan x/y is the text centre and
@@ -178,8 +188,16 @@ ignored. The hold outline is the first subpath of the `prise` path (or the
 `pad` rect for STOP); path commands outside `M L H V C S Z` and transforms
 outside `matrix translate rotate scale` throw.
 
-Smearing zone labels share `holdLabelFontSize` but are not placed: they can
-cover holds when the labels are large.
+**Smearing zone labels** are placed too, by `placeZoneLabels()`, *before* hold
+labels: a candidate starts left-aligned under the zone's bottom edge and slides
+right in 5 mm steps; if the whole edge is blocked it drops 5 mm and slides
+again, up to `2 × fontSize` below the start. Obstacles are hold outlines and
+zone labels already placed — zone rectangles themselves are never obstacles.
+The zone rectangle geometry (`computeZoneRect` in `svg-generator.ts`) is
+computed once and shared by rendering and placement. Placed zone-label boxes
+then become fixed obstacles for hold labels (`HoldLabelContext.fixedLabels`) —
+a zone label has one band of candidate positions where a hold label has 16, so
+the hold label is the one that adapts.
 
 ### Column Coordinate Systems
 

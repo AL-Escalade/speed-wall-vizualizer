@@ -35,13 +35,15 @@ qu'elles touchent :
 
 | Question | Décision |
 |---|---|
-| Portée de l'évitement | Prises et étiquettes de prises. Flèches, zones d'adhérence et leurs étiquettes exclues. |
+| Portée de l'évitement | Prises et étiquettes de prises, étiquettes de zones d'adhérence. Flèches et zones d'adhérence elles-mêmes exclues. |
 | Orientation | L'étiquette suit la prise, comme aujourd'hui (inclinaison héritée des assets, jusqu'à environ ±95° en bord de secteur). |
 | Forme de la prise | Contour réel (chemin `prise` converti en polygone), pas la boîte englobante. |
 | Pas de place libre | Moindre chevauchement ; même taille pour toutes les étiquettes. |
 | Algorithme | Rayon partant du centre du cercle `insert` (point de fixation), dans la direction de l'ancre Inkscape ; si rien n'est libre, éventail de directions autour de l'insert ; sinon repli. |
 | Rôle de l'ancre Inkscape | Elle ne donne que la **direction** (insert → ancre) et l'**angle** du texte ; la distance est calculée. |
-| Ordre de placement | Haut du mur d'abord, indépendant de l'ordre des sections. |
+| Ordre de placement | Haut du mur d'abord, indépendant de l'ordre des sections. Les étiquettes de zones sont placées avant celles des prises. |
+| Association étiquette ↔ prise | Un candidat n'est libre que si son centre est strictement plus proche de sa propre ancre `insert` que de celle de toute autre prise (§2). |
+| Étiquettes de zones | Glissent le long du bord bas de la zone puis descendent si besoin ; jamais recouvertes par une étiquette de prise, qui les traite comme obstacle fixe (§2 bis). |
 
 Approches écartées :
 
@@ -218,17 +220,30 @@ croissant, puis `holdIndex`. Le résultat est renvoyé dans l'ordre de `requests
   n'est **admissible** que si son chevauchement avec sa propre prise est nul (le
   contour propre est retesté à chaque pas : sur une prise concave, un bras peut
   recouper le rayon après `d₀`).
-- **Libre** : admissible, et ne chevauche ni une autre prise, ni une étiquette
-  déjà placée. Le test s'arrête au premier obstacle d'aire positive.
+- **Libre** : admissible, associé (voir ci-dessous), et ne chevauche ni une
+  autre prise, ni une étiquette déjà placée (de prise ou de zone). Le test
+  s'arrête au premier obstacle d'aire positive.
 
-**Choix** : le premier candidat libre, en parcourant les directions dans l'ordre
-puis `d` croissant. Les directions suivantes ne sont pas explorées.
+**Association** (`HoldLabelContext.inserts`) : un candidat n'est **associé** que
+si son centre est strictement plus proche de l'`insert` de sa propre prise que
+de l'`insert` de **toute autre prise**. Les prises dont l'`insert` est à moins
+de 1 mm de l'`insert` propre sont ignorées (deux prises sur un même insert ne
+doivent pas se bloquer mutuellement). Sans `inserts` (appel sans contexte),
+tout candidat est associé : le comportement historique est inchangé. L'ordre de
+recherche ne change pas (rayon puis éventail puis repli) ; seule la condition
+« libre » se durcit.
+
+**Choix** : le premier candidat libre (admissible, associé, sans chevauchement),
+en parcourant les directions dans l'ordre puis `d` croissant. Les directions
+suivantes ne sont pas explorées.
 
 **Repli** (aucun candidat libre dans aucune direction) : parmi tous les
 candidats admissibles, on calcule la somme exacte des aires de chevauchement
 avec les autres prises et étiquettes ; on retient le **premier** (même ordre de
-parcours) dont la somme est `≤ 1,05 × minimum + 1 mm²`. Cela évite de s'éloigner
-jusqu'au bout de la fenêtre pour un gain négligeable.
+parcours) dont la somme est `≤ 1,05 × minimum + 1 mm²`, en préférant les
+candidats associés quand il en existe (sinon on retombe sur tous les candidats
+admissibles). Cela évite de s'éloigner jusqu'au bout de la fenêtre pour un gain
+négligeable.
 
 La boîte retenue (non gonflée) devient un obstacle pour les étiquettes
 suivantes.
@@ -246,11 +261,46 @@ Conséquences assumées :
   (simulation IFSC, IFSC + U15-DE, U15). PAD descend sous le pad. **Toutes les
   étiquettes de `docs/images` bougent.**
 - La fenêtre borne l'éloignement à `2 × fontSize` au-delà du décollage, soit
-  400 mm à 200 px (plus de trois pas d'insert). Elle ne garantit pas
-  l'association visuelle : une étiquette peut finir plus près d'une autre prise
-  que de la sienne.
+  400 mm à 200 px (plus de trois pas d'insert). Avec `inserts` fourni, la règle
+  d'association garantit qu'un candidat retenu hors repli est plus proche de sa
+  propre prise que de toute autre — sauf en repli, où aucun candidat associé
+  n'existait dans la fenêtre.
 - Coût : le cas nominal s'arrête au premier candidat libre ; seul le repli
   calcule toutes les aires (jusqu'à 16 directions × 81 pas à 200 px).
+
+### 2 bis. Étiquettes de zones d'adhérence
+
+Nouvelle fonction `placeZoneLabels(requests, outlines, fontSize)`, même module.
+Une étiquette de zone n'a qu'une seule bande de positions (contre 16 directions
+pour une étiquette de prise) : glisser le long du bord bas de la zone, puis
+descendre si tout le bord est bloqué.
+
+- **Candidats** : la boîte part **alignée à gauche**, coin haut-gauche en
+  `(zoneLeft, zoneBottom + 5 mm)` (5 mm = marge historique sous la zone). Elle
+  **glisse à droite** par pas de 5 mm tant que son bord droit reste
+  `≤ zoneRight` (le décalage 0 est toujours tenté, même si l'étiquette est plus
+  large que la zone). Si tout le bord est bloqué, elle **descend** de 5 mm et
+  glisse à nouveau, jusqu'à une descente de `2 × fontSize`.
+- **Boîte** : largeur = texte affiché × `LABEL_GLYPH_WIDTH_EM` × fontSize,
+  hauteur = fontSize, angle 0 ; le test de collision gonfle la boîte de
+  `LABEL_MARGIN_EM × fontSize` de chaque côté (comme pour les étiquettes de
+  prise) ; les obstacles ne sont pas gonflés.
+- **Obstacles** : le contour de chaque prise, et les étiquettes de zones déjà
+  placées (non gonflées). Le rectangle de la zone elle-même n'est **pas** un
+  obstacle.
+- **Ordre** : bas de zone croissant en coordonnées SVG (haut du mur d'abord),
+  puis gauche de zone, puis index de zone.
+- **Choix** : le premier candidat libre (glissement croissant à chaque
+  descente, descente croissante) ; sinon repli (`selectFallbackCandidate`, même
+  règle que pour les étiquettes de prise).
+
+Les étiquettes de zones sont placées **avant** celles des prises : leurs boîtes
+retenues (non gonflées, `labelBox(center, width, height, 0)`) deviennent des
+obstacles fixes pour `placeHoldLabels` (`HoldLabelContext.fixedLabels`) — une
+étiquette de zone a une seule bande de positions quand une étiquette de prise
+en a 16, c'est donc la seconde qui s'adapte. La géométrie du rectangle de zone
+(`computeZoneRect` dans `svg-generator.ts`) est calculée une seule fois et
+partagée entre le rendu et le placement, pour ne jamais diverger.
 
 ### 3. Rendu
 
@@ -262,14 +312,19 @@ normalisée est passée aux étiquettes des zones d'adhérence.
 
 **Deux temps** :
 
-1. `layoutHoldLabels(config, holds, options): Promise<LabelPlacement[]>`
-   (`svg-generator.ts`, exportée par `index.ts`) : pour chaque prise, contour et
-   ancre transformés dans le repère du mur (même matrice que le rendu :
-   `translate · rotate(−rotation) · scale · translate(−insertCenter)`), angle θ,
-   texte affiché ; puis `placeHoldLabels`.
+1. `layoutLabels(config, holds, options, smearingZones): Promise<{ holds: LabelPlacement[]; zones: ZoneLabelPlacement[] }>`
+   (`svg-generator.ts`, exportée par `index.ts`) : place d'abord les étiquettes
+   de zones (`placeZoneLabels`, obstacles = contours de prises), puis les
+   étiquettes de prises (pour chaque prise, contour et ancre transformés dans
+   le repère du mur — même matrice que le rendu :
+   `translate · rotate(−rotation) · scale · translate(−insertCenter)` —, angle
+   θ, texte affiché ; `placeHoldLabels` avec `inserts` = insert de chaque prise
+   et `fixedLabels` = boîtes des étiquettes de zones déjà placées).
+   `layoutHoldLabels(config, holds, options, smearingZones)` reste disponible :
+   `(await layoutLabels(...)).holds`.
 2. `generateSvg` consomme ces placements et écrit les étiquettes.
 
-Chaque étiquette est écrite **dans le repère du mur**, hors du groupe de la prise :
+Chaque étiquette de prise est écrite **dans le repère du mur**, hors du groupe de la prise :
 
 ```svg
 <text x="…" y="…" transform="rotate(θ, x, y)" text-anchor="middle"
@@ -278,14 +333,29 @@ Chaque étiquette est écrite **dans le repère du mur**, hors du groupe de la p
       fill="…">M1</text>
 ```
 
+Chaque étiquette de zone, à son emplacement placé (`ZoneLabelPlacement.center`) :
+
+```svg
+<text x="…" y="…" text-anchor="middle" dominant-baseline="central"
+      font-size="…" font-family="'Lucida Grande', sans-serif"
+      font-weight="bold" fill="…">A3</text>
+```
+
+(remplace l'ancien `text-anchor="start" dominant-baseline="text-before-edge"`,
+écrit à une position fixe sous la zone, sans évitement.)
+
 - La réécriture par regex de l'élément Inkscape (bloc `if (labelZone)`) et la
   branche de repli « sous la prise » disparaissent : une prise sans zone prend
   l'insert comme ancre et passe par le même algorithme.
-- Le calque `<g id="hold-labels">` reste au-dessus des prises.
+- Le calque `<g id="hold-labels">` reste au-dessus des prises ; le groupe
+  `<g class="smearing-zone" data-label="…">` de chaque zone, et ses trois
+  rectangles, sont inchangés.
 
-`placeHoldLabels`, `layoutHoldLabels` et les types `LabelRequest`,
-`LabelPlacement` sont exportés par `packages/core/src/index.ts`. Le type exporté
-`LabelZone` change de forme ; aucun autre package ne l'utilise.
+`placeHoldLabels`, `placeZoneLabels`, `layoutHoldLabels`, `layoutLabels`,
+`overlapArea` et les types `LabelRequest`, `LabelPlacement`, `HoldLabelContext`,
+`ZoneLabelRequest`, `ZoneLabelPlacement` sont exportés par
+`packages/core/src/index.ts`. Le type exporté `LabelZone` change de forme ;
+aucun autre package ne l'utilise.
 
 ### 4. Web
 
@@ -346,7 +416,17 @@ TDD, fichiers co-localisés, Vitest.
     retient le premier candidat ;
   - une seconde étiquette évite la première ;
   - `anchor ≈ insert` → poussée vers le bas ;
-  - permuter `requests` ne change pas le résultat.
+  - permuter `requests` ne change pas le résultat ;
+  - **association** (`context.inserts`) : une prise voisine sur le rayon et
+    l'éventail proche force le premier candidat associé (+67,5°) ; ignore une
+    prise à moins de 1 mm du même insert ; sans `inserts`, comportement
+    inchangé ;
+  - **`fixedLabels`** : une étiquette fixe repousse une étiquette de prise sans
+    modifier le repli ;
+  - **`placeZoneLabels`** : sans obstacle → `shift 0, drop 0` ; glisse à droite
+    pour éviter une prise sous la zone ; descend quand tout le bord est
+    bloqué ; repli quand rien n'est libre ; une seconde étiquette de zone évite
+    la première ; `RangeError` sur `fontSize` non fini/`≤ 0`.
 - `svg-generator.test.ts` :
   - via `layoutHoldLabels` : chaque type de prise × 4 directions, au centre et
     aux deux bords de secteur (rotation centre ± 44°), à 40 et 200 px →
@@ -357,14 +437,24 @@ TDD, fichiers co-localisés, Vitest.
   - étiquette vide : aucun `<text>`, et la voisine garde le même placement qu'en
     son absence ;
   - `holdLabelFontSize` = 850 et 5000 donnent 200 ; `NaN` et `0` donnent 40 ;
-  - `id="hold-labels"` conservé.
+  - `id="hold-labels"` conservé ;
+  - étiquette de zone rendue à son placement : `text-anchor="middle"`,
+    `dominant-baseline="central"`, `x`/`y` égaux à `layoutLabels(...).zones[0].center`.
 - Régression voies de référence — `packages/cli/src/reference-routes/label-placement.test.ts`
   (les voies se chargent côté cli ; core est importé compilé). Configuration :
   `wall: { lanes: 2, panelsHeight: 10 }`, routes `ifsc` en `laneOffset` 0 et
-  `u15-de` en `laneOffset` 1. À 40, 120 et 200 px :
+  `u15-de` en `laneOffset` 1, zones composées avec `composeAllSmearingZones` et
+  passées à `layoutLabels`. À 40, 120 et 200 px :
   - `ownOverlap === 0` pour chaque étiquette ;
   - nombre de `fallback` ≤ un plafond documenté (valeur mesurée à
     l'implémentation, 0 d'après la simulation), jamais une égalité exacte ;
+  - aucune étiquette de prise n'est plus proche de l'insert d'une autre prise
+    que du sien (insert en coordonnées SVG = `(pos.x, wall.height − pos.y)`
+    depuis `getInsertPosition` ; les prises partageant l'insert propre à moins
+    de 1 mm sont ignorées) ;
+  - à 120 et 200 px, l'étiquette IFSC `M8` et l'étiquette de zone IFSC `A3` ne
+    se chevauchent pas (`overlapArea` de leurs `labelBox`) ;
+  - aucune étiquette de zone en repli, à 40, 120 et 200 px ;
   - M2 (IFSC) et H2 (U15-DE) ne sont pas en repli ;
   - inverser l'ordre des routes donne un placement identique ;
   - les étiquettes `SN8 STOP D7 D7 @PAD-U15` (`u15`) et `SN6 STOP B3`
@@ -381,11 +471,8 @@ d'adhérence affichées, en surveillant la fluidité du curseur.
 
 - Le bord du mur n'est pas un obstacle : une étiquette poussée près du bord peut
   en sortir (dans la marge des coordonnées ou hors du SVG).
-- Les flèches et les zones d'adhérence peuvent être recouvertes.
-- Les étiquettes des zones d'adhérence partagent `holdLabelFontSize` : elles
-  atteignent aussi 200 mm (en gras), ne sont pas placées par l'algorithme et ne
-  sont pas des obstacles ; elles peuvent recouvrir des prises et des étiquettes
-  de prise. Leur découplage est hors périmètre.
+- Les flèches et les rectangles de zones d'adhérence peuvent être recouverts
+  (seules leurs étiquettes sont évitées).
 - La largeur du texte est estimée ; une police de repli plus large que
   `0,65 em` par caractère peut produire un chevauchement de quelques mm que la
   marge de `0,15 em` doit absorber.
