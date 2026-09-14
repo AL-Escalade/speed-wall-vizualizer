@@ -499,7 +499,7 @@ function buildHoldLabelRequests(
 }
 
 /**
- * Place zone labels, then hold labels against them: shared by `layoutLabels`
+ * Place hold labels, then zone labels against them: shared by `layoutLabels`
  * and `generateSvg`, which both already have `geometries` in hand and must
  * not compute it twice.
  */
@@ -515,6 +515,11 @@ function computeLayout(
     geometry.svgData.outline.map((polygon) => polygon.map((p) => applyMatrix(geometry.matrix, p)))
   );
 
+  const holdRequests = buildHoldLabelRequests(holds, geometries, outlines, language);
+  const holdPlacements = placeHoldLabels(holdRequests, outlines, fontSize, {
+    inserts: geometries.map((geometry) => geometry.insert),
+  });
+
   const zoneRequests: ZoneLabelRequest[] = smearingZones.map((zone, zoneIndex) => {
     const rect = computeZoneRect(zone, wallDimensions);
     return {
@@ -525,12 +530,8 @@ function computeLayout(
       zoneBottom: rect.bottom,
     };
   });
-  const zonePlacements = placeZoneLabels(zoneRequests, outlines, fontSize);
-
-  const holdRequests = buildHoldLabelRequests(holds, geometries, outlines, language);
-  const holdPlacements = placeHoldLabels(holdRequests, outlines, fontSize, {
-    inserts: geometries.map((geometry) => geometry.insert),
-    fixedLabels: zonePlacements.map((placement) => labelBox(placement.center, placement.width, placement.height, 0)),
+  const zonePlacements = placeZoneLabels(zoneRequests, outlines, fontSize, {
+    fixedLabels: holdPlacements.map((placement) => labelBox(placement.center, placement.width, placement.height, placement.angle)),
   });
 
   return { holds: holdPlacements, zones: zonePlacements };
@@ -538,10 +539,11 @@ function computeLayout(
 
 /**
  * Place every hold label and smearing-zone label on the wall, in wall
- * coordinates. Zone labels are placed first; hold labels then treat them as
- * fixed obstacles. Exposed so placement can be tested and inspected without
- * parsing SVG.
- * @param smearingZones - Zones to place labels for (e.g. `zonesToRender` in `generateSvg`)
+ * coordinates. Hold labels are placed first, exactly as if zones did not
+ * exist; zone labels are placed second and treat the placed hold-label boxes
+ * as fixed obstacles. Exposed so placement can be tested and inspected
+ * without parsing SVG.
+ * @param smearingZones - Zones to place labels for (e.g. `zonesToRender` in `generateSvg`); no zone label is placed when `options.showSmearingZones` is `false`
  */
 export async function layoutLabels(
   config: Config,
@@ -551,13 +553,14 @@ export async function layoutLabels(
 ): Promise<{ holds: LabelPlacement[]; zones: ZoneLabelPlacement[] }> {
   const wallDimensions = getWallDimensions(config.wall.lanes, config.wall.panelsHeight);
   const geometries = await computeAllHoldGeometries(holds, wallDimensions);
+  const showSmearingZones = options.showSmearingZones ?? DEFAULT_OPTIONS.showSmearingZones;
   return computeLayout(
     holds,
     geometries,
     wallDimensions,
     normalizeHoldLabelFontSize(options.holdLabelFontSize),
     options.holdLabelLanguage ?? DEFAULT_OPTIONS.holdLabelLanguage,
-    smearingZones
+    showSmearingZones ? smearingZones : []
   );
 }
 
@@ -610,13 +613,12 @@ function generateHatchPattern(color: string): string {
 
 /**
  * Generate SVG for smearing zones
- * @param labelPlacements - One placement per zone, same order as `zones` (`computeLayout().zones`)
+ * @param labelPlacements - One placement per zone, same order as `zones` (`computeLayout().zones`); its `text` is already translated, so the label is rendered from it rather than recomputed
  */
 function generateSmearingZones(
   zones: ComposedSmearingZone[],
   wallDimensions: Dimensions,
   labelFontSize: number,
-  labelLanguage: HoldLabelLanguage,
   labelPlacements: ZoneLabelPlacement[]
 ): { defs: string; elements: string } {
   if (zones.length === 0) {
@@ -636,7 +638,7 @@ function generateSmearingZones(
     const widthMm = rect.right - rect.left;
     const heightMm = rect.bottom - rect.top;
     const patternId = getHatchPatternId(zone.color);
-    const { center } = labelPlacements[zoneIndex];
+    const { center, text } = labelPlacements[zoneIndex];
 
     // Zone group with data attribute
     elements.push(`<g class="smearing-zone" data-label="${zone.label}">`);
@@ -651,7 +653,7 @@ function generateSmearingZones(
     elements.push(`  <rect x="${rect.left}" y="${rect.top}" width="${widthMm}" height="${heightMm}" fill="none" stroke="${zone.color}" stroke-width="${SMEARING_ZONE_BORDER_WIDTH}" stroke-opacity="${SMEARING_ZONE_BORDER_OPACITY}" />`);
 
     // Label, placed by placeZoneLabels (slide right along the bottom edge, then drop)
-    elements.push(`  <text x="${center.x}" y="${center.y}" text-anchor="middle" dominant-baseline="central" font-size="${labelFontSize}" font-family="'Lucida Grande', sans-serif" fill="${zone.color}" font-weight="bold">${formatSmearingZoneLabel(zone.label, labelLanguage)}</text>`);
+    elements.push(`  <text x="${center.x}" y="${center.y}" text-anchor="middle" dominant-baseline="central" font-size="${labelFontSize}" font-family="'Lucida Grande', sans-serif" fill="${zone.color}" font-weight="bold">${text}</text>`);
 
     elements.push(`</g>`);
   });
@@ -688,7 +690,8 @@ export async function generateSvg(
   const geometries = await computeAllHoldGeometries(holds, wallDimensions);
   const holdResults = holds.map((hold, index) => generateHold(hold, geometries[index], wallDimensions));
 
-  // Zone labels placed before hold labels, so the latter can treat them as fixed obstacles
+  // Hold labels placed first, exactly as if zones did not exist; zone labels
+  // placed second and treat the placed hold-label boxes as fixed obstacles
   const zonesToRender = opts.showSmearingZones ? smearingZones : [];
   const layout = computeLayout(holds, geometries, wallDimensions, holdLabelFontSize, holdLabelLanguage, zonesToRender);
 
@@ -697,7 +700,6 @@ export async function generateSvg(
     zonesToRender,
     wallDimensions,
     holdLabelFontSize,
-    holdLabelLanguage,
     layout.zones
   );
 

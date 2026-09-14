@@ -391,6 +391,11 @@ describe('generateSvg', () => {
       expect(svg).not.toContain('<defs>');
     });
 
+    it('places no zone label when showSmearingZones is false, even with zones given', async () => {
+      const { zones } = await layoutLabels(basicConfig, [basicHold], { showSmearingZones: false }, [basicZone]);
+      expect(zones).toEqual([]);
+    });
+
     it('renders the zone label at its placement', async () => {
       const { zones } = await layoutLabels(basicConfig, [basicHold], { showSmearingZones: true }, [basicZone]);
       const svg = await generateSvg(basicConfig, [basicHold], { showSmearingZones: true }, [basicZone]);
