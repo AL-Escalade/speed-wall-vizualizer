@@ -6,7 +6,7 @@
     "voie-vitesse": "./dist/cli.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "bun --bun tsc",
     "generate": "bun src/cli.ts",
     "generate:doc-images": "bun scripts/generate-doc-images.ts"
   },
