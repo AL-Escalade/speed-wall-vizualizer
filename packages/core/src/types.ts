@@ -223,10 +223,12 @@ export interface Config {
 /** Arrow direction for label zone selection */
 export type ArrowDirection = 'up' | 'down' | 'left' | 'right';
 
-/** Label zone definition from SVG */
+/** Label zone drawn in a hold asset */
 export interface LabelZone {
-  /** The cleaned text element to include in the transformed group */
-  element: string;
+  /** Text centre in the asset frame: gives the push direction from the insert */
+  anchor: Point;
+  /** Text rotation in the asset frame, in SVG degrees (clockwise) */
+  angle: number;
 }
 
 /** Label zones indexed by arrow direction */
@@ -246,6 +248,8 @@ export interface HoldSvgData {
   svgRotation: number;
   /** Label zones for different orientations */
   labelZones: LabelZones;
+  /** Hold shape as polygons in the asset frame, for label collision tests */
+  outline: Point[][];
 }
 
 /** Output format */

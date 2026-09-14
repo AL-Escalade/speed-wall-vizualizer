@@ -539,15 +539,15 @@ export const HOLD_SVG_CONTENT: Record<string, string> = {
        inkscape:label="insert" />
     <text
        xml:space="preserve"
-       style="font-weight:500;font-size:12.7px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;stroke-width:1.265"
-       x="-1.3514959"
+       style="font-weight:500;font-size:12.7px;font-family:'Lucida Grande';-inkscape-font-specification:'Lucida Grande Medium';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;stroke-width:1.265"
+       x="119.3675"
        y="262.59595"
        id="text1"
        inkscape:label="label"><tspan
          sodipodi:role="line"
          id="tspan1"
-         style="stroke-width:1.265"
-         x="-1.3514959"
+         style="text-align:center;text-anchor:middle;stroke-width:1.265"
+         x="119.3675"
          y="262.59595">PAD</tspan></text>
   </g>
 </svg>

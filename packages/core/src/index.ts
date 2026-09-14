@@ -56,8 +56,22 @@ export { parseSmearingZoneLabel, formatSmearingZoneLabel } from './smearing-zone
 export type { SmearingZoneRole } from './smearing-zone-label.js';
 
 // SVG Generation
-export { generateSvg } from './svg-generator.js';
+export { generateSvg, layoutHoldLabels, layoutLabels } from './svg-generator.js';
 export type { SvgOptions } from './svg-generator.js';
+
+// Hold and zone label placement
+export { placeHoldLabels, placeZoneLabels, labelBox } from './label-placement.js';
+export type {
+  LabelRequest,
+  LabelPlacement,
+  HoldLabelContext,
+  ZoneLabelRequest,
+  ZoneLabelPlacement,
+  ZoneLabelContext,
+} from './label-placement.js';
+
+// Polygon overlap (used by reference-route regression tests)
+export { overlapArea } from './polygon-clip.js';
 
 // Route Composition
 export { composeAllRoutes, composeRoute, extractHolds, parseHold, getRouteHolds, composeAllSmearingZones, composeSmearingZones, extractSmearingZones, getRouteColorMap, getDefaultColorTag, validateRouteColorTags } from './route-composer.js';

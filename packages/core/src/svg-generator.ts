@@ -2,13 +2,23 @@
  * SVG Generator for speed climbing wall visualization
  */
 
-import { type Config, type Dimensions, type ArrowDirection, type ColumnSystem, type ComposedSmearingZone, DEFAULT_COLUMN_SYSTEM } from './types.js';
+import { type Config, type Dimensions, type ArrowDirection, type ColumnSystem, type ComposedSmearingZone, type HoldSvgData, type LabelZone, type Point, DEFAULT_COLUMN_SYSTEM } from './types.js';
 import { GRID, PANEL, PANELS_PER_LANE, ROWS, PANEL_NUMBERS, getInsertPosition, getWallDimensions, getColumnsForSystem, parsePanelId } from './plate-grid.js';
 import { calculateHoldRotation } from './rotation.js';
 import { loadHoldSvg, getHoldDimensions, getHoldDefaultOrientation, getHoldShowArrow } from './hold-svg-parser.js';
 import type { ComposedHold } from './route-composer.js';
 import { formatHoldLabel, type HoldLabelLanguage } from './hold-label.js';
 import { formatSmearingZoneLabel } from './smearing-zone-label.js';
+import { applyMatrix, multiplyMatrices, rotateMatrix, scaleMatrix, translateMatrix, type Matrix } from './svg-transform.js';
+import {
+  placeHoldLabels,
+  placeZoneLabels,
+  labelBox,
+  type LabelPlacement,
+  type LabelRequest,
+  type ZoneLabelPlacement,
+  type ZoneLabelRequest,
+} from './label-placement.js';
 
 /**
  * Determine the visual arrow direction after rotation
@@ -114,6 +124,22 @@ export interface SvgOptions {
   holdLabelLanguage?: HoldLabelLanguage;
 }
 
+/** Hold label font size used when the option is missing or invalid */
+const DEFAULT_HOLD_LABEL_FONT_SIZE = 40;
+/** Largest hold label font size: the web slider maximum. Placement cost explodes above it — most labels fall back and each fallback scans every direction. */
+const MAX_HOLD_LABEL_FONT_SIZE = 200;
+/** Color of a hold (and its label) whose route gives none */
+const FALLBACK_HOLD_COLOR = '#FF0000';
+
+/**
+ * Clamp the hold label font size: it reaches generateSvg unvalidated from
+ * URLs, imports and localStorage.
+ */
+function normalizeHoldLabelFontSize(value: number | undefined): number {
+  if (value === undefined || !Number.isFinite(value) || value <= 0) return DEFAULT_HOLD_LABEL_FONT_SIZE;
+  return Math.min(value, MAX_HOLD_LABEL_FONT_SIZE);
+}
+
 const DEFAULT_OPTIONS: Required<SvgOptions> = {
   showGrid: true,
   showPanelLabels: true,
@@ -122,7 +148,7 @@ const DEFAULT_OPTIONS: Required<SvgOptions> = {
   gridLineWidth: 0.5,
   insertRadius: 4,
   labelFontSize: 40,
-  holdLabelFontSize: 40,
+  holdLabelFontSize: DEFAULT_HOLD_LABEL_FONT_SIZE,
   showArrow: false,
   coordinateDisplaySystem: DEFAULT_COLUMN_SYSTEM,
   showSmearingZones: true,
@@ -251,24 +277,30 @@ function generateGrid(
   return lines.join('\n');
 }
 
+/** Where a hold lands on the wall, shared by its rendering and its label placement */
+interface HoldGeometry {
+  svgData: HoldSvgData;
+  /** Asset frame → wall frame: the same chain as `transform` */
+  matrix: Matrix;
+  transform: string;
+  /** Rotation from calculateHoldRotation (counterclockwise, wall y-up) */
+  rotation: number;
+  /** Insert position on the wall (SVG coordinates) */
+  insert: Point;
+  labelZone: LabelZone | undefined;
+}
+
 /**
- * Generate SVG for a single hold
+ * Compute where a hold lands on the wall
  */
-async function generateHold(
-  hold: ComposedHold,
-  wallDimensions: Dimensions,
-  holdLabelFontSize: number,
-  holdLabelLanguage: HoldLabelLanguage
-): Promise<{ holdSvg: string; labelSvg: string; arrowSvg: string | null }> {
-  // Get hold dimensions from central configuration
+async function computeHoldGeometry(hold: ComposedHold, wallDimensions: Dimensions): Promise<HoldGeometry> {
+  // Get hold dimensions from central configuration, with the hold scale factor
   const baseDimensions = getHoldDimensions(hold.type);
-  // Apply hold scale factor
   const holdDimensions = {
     width: baseDimensions.width * hold.holdScale,
     height: baseDimensions.height * hold.holdScale,
   };
 
-  // Load SVG data
   const svgData = await loadHoldSvg(hold.type);
 
   // Calculate position (coordinates are already converted to ABC system by parseHold)
@@ -284,52 +316,79 @@ async function generateHold(
   const svgX = pos.x;
   const svgY = wallDimensions.height - pos.y;
 
-  // Calculate scale factor
-  const scaleX = holdDimensions.width / svgData.viewBox.width;
-  const scaleY = holdDimensions.height / svgData.viewBox.height;
-  const scale = Math.min(scaleX, scaleY); // Use uniform scale to maintain aspect ratio
+  // Uniform scale to maintain aspect ratio
+  const scale = Math.min(
+    holdDimensions.width / svgData.viewBox.width,
+    holdDimensions.height / svgData.viewBox.height
+  );
 
-  // Calculate rotation (use orientation panel if specified, otherwise same as hold panel)
-  const orientationPanel = hold.orientationPanel ?? hold.panel;
+  // Calculate rotation (use orientation panel if specified, otherwise same as hold panel).
+  // The SVG's embedded transform already positions the hold with its arrow in the
+  // default orientation, which DEFAULT_ORIENTATIONS describes: no svgRotation compensation.
   const rotation = calculateHoldRotation(
     hold.panel,
     hold.position,
-    orientationPanel,
+    hold.orientationPanel ?? hold.panel,
     hold.orientation,
     hold.type,
     hold.laneOffset
   );
-  // Note: The SVG's embedded transform already positions the hold with arrow pointing
-  // in the default orientation (e.g., down for BIG). We don't need to compensate for
-  // svgRotation since DEFAULT_ORIENTATIONS already describes the displayed orientation.
 
-  // Build transform
-  // 1. Translate to position
-  // 2. Rotate around position
-  // 3. Scale
-  // 4. Translate back by insert center (so insert center is at position)
+  // Translate to position, rotate around it (negated: SVG Y is inverted), scale,
+  // then translate back by the insert center so the insert lands on the position
   const transform = [
     `translate(${svgX}, ${svgY})`,
-    `rotate(${-rotation})`, // Negate because SVG Y is inverted
+    `rotate(${-rotation})`,
     `scale(${scale})`,
     `translate(${-svgData.insertCenter.x}, ${-svgData.insertCenter.y})`,
   ].join(' ');
+  const matrix = [
+    translateMatrix(svgX, svgY),
+    rotateMatrix(-rotation),
+    scaleMatrix(scale),
+    translateMatrix(-svgData.insertCenter.x, -svgData.insertCenter.y),
+  ].reduce((product, factor) => multiplyMatrices(product, factor));
 
-  // Build elements array
+  const labelZone = svgData.labelZones[getArrowDirection(hold.type, rotation)] ?? svgData.labelZones['default'];
+
+  return { svgData, matrix, transform, rotation, insert: { x: svgX, y: svgY }, labelZone };
+}
+
+/**
+ * Compute the geometry of every hold.
+ * Sequential is fine: loadHoldSvg reads from an in-memory cache and parseHoldSvg
+ * is synchronous CPU work, so Promise.all would not parallelize anything in practice.
+ */
+async function computeAllHoldGeometries(holds: ComposedHold[], wallDimensions: Dimensions): Promise<HoldGeometry[]> {
+  const geometries: HoldGeometry[] = [];
+  for (const hold of holds) {
+    // eslint-disable-next-line no-await-in-loop -- see the comment above: intentionally sequential
+    geometries.push(await computeHoldGeometry(hold, wallDimensions));
+  }
+  return geometries;
+}
+
+/**
+ * Generate the SVG of a single hold and of its orientation arrow
+ */
+function generateHold(
+  hold: ComposedHold,
+  geometry: HoldGeometry,
+  wallDimensions: Dimensions
+): { holdSvg: string; arrowSvg: string | null } {
+  const { svgData, transform, insert } = geometry;
   const elements: string[] = [];
 
-  // Add colored path element if present
-  // Use hold color (already includes route default from composeRoute)
-  const holdColor = hold.color ?? '#FF0000'; // Fallback to red if no color
+  // Colored path element (hold color already includes the route default from composeRoute)
+  const holdColor = hold.color ?? FALLBACK_HOLD_COLOR;
   if (svgData.pathElement !== null) {
-    const coloredPath = svgData.pathElement.replace(/<(path)/, `<$1 fill="${holdColor}"`);
-    elements.push(coloredPath);
+    elements.push(svgData.pathElement.replace(/<(path)/, `<$1 fill="${holdColor}"`));
   }
 
-  // Add additional elements (circles, or all visual elements for uncolored holds)
+  // Additional elements (circles, or all visual elements for uncolored holds)
   elements.push(...svgData.additionalElements);
 
-  // Add data attributes for interactive selection
+  // Data attributes for interactive selection
   const dataAttrs = [
     `data-source="${hold.sourceRoute}"`,
     `data-hold="${hold.originalHoldNumber}"`,
@@ -337,94 +396,193 @@ async function generateHold(
   ].join(' ');
   const holdSvg = `<g transform="${transform}" ${dataAttrs} class="hold">${elements.join('\n')}</g>`;
 
-  // Generate label (use label if defined, otherwise composedHoldNumber)
-  const labelText = hold.label === undefined
-    ? String(hold.composedHoldNumber)
-    : formatHoldLabel(hold.label, holdLabelLanguage);
-
-  // Determine arrow direction and find corresponding label zone
-  const arrowDirection = getArrowDirection(hold.type, rotation);
-  const labelZone = svgData.labelZones[arrowDirection] ?? svgData.labelZones['default'];
-
-  let labelSvg = '';
-
-  if (labelZone) {
-    // Take the label element from the SVG and modify it
-    let labelElement = labelZone.element;
-
-    // Compensate for the group scale to get consistent font size
-    const adjustedFontSize = holdLabelFontSize / scale;
-
-    // Replace the text content (inside <tspan> or directly in <text>)
-    // First try to replace inside <tspan>
-    if (labelElement.includes('<tspan')) {
-      labelElement = labelElement.replace(/>([^<]*)<\/tspan>/g, `>${labelText}</tspan>`);
-    } else {
-      // Replace text directly inside <text>
-      labelElement = labelElement.replace(/>([^<]*)<\/text>/, `>${labelText}</text>`);
-    }
-
-    // Replace fill color (in style attribute or as attribute)
-    labelElement = labelElement.replace(/fill\s*:\s*[^;}"']+/gi, `fill:${holdColor}`);
-    labelElement = labelElement.replace(/\bfill\s*=\s*["'][^"']*["']/gi, `fill="${holdColor}"`);
-    // If no fill found, add it to the opening tag
-    if (!labelElement.includes('fill')) {
-      labelElement = labelElement.replace(/<text/, `<text fill="${holdColor}"`);
-    }
-
-    // Replace font-size (in style attribute or as attribute)
-    // Use adjusted size to compensate for group scale
-    labelElement = labelElement.replace(/font-size\s*:\s*[^;}"'px]+(?:px)?/gi, `font-size:${adjustedFontSize}px`);
-    labelElement = labelElement.replace(/\bfont-size\s*=\s*["'][^"']*["']/gi, `font-size="${adjustedFontSize}px"`);
-
-    // Also update tspan font-size if present
-    if (labelElement.includes('<tspan')) {
-      labelElement = labelElement.replace(
-        /(<tspan[^>]*style\s*=\s*["'][^"']*)font-size\s*:\s*[^;}"'px]+(?:px)?/gi,
-        `$1font-size:${adjustedFontSize}px`
-      );
-    }
-
-    // Add dominant-baseline="hanging" for top alignment
-    if (!labelElement.includes('dominant-baseline')) {
-      labelElement = labelElement.replace(/<text/, '<text dominant-baseline="hanging"');
-    }
-
-    // Include the label in the same transform group as the hold
-    labelSvg = `<g transform="${transform}">${labelElement}</g>`;
-  } else {
-    // Fallback: place label below the hold with a simple offset
-    const fallbackOffset = Math.max(svgData.viewBox.width, svgData.viewBox.height) * scale * 0.6;
-    const labelX = svgX;
-    const labelY = svgY + fallbackOffset;
-    labelSvg = `<text x="${labelX}" y="${labelY}" font-size="${holdLabelFontSize}" fill="${holdColor}" text-anchor="middle" dominant-baseline="hanging" font-weight="bold">${labelText}</text>`;
-  }
-
-  // Generate arrow SVG pointing to target insert (if hold type supports arrows)
+  // Arrow pointing to the target insert (if the hold type supports arrows)
   let arrowSvg: string | null = null;
   if (getHoldShowArrow(hold.type)) {
-    // Get target insert position (orientation point)
-    const targetPos = getInsertPosition(orientationPanel, hold.orientation, hold.laneOffset);
+    const targetPos = getInsertPosition(hold.orientationPanel ?? hold.panel, hold.orientation, hold.laneOffset);
 
-    // Apply the same anchor offset to target position
-    // This ensures the arrow keeps the same length and direction when the route is moved
+    // Same anchor offset as the hold: the arrow keeps its length and direction when the route moves
     if (hold.anchorOffset) {
       targetPos.x += hold.anchorOffset.x;
       targetPos.y += hold.anchorOffset.y;
     }
 
-    // Convert to SVG coordinates
-    const holdSvgPos = { x: svgX, y: svgY };
     const targetSvgPos = { x: targetPos.x, y: wallDimensions.height - targetPos.y };
-
-    // Generate arrow from hold to target with circle around target
-    const arrowElements = generateArrowToTarget(holdSvgPos, targetSvgPos, holdColor);
+    const arrowElements = generateArrowToTarget(insert, targetSvgPos, holdColor);
     if (arrowElements) {
       arrowSvg = arrowElements;
     }
   }
 
-  return { holdSvg, labelSvg, arrowSvg };
+  return { holdSvg, arrowSvg };
+}
+
+/** Displayed text of a hold label: its translated label, else its composed number */
+function holdLabelText(hold: ComposedHold, language: HoldLabelLanguage): string {
+  return hold.label === undefined ? String(hold.composedHoldNumber) : formatHoldLabel(hold.label, language);
+}
+
+/** A zone rectangle's edges in wall SVG coordinates (mm), shared by rendering and label placement */
+interface ZoneRect {
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
+}
+
+/**
+ * Where a smearing zone's rectangle lands on the wall. The single source of
+ * geometry for both `generateSmearingZones` (rendering) and `layoutLabels`
+ * (placement), so the two never drift apart.
+ */
+function computeZoneRect(zone: ComposedSmearingZone, wallDimensions: Dimensions): ZoneRect {
+  const panel = parsePanelId(zone.panel);
+  // Use integer part of row for base position calculation
+  const integerRow = Math.floor(zone.row) as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+  const basePos = getInsertPosition(panel, { column: zone.column, row: integerRow }, zone.laneOffset);
+
+  // Apply fractional row offset
+  const fractionalRowOffset = (zone.row - integerRow) * GRID.ROW_SPACING;
+  basePos.y += fractionalRowOffset;
+
+  // Apply columnOffset if present
+  if (zone.columnOffset !== undefined) {
+    basePos.x += zone.columnOffset * GRID.COLUMN_SPACING;
+  }
+
+  // Apply anchor offset if present
+  if (zone.anchorOffset) {
+    basePos.x += zone.anchorOffset.x;
+    basePos.y += zone.anchorOffset.y;
+  }
+
+  const widthMm = zone.width * GRID.COLUMN_SPACING;
+  const heightMm = zone.height * GRID.ROW_SPACING;
+
+  // Convert to SVG coordinates (Y is inverted, origin at top-left)
+  const left = basePos.x;
+  const top = wallDimensions.height - basePos.y - heightMm; // Bottom-left corner in wall coords -> top-left in SVG
+
+  return { left, right: left + widthMm, top, bottom: top + heightMm };
+}
+
+/**
+ * Build the labels to place for the holds whose geometry is known.
+ * @param holds - Composed holds, in the same order as `geometries`
+ * @param geometries - Geometry of every hold (`computeAllHoldGeometries`)
+ * @param outlines - Every hold's outline in wall coordinates, indexed like `geometries`
+ * @param language - Language the displayed text is translated into
+ */
+function buildHoldLabelRequests(
+  holds: ComposedHold[],
+  geometries: HoldGeometry[],
+  outlines: Point[][][],
+  language: HoldLabelLanguage
+): LabelRequest[] {
+  const requests: LabelRequest[] = [];
+  holds.forEach((hold, holdIndex) => {
+    const text = holdLabelText(hold, language);
+    // An empty label shows nothing, so it takes no room
+    if (text === '') return;
+    const geometry = geometries[holdIndex];
+    requests.push({
+      holdIndex,
+      text,
+      ownOutline: outlines[holdIndex],
+      insert: geometry.insert,
+      anchor: geometry.labelZone ? applyMatrix(geometry.matrix, geometry.labelZone.anchor) : geometry.insert,
+      // Zone angle is an SVG rotate (clockwise); the hold rotation is counterclockwise
+      angle: (geometry.labelZone?.angle ?? 0) - geometry.rotation,
+    });
+  });
+  return requests;
+}
+
+/**
+ * Place hold labels, then zone labels against them: shared by `layoutLabels`
+ * and `generateSvg`, which both already have `geometries` in hand and must
+ * not compute it twice.
+ */
+function computeLayout(
+  holds: ComposedHold[],
+  geometries: HoldGeometry[],
+  wallDimensions: Dimensions,
+  fontSize: number,
+  language: HoldLabelLanguage,
+  smearingZones: ComposedSmearingZone[]
+): { holds: LabelPlacement[]; zones: ZoneLabelPlacement[] } {
+  const outlines = geometries.map((geometry) =>
+    geometry.svgData.outline.map((polygon) => polygon.map((p) => applyMatrix(geometry.matrix, p)))
+  );
+
+  const holdRequests = buildHoldLabelRequests(holds, geometries, outlines, language);
+  const holdPlacements = placeHoldLabels(holdRequests, outlines, fontSize, {
+    inserts: geometries.map((geometry) => geometry.insert),
+  });
+
+  const zoneRequests: ZoneLabelRequest[] = smearingZones.map((zone, zoneIndex) => {
+    const rect = computeZoneRect(zone, wallDimensions);
+    return {
+      zoneIndex,
+      text: formatSmearingZoneLabel(zone.label, language),
+      zoneLeft: rect.left,
+      zoneRight: rect.right,
+      zoneBottom: rect.bottom,
+    };
+  });
+  const zonePlacements = placeZoneLabels(zoneRequests, outlines, fontSize, {
+    fixedLabels: holdPlacements.map((placement) => labelBox(placement.center, placement.width, placement.height, placement.angle)),
+  });
+
+  return { holds: holdPlacements, zones: zonePlacements };
+}
+
+/**
+ * Place every hold label and smearing-zone label on the wall, in wall
+ * coordinates. Hold labels are placed first, exactly as if zones did not
+ * exist; zone labels are placed second and treat the placed hold-label boxes
+ * as fixed obstacles. Exposed so placement can be tested and inspected
+ * without parsing SVG.
+ * @param smearingZones - Zones to place labels for (e.g. `zonesToRender` in `generateSvg`); no zone label is placed when `options.showSmearingZones` is `false`
+ */
+export async function layoutLabels(
+  config: Config,
+  holds: ComposedHold[],
+  options: SvgOptions = {},
+  smearingZones: ComposedSmearingZone[] = []
+): Promise<{ holds: LabelPlacement[]; zones: ZoneLabelPlacement[] }> {
+  const wallDimensions = getWallDimensions(config.wall.lanes, config.wall.panelsHeight);
+  const geometries = await computeAllHoldGeometries(holds, wallDimensions);
+  const showSmearingZones = options.showSmearingZones ?? DEFAULT_OPTIONS.showSmearingZones;
+  return computeLayout(
+    holds,
+    geometries,
+    wallDimensions,
+    normalizeHoldLabelFontSize(options.holdLabelFontSize),
+    options.holdLabelLanguage ?? DEFAULT_OPTIONS.holdLabelLanguage,
+    showSmearingZones ? smearingZones : []
+  );
+}
+
+/**
+ * Place every hold label on the wall, in wall coordinates.
+ * Exposed so placement can be tested and inspected without parsing SVG.
+ */
+export async function layoutHoldLabels(
+  config: Config,
+  holds: ComposedHold[],
+  options: SvgOptions = {},
+  smearingZones: ComposedSmearingZone[] = []
+): Promise<LabelPlacement[]> {
+  return (await layoutLabels(config, holds, options, smearingZones)).holds;
+}
+
+/**
+ * Render a placed label in wall coordinates, outside the hold's group
+ */
+function renderHoldLabel(placement: LabelPlacement, color: string, fontSize: number): string {
+  const { center, angle, text } = placement;
+  return `<text x="${center.x}" y="${center.y}" transform="rotate(${angle}, ${center.x}, ${center.y})" text-anchor="middle" dominant-baseline="central" font-size="${fontSize}" font-family="'Lucida Grande', sans-serif" font-weight="500" fill="${color}">${text}</text>`;
 }
 
 /** Smearing zone rendering constants */
@@ -434,7 +592,6 @@ const SMEARING_ZONE_HATCH_LINE_WIDTH = 0;
 const SMEARING_ZONE_HATCH_SPACING = 40;
 const SMEARING_ZONE_BORDER_WIDTH = 10;
 const SMEARING_ZONE_BORDER_OPACITY = 0.3;
-const SMEARING_ZONE_LABEL_MARGIN = 5; // Margin below the zone for the label
 
 /**
  * Generate a unique pattern ID for a color (for hatched patterns)
@@ -456,12 +613,13 @@ function generateHatchPattern(color: string): string {
 
 /**
  * Generate SVG for smearing zones
+ * @param labelPlacements - One placement per zone, same order as `zones` (`computeLayout().zones`); its `text` is already translated, so the label is rendered from it rather than recomputed
  */
 function generateSmearingZones(
   zones: ComposedSmearingZone[],
   wallDimensions: Dimensions,
   labelFontSize: number,
-  labelLanguage: HoldLabelLanguage
+  labelPlacements: ZoneLabelPlacement[]
 ): { defs: string; elements: string } {
   if (zones.length === 0) {
     return { defs: '', elements: '' };
@@ -475,57 +633,30 @@ function generateSmearingZones(
   // Generate zone rectangles and labels
   const elements: string[] = [];
 
-  for (const zone of zones) {
-    // Calculate position
-    const panel = parsePanelId(zone.panel);
-    // Use integer part of row for base position calculation
-    const integerRow = Math.floor(zone.row) as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
-    const basePos = getInsertPosition(panel, { column: zone.column, row: integerRow }, zone.laneOffset);
-
-    // Apply fractional row offset
-    const fractionalRowOffset = (zone.row - integerRow) * GRID.ROW_SPACING;
-    basePos.y += fractionalRowOffset;
-
-    // Apply columnOffset if present
-    if (zone.columnOffset !== undefined) {
-      basePos.x += zone.columnOffset * GRID.COLUMN_SPACING;
-    }
-
-    // Apply anchor offset if present
-    if (zone.anchorOffset) {
-      basePos.x += zone.anchorOffset.x;
-      basePos.y += zone.anchorOffset.y;
-    }
-
-    // Calculate dimensions in mm
-    const widthMm = zone.width * GRID.COLUMN_SPACING;
-    const heightMm = zone.height * GRID.ROW_SPACING;
-
-    // Convert to SVG coordinates (Y is inverted, origin at top-left)
-    const svgX = basePos.x;
-    const svgY = wallDimensions.height - basePos.y - heightMm; // Bottom-left corner in wall coords -> top-left in SVG
-
+  zones.forEach((zone, zoneIndex) => {
+    const rect = computeZoneRect(zone, wallDimensions);
+    const widthMm = rect.right - rect.left;
+    const heightMm = rect.bottom - rect.top;
     const patternId = getHatchPatternId(zone.color);
+    const { center, text } = labelPlacements[zoneIndex];
 
     // Zone group with data attribute
     elements.push(`<g class="smearing-zone" data-label="${zone.label}">`);
 
     // Solid fill rectangle with opacity
-    elements.push(`  <rect x="${svgX}" y="${svgY}" width="${widthMm}" height="${heightMm}" fill="${zone.color}" fill-opacity="${SMEARING_ZONE_FILL_OPACITY}" />`);
+    elements.push(`  <rect x="${rect.left}" y="${rect.top}" width="${widthMm}" height="${heightMm}" fill="${zone.color}" fill-opacity="${SMEARING_ZONE_FILL_OPACITY}" />`);
 
     // Hatched pattern overlay
-    elements.push(`  <rect x="${svgX}" y="${svgY}" width="${widthMm}" height="${heightMm}" fill="url(#${patternId})" />`);
+    elements.push(`  <rect x="${rect.left}" y="${rect.top}" width="${widthMm}" height="${heightMm}" fill="url(#${patternId})" />`);
 
     // Border rectangle
-    elements.push(`  <rect x="${svgX}" y="${svgY}" width="${widthMm}" height="${heightMm}" fill="none" stroke="${zone.color}" stroke-width="${SMEARING_ZONE_BORDER_WIDTH}" stroke-opacity="${SMEARING_ZONE_BORDER_OPACITY}" />`);
+    elements.push(`  <rect x="${rect.left}" y="${rect.top}" width="${widthMm}" height="${heightMm}" fill="none" stroke="${zone.color}" stroke-width="${SMEARING_ZONE_BORDER_WIDTH}" stroke-opacity="${SMEARING_ZONE_BORDER_OPACITY}" />`);
 
-    // Label BELOW the zone (in SVG coords, y increases downward)
-    const labelX = svgX;
-    const labelY = svgY + heightMm + SMEARING_ZONE_LABEL_MARGIN; // Below the rectangle
-    elements.push(`  <text x="${labelX}" y="${labelY}" font-size="${labelFontSize}" font-family="'Lucida Grande', sans-serif" fill="${zone.color}" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">${formatSmearingZoneLabel(zone.label, labelLanguage)}</text>`);
+    // Label, placed by placeZoneLabels (slide right along the bottom edge, then drop)
+    elements.push(`  <text x="${center.x}" y="${center.y}" text-anchor="middle" dominant-baseline="central" font-size="${labelFontSize}" font-family="'Lucida Grande', sans-serif" fill="${zone.color}" font-weight="bold">${text}</text>`);
 
     elements.push(`</g>`);
-  }
+  });
 
   return { defs, elements: elements.join('\n') };
 }
@@ -540,6 +671,8 @@ export async function generateSvg(
   smearingZones: ComposedSmearingZone[] = []
 ): Promise<string> {
   const opts = { ...DEFAULT_OPTIONS, ...options };
+  const holdLabelFontSize = normalizeHoldLabelFontSize(opts.holdLabelFontSize);
+  const holdLabelLanguage = opts.holdLabelLanguage ?? DEFAULT_OPTIONS.holdLabelLanguage;
   const wallDimensions = getWallDimensions(config.wall.lanes, config.wall.panelsHeight);
 
   // Add margin for labels (needs to accommodate font size + panel labels)
@@ -553,13 +686,21 @@ export async function generateSvg(
   parts.push(`<?xml version="1.0" encoding="UTF-8"?>`);
   parts.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}mm" height="${svgHeight}mm" viewBox="${-margin} ${-margin} ${svgWidth} ${svgHeight}">`);
 
-  // Generate smearing zone patterns (need to be in defs before use)
+  // Hold geometry first: rendering and label placement (zone labels included) share it
+  const geometries = await computeAllHoldGeometries(holds, wallDimensions);
+  const holdResults = holds.map((hold, index) => generateHold(hold, geometries[index], wallDimensions));
+
+  // Hold labels placed first, exactly as if zones did not exist; zone labels
+  // placed second and treat the placed hold-label boxes as fixed obstacles
   const zonesToRender = opts.showSmearingZones ? smearingZones : [];
+  const layout = computeLayout(holds, geometries, wallDimensions, holdLabelFontSize, holdLabelLanguage, zonesToRender);
+
+  // Generate smearing zone patterns (need to be in defs before use)
   const { defs: zoneDefs, elements: zoneElements } = generateSmearingZones(
     zonesToRender,
     wallDimensions,
-    opts.holdLabelFontSize,
-    opts.holdLabelLanguage
+    holdLabelFontSize,
+    layout.zones
   );
 
   // Add defs section if we have patterns
@@ -586,16 +727,6 @@ export async function generateSvg(
     parts.push(`</g>`);
   }
 
-  // Generate hold data first to collect all SVG elements.
-  // Sequential is fine: loadHoldSvg reads from an in-memory cache and parseHoldSvg
-  // is synchronous CPU work, so Promise.all would not parallelize anything in practice.
-  const holdResults: { holdSvg: string; labelSvg: string; arrowSvg: string | null }[] = [];
-  for (const hold of holds) {
-    // eslint-disable-next-line no-await-in-loop
-    const result = await generateHold(hold, wallDimensions, opts.holdLabelFontSize, opts.holdLabelLanguage);
-    holdResults.push(result);
-  }
-
   // Arrow indicators (rendered below holds)
   if (opts.showArrow) {
     parts.push(`<g id="arrows">`);
@@ -609,16 +740,16 @@ export async function generateSvg(
 
   // Holds
   parts.push(`<g id="holds">`);
-  const labels: string[] = [];
-  for (const { holdSvg, labelSvg } of holdResults) {
+  for (const { holdSvg } of holdResults) {
     parts.push(holdSvg);
-    labels.push(labelSvg);
   }
   parts.push(`</g>`);
 
-  // Hold number labels (separate layer so they appear on top)
+  // Hold labels (separate layer so they appear on top)
   parts.push(`<g id="hold-labels">`);
-  parts.push(...labels);
+  for (const placement of layout.holds) {
+    parts.push(renderHoldLabel(placement, holds[placement.holdIndex].color ?? FALLBACK_HOLD_COLOR, holdLabelFontSize));
+  }
   parts.push(`</g>`);
 
   // Close SVG
