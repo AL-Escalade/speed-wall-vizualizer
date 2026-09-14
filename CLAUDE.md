@@ -158,9 +158,10 @@ no config migration is involved.
 Hold labels are placed by `packages/core/src/label-placement.ts`, not drawn at a
 fixed spot. Each label starts from its hold's **insert** and is pushed outward
 until its box (text width estimated at 0.65 em per character, plus a 0.15 em
-margin) clears its own hold outline — a hard guarantee — then the other holds,
-the zone labels already placed and, when `HoldLabelContext.inserts` is given,
-any candidate nearer another hold's insert than its own:
+margin) clears its own hold outline — a hard guarantee — then the other holds
+and, when `HoldLabelContext.inserts` is given, any candidate nearer another
+hold's insert than its own. Zone labels are **not** obstacles for hold
+labels — they are placed afterward and move out of the way instead:
 
 1. along the **ray** from the insert toward the asset's Inkscape anchor;
 2. if the ray is blocked for `2 × fontSize` past lift-off, along a **fan** of
@@ -188,16 +189,17 @@ ignored. The hold outline is the first subpath of the `prise` path (or the
 `pad` rect for STOP); path commands outside `M L H V C S Z` and transforms
 outside `matrix translate rotate scale` throw.
 
-**Smearing zone labels** are placed too, by `placeZoneLabels()`, *before* hold
+**Smearing zone labels** are placed too, by `placeZoneLabels()`, *after* hold
 labels: a candidate starts left-aligned under the zone's bottom edge and slides
 right in 5 mm steps; if the whole edge is blocked it drops 5 mm and slides
-again, up to `2 × fontSize` below the start. Obstacles are hold outlines and
-zone labels already placed — zone rectangles themselves are never obstacles.
-The zone rectangle geometry (`computeZoneRect` in `svg-generator.ts`) is
-computed once and shared by rendering and placement. Placed zone-label boxes
-then become fixed obstacles for hold labels (`HoldLabelContext.fixedLabels`) —
-a zone label has one band of candidate positions where a hold label has 16, so
-the hold label is the one that adapts.
+again, up to `2 × fontSize` below the start. Obstacles are hold outlines, zone
+labels already placed and the hold-label boxes just placed
+(`ZoneLabelContext.fixedLabels`, not inflated, rotated as rendered) — zone
+rectangles themselves are never obstacles. The zone rectangle geometry
+(`computeZoneRect` in `svg-generator.ts`) is computed once and shared by
+rendering and placement. A zone label has one band of candidate positions
+where a hold label has 16, so the zone label is the one that adapts: a hold
+label keeps the exact spot it would have with no zones on the wall at all.
 
 ### Column Coordinate Systems
 

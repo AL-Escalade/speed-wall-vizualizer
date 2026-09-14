@@ -41,9 +41,15 @@ qu'elles touchent :
 | Pas de place libre | Moindre chevauchement ; même taille pour toutes les étiquettes. |
 | Algorithme | Rayon partant du centre du cercle `insert` (point de fixation), dans la direction de l'ancre Inkscape ; si rien n'est libre, éventail de directions autour de l'insert ; sinon repli. |
 | Rôle de l'ancre Inkscape | Elle ne donne que la **direction** (insert → ancre) et l'**angle** du texte ; la distance est calculée. |
-| Ordre de placement | Haut du mur d'abord, indépendant de l'ordre des sections. Les étiquettes de zones sont placées avant celles des prises. |
+| Ordre de placement | Haut du mur d'abord, indépendant de l'ordre des sections. Les étiquettes de prises sont placées **avant** celles des zones (décision révisée, voir plus bas). |
 | Association étiquette ↔ prise | Un candidat n'est libre que si son centre est strictement plus proche de sa propre ancre `insert` que de celle de toute autre prise (§2). |
-| Étiquettes de zones | Glissent le long du bord bas de la zone puis descendent si besoin ; jamais recouvertes par une étiquette de prise, qui les traite comme obstacle fixe (§2 bis). |
+| Étiquettes de zones | Glissent le long du bord bas de la zone puis descendent si besoin ; évitent les prises et les étiquettes de prises déjà placées, sauf en repli (§2 bis). |
+
+**Révision (brief 2)** : l'ordre a été inversé après une première itération où
+les étiquettes de zones étaient placées en premier. Décision de l'utilisateur :
+préférer déplacer les étiquettes de zones plutôt que les étiquettes de prises.
+Conséquence sur IFSC : M8 garde l'emplacement qu'elle aurait sans aucune zone
+sur le mur, et A3 glisse/descend à sa place.
 
 Approches écartées :
 
@@ -270,10 +276,17 @@ Conséquences assumées :
 
 ### 2 bis. Étiquettes de zones d'adhérence
 
-Nouvelle fonction `placeZoneLabels(requests, outlines, fontSize)`, même module.
-Une étiquette de zone n'a qu'une seule bande de positions (contre 16 directions
-pour une étiquette de prise) : glisser le long du bord bas de la zone, puis
-descendre si tout le bord est bloqué.
+Nouvelle fonction `placeZoneLabels(requests, outlines, fontSize, context: ZoneLabelContext = {})`,
+même module. Une étiquette de zone n'a qu'une seule bande de positions (contre
+16 directions pour une étiquette de prise) : glisser le long du bord bas de la
+zone, puis descendre si tout le bord est bloqué.
+
+```ts
+interface ZoneLabelContext {
+  /** Boîtes d'étiquettes déjà fixées sur le mur (étiquettes de prises) : obstacles, non gonflées */
+  fixedLabels?: Point[][];
+}
+```
 
 - **Candidats** : la boîte part **alignée à gauche**, coin haut-gauche en
   `(zoneLeft, zoneBottom + 5 mm)` (5 mm = marge historique sous la zone). Elle
@@ -285,20 +298,26 @@ descendre si tout le bord est bloqué.
   hauteur = fontSize, angle 0 ; le test de collision gonfle la boîte de
   `LABEL_MARGIN_EM × fontSize` de chaque côté (comme pour les étiquettes de
   prise) ; les obstacles ne sont pas gonflés.
-- **Obstacles** : le contour de chaque prise, et les étiquettes de zones déjà
-  placées (non gonflées). Le rectangle de la zone elle-même n'est **pas** un
-  obstacle.
+- **Obstacles** : le contour de chaque prise, les étiquettes de zones déjà
+  placées, et `context.fixedLabels` — les boîtes des étiquettes de prises déjà
+  placées, non gonflées, telles que rendues (avec leur rotation). Le
+  chevauchement avec une boîte de prise pivotée utilise
+  `overlapArea(boîteFixe, boîteDeZoneGonflée)` (sujet = obstacle, découpe =
+  boîte de zone convexe), comme partout ailleurs. Le rectangle de la zone
+  elle-même n'est **pas** un obstacle.
 - **Ordre** : bas de zone croissant en coordonnées SVG (haut du mur d'abord),
   puis gauche de zone, puis index de zone.
 - **Choix** : le premier candidat libre (glissement croissant à chaque
   descente, descente croissante) ; sinon repli (`selectFallbackCandidate`, même
   règle que pour les étiquettes de prise).
 
-Les étiquettes de zones sont placées **avant** celles des prises : leurs boîtes
-retenues (non gonflées, `labelBox(center, width, height, 0)`) deviennent des
-obstacles fixes pour `placeHoldLabels` (`HoldLabelContext.fixedLabels`) — une
-étiquette de zone a une seule bande de positions quand une étiquette de prise
-en a 16, c'est donc la seconde qui s'adapte. La géométrie du rectangle de zone
+Les étiquettes de zones sont placées **après** celles des prises (décision
+révisée, voir « Révision (brief 2) » plus haut) : les étiquettes de prises
+ignorent totalement les zones — elles sont calculées exactement comme si le
+mur n'avait aucune zone — et leurs boîtes retenues deviennent les obstacles
+fixes des étiquettes de zones (`ZoneLabelContext.fixedLabels`). Une étiquette
+de zone a une seule bande de positions quand une étiquette de prise en a 16,
+c'est donc l'étiquette de zone qui s'adapte. La géométrie du rectangle de zone
 (`computeZoneRect` dans `svg-generator.ts`) est calculée une seule fois et
 partagée entre le rendu et le placement, pour ne jamais diverger.
 
@@ -314,12 +333,15 @@ normalisée est passée aux étiquettes des zones d'adhérence.
 
 1. `layoutLabels(config, holds, options, smearingZones): Promise<{ holds: LabelPlacement[]; zones: ZoneLabelPlacement[] }>`
    (`svg-generator.ts`, exportée par `index.ts`) : place d'abord les étiquettes
-   de zones (`placeZoneLabels`, obstacles = contours de prises), puis les
-   étiquettes de prises (pour chaque prise, contour et ancre transformés dans
-   le repère du mur — même matrice que le rendu :
+   de prises (pour chaque prise, contour et ancre transformés dans le repère du
+   mur — même matrice que le rendu :
    `translate · rotate(−rotation) · scale · translate(−insertCenter)` —, angle
-   θ, texte affiché ; `placeHoldLabels` avec `inserts` = insert de chaque prise
-   et `fixedLabels` = boîtes des étiquettes de zones déjà placées).
+   θ, texte affiché ; `placeHoldLabels` avec `inserts` = insert de chaque
+   prise, sans connaissance des zones), puis les étiquettes de zones
+   (`placeZoneLabels`, obstacles = contours de prises + `fixedLabels` = boîtes
+   des étiquettes de prises déjà placées, angle inclus). Aucune étiquette de
+   zone n'est placée si `options.showSmearingZones` vaut `false`, même si
+   `smearingZones` n'est pas vide, pour rester cohérent avec `generateSvg`.
    `layoutHoldLabels(config, holds, options, smearingZones)` reste disponible :
    `(await layoutLabels(...)).holds`.
 2. `generateSvg` consomme ces placements et écrit les étiquettes.
@@ -353,7 +375,7 @@ Chaque étiquette de zone, à son emplacement placé (`ZoneLabelPlacement.center
 
 `placeHoldLabels`, `placeZoneLabels`, `layoutHoldLabels`, `layoutLabels`,
 `overlapArea` et les types `LabelRequest`, `LabelPlacement`, `HoldLabelContext`,
-`ZoneLabelRequest`, `ZoneLabelPlacement` sont exportés par
+`ZoneLabelRequest`, `ZoneLabelPlacement`, `ZoneLabelContext` sont exportés par
 `packages/core/src/index.ts`. Le type exporté `LabelZone` change de forme ;
 aucun autre package ne l'utilise.
 
@@ -419,14 +441,19 @@ TDD, fichiers co-localisés, Vitest.
   - permuter `requests` ne change pas le résultat ;
   - **association** (`context.inserts`) : une prise voisine sur le rayon et
     l'éventail proche force le premier candidat associé (+67,5°) ; ignore une
-    prise à moins de 1 mm du même insert ; sans `inserts`, comportement
-    inchangé ;
-  - **`fixedLabels`** : une étiquette fixe repousse une étiquette de prise sans
-    modifier le repli ;
+    prise à moins de 1 mm du même insert (test dédié : second insert à 0,5 mm,
+    contour éloigné, l'étiquette reste sur le rayon — sans l'exception, (0,65)
+    serait plus proche de (0, 0,5) que de (0,0) et ne serait jamais associée) ;
+    sans `inserts`, comportement inchangé ; en repli, un candidat associé est
+    préféré à un candidat non associé quand il en existe un ;
   - **`placeZoneLabels`** : sans obstacle → `shift 0, drop 0` ; glisse à droite
     pour éviter une prise sous la zone ; descend quand tout le bord est
     bloqué ; repli quand rien n'est libre ; une seconde étiquette de zone évite
-    la première ; `RangeError` sur `fontSize` non fini/`≤ 0`.
+    la première ; `RangeError` sur `fontSize` non fini/`≤ 0` ; **`context.fixedLabels`** :
+    une étiquette de prise fixe pousse l'étiquette de zone le long du bord
+    (mêmes valeurs numériques que le test de glissement ci-dessus) ; une
+    étiquette de prise fixe **pivotée** est gérée (`labelBox(…, 45)`) et le
+    chevauchement avec la boîte retenue reste nul.
 - `svg-generator.test.ts` :
   - via `layoutHoldLabels` : chaque type de prise × 4 directions, au centre et
     aux deux bords de secteur (rotation centre ± 44°), à 40 et 200 px →
@@ -439,7 +466,9 @@ TDD, fichiers co-localisés, Vitest.
   - `holdLabelFontSize` = 850 et 5000 donnent 200 ; `NaN` et `0` donnent 40 ;
   - `id="hold-labels"` conservé ;
   - étiquette de zone rendue à son placement : `text-anchor="middle"`,
-    `dominant-baseline="central"`, `x`/`y` égaux à `layoutLabels(...).zones[0].center`.
+    `dominant-baseline="central"`, `x`/`y` égaux à `layoutLabels(...).zones[0].center` ;
+  - `showSmearingZones: false` → `layoutLabels(...).zones` vide, même avec des
+    zones non vides en argument (même garde que `generateSvg`).
 - Régression voies de référence — `packages/cli/src/reference-routes/label-placement.test.ts`
   (les voies se chargent côté cli ; core est importé compilé). Configuration :
   `wall: { lanes: 2, panelsHeight: 10 }`, routes `ifsc` en `laneOffset` 0 et
@@ -450,11 +479,24 @@ TDD, fichiers co-localisés, Vitest.
     l'implémentation, 0 d'après la simulation), jamais une égalité exacte ;
   - aucune étiquette de prise n'est plus proche de l'insert d'une autre prise
     que du sien (insert en coordonnées SVG = `(pos.x, wall.height − pos.y)`
-    depuis `getInsertPosition` ; les prises partageant l'insert propre à moins
-    de 1 mm sont ignorées) ;
+    depuis `getInsertPosition`, décalage `anchorOffset` inclus avant
+    l'inversion Y ; les prises partageant l'insert propre à moins de 1 mm sont
+    ignorées) ;
   - à 120 et 200 px, l'étiquette IFSC `M8` et l'étiquette de zone IFSC `A3` ne
     se chevauchent pas (`overlapArea` de leurs `labelBox`) ;
-  - aucune étiquette de zone en repli, à 40, 120 et 200 px ;
+  - à 40, 120 et 200 px, aucune étiquette de zone ne chevauche une prise ou une
+    étiquette de prise (`placement.overlap ≤ 1e-6` et `fallback === false` pour
+    chaque étiquette de zone) — remplace l'ancien test « aucun repli » ;
+  - **contrôle indépendant** (revue) : à 40, 120 et 200 px, `overlapArea`
+    calculée directement entre chaque `labelBox` d'étiquette de zone
+    (`labelBox(zone.center, zone.width, zone.height, 0)`) et chaque
+    `labelBox` d'étiquette de prise (`labelBox(h.center, h.width, h.height,
+    h.angle)`) est `≤ 1e-6`, sans utiliser `placement.overlap` (calculé par le
+    code testé) — épingle l'ordre prises-puis-zones indépendamment du reste ;
+  - **les étiquettes de prises ne dépendent pas des zones** : à 200 px,
+    `layoutLabels(config, holds, opts, zones).holds` et
+    `layoutLabels(config, holds, opts, []).holds` ont les mêmes centres
+    (`toBeCloseTo`, 1e-6) ;
   - M2 (IFSC) et H2 (U15-DE) ne sont pas en repli ;
   - inverser l'ordre des routes donne un placement identique ;
   - les étiquettes `SN8 STOP D7 D7 @PAD-U15` (`u15`) et `SN6 STOP B3`
