@@ -11,8 +11,8 @@ npm run dev:web          # Start web app dev server (Vite)
 ## Testing
 ```bash
 npm run test             # Run tests with Vitest (watch mode)
-npx vitest run           # Run all tests once
-npx vitest run <file>    # Run single test file
+bun run test run         # Run all tests once
+bun run test run <file>  # Run single test file
 npm run test:coverage    # Run tests with v8 coverage
 npm run test:ui          # Run tests with Vitest UI
 ```

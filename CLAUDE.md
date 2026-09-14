@@ -19,7 +19,7 @@ bun run build
 bun run dev:web          # Start web app dev server (Vite)
 bun run test             # Run tests with Vitest
 bun run test:coverage    # Run tests with coverage
-bun run vitest run <file> # Run single test file
+bun run test run <file>  # Run single test file
 
 # Generate SVG via CLI
 bun run generate -- -c data/base.json -o output/wall.svg
@@ -227,3 +227,4 @@ Routes declare their system via `columns` field.
 - Config changes must be backward-compatible (or include migration) — users have configs in localStorage, may import old exported files, or follow URLs containing configurations. Anything that cannot be replayed idempotently (renaming a route id, reusing one for different data) goes through `packages/web/src/utils/configMigrations.ts`: bump `CONFIG_SCHEMA_VERSION`, describe the step there, and it applies at all three entry points
 - When adding user-visible strings in the web app, add translations to all 4 locale files in `packages/web/src/i18n/`
 - Web tests mock `window.matchMedia` and `ResizeObserver` in `packages/web/src/test/setup.ts`
+- Tools run under the Bun runtime (`bun --bun …` in the scripts): Node is not required. Running Vitest through Node (`npx vitest`, plain `bun run vitest`) breaks the jsdom web tests on Node ≥ 25, whose native `localStorage` shadows jsdom's.
