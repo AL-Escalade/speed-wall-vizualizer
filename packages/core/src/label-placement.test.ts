@@ -3,8 +3,10 @@ import {
   fanDeviations,
   labelBox,
   placeHoldLabels,
+  placeZoneLabels,
   selectFallbackCandidate,
   type LabelRequest,
+  type ZoneLabelRequest,
 } from './label-placement.js';
 import { overlapArea } from './polygon-clip.js';
 import type { Point } from './types.js';
@@ -105,6 +107,87 @@ describe('placeHoldLabels', () => {
 
   it.each([Number.NaN, 0, -5])('rejects a non-positive font size of %s', (fontSize) => {
     expect(() => placeHoldLabels([DOWN], [[HOLD]], fontSize)).toThrow(RangeError);
+  });
+
+  describe('association with inserts', () => {
+    // A second hold sits on the ray and on every early fan direction's window,
+    // so only a candidate strictly closer to (0,0) than to (0,80) can be chosen.
+    const NEIGHBOUR = square(0, 80, 2);
+    const INSERTS: Point[] = [{ x: 0, y: 0 }, { x: 0, y: 80 }];
+
+    it('refuses a position nearer another insert, and picks the first associated one', () => {
+      const [placement] = placeHoldLabels([DOWN], [[HOLD], [NEIGHBOUR]], FONT_SIZE, { inserts: INSERTS });
+      expect(placement).toMatchObject({ direction: 67.5, d: 75, d0: 75, fallback: false });
+      expect(placement.center.x).toBeCloseTo(-69.291, 3);
+      expect(placement.center.y).toBeCloseTo(28.701, 3);
+      const ownDistance = Math.hypot(placement.center.x, placement.center.y);
+      const otherDistance = Math.hypot(placement.center.x, placement.center.y - 80);
+      expect(ownDistance).toBeLessThan(otherDistance);
+    });
+
+    it('behaves like today when no inserts are given', () => {
+      const [placement] = placeHoldLabels([DOWN], [[HOLD], [NEIGHBOUR]], FONT_SIZE);
+      expect(placement).toMatchObject({ direction: 'ray', d: 65 });
+    });
+  });
+
+  describe('fixedLabels', () => {
+    it('is repelled by a fixed label', () => {
+      const fixed = rect(-30, 60, 30, 90);
+      const [placement] = placeHoldLabels([DOWN], [[HOLD]], FONT_SIZE, { fixedLabels: [fixed] });
+      expect(placement.d).not.toBe(65);
+      expect(placement.fallback).toBe(false);
+      const box = labelBox(placement.center, placement.width, placement.height, placement.angle);
+      expect(overlapArea(fixed, box)).toBeLessThanOrEqual(1e-6);
+    });
+  });
+});
+
+describe('placeZoneLabels', () => {
+  function zoneRequest(overrides: Partial<ZoneLabelRequest> = {}): ZoneLabelRequest {
+    return { zoneIndex: 0, text: 'A3', zoneLeft: 0, zoneRight: 200, zoneBottom: 100, ...overrides };
+  }
+
+  it('places a zone label with no obstacle at shift 0, drop 0', () => {
+    const [placement] = placeZoneLabels([zoneRequest()], [], FONT_SIZE);
+    expect(placement).toMatchObject({
+      shift: 0, drop: 0, width: 26, height: 20, fallback: false,
+    });
+    expect(placement.center).toEqual({ x: 13, y: 115 });
+  });
+
+  it('slides right to clear a hold under the zone', () => {
+    const obstacle = rect(0, 100, 40, 140);
+    const [placement] = placeZoneLabels([zoneRequest()], [[obstacle]], FONT_SIZE);
+    expect(placement).toMatchObject({ shift: 45, drop: 0 });
+    expect(placement.center).toEqual({ x: 58, y: 115 });
+  });
+
+  it('drops below the zone when the whole edge is blocked', () => {
+    const obstacle = rect(-10, 100, 210, 140);
+    const [placement] = placeZoneLabels([zoneRequest()], [[obstacle]], FONT_SIZE);
+    expect(placement).toMatchObject({ shift: 0, drop: 40 });
+    expect(placement.center).toEqual({ x: 13, y: 155 });
+  });
+
+  it('falls back when nothing is free', () => {
+    const obstacle = square(0, 0, 4000);
+    const [placement] = placeZoneLabels([zoneRequest()], [[obstacle]], FONT_SIZE);
+    expect(placement.fallback).toBe(true);
+  });
+
+  it('makes a later zone label avoid an earlier one', () => {
+    const first = zoneRequest({ zoneIndex: 0, zoneLeft: 0, zoneRight: 200 });
+    const second = zoneRequest({ zoneIndex: 1, zoneLeft: 20, zoneRight: 220 });
+    const [a, b] = placeZoneLabels([first, second], [], FONT_SIZE);
+    expect(b.fallback).toBe(false);
+    const boxA = labelBox(a.center, a.width, a.height, 0);
+    const boxB = labelBox(b.center, b.width, b.height, 0);
+    expect(overlapArea(boxA, boxB)).toBeLessThanOrEqual(1e-6);
+  });
+
+  it.each([Number.NaN, 0, -5])('rejects a non-positive font size of %s', (fontSize) => {
+    expect(() => placeZoneLabels([zoneRequest()], [], fontSize)).toThrow(RangeError);
   });
 });
 
