@@ -3,9 +3,10 @@
  *
  * Each label starts from its hold's insert and is pushed outward: first along
  * the direction the asset designer drew (insert → Inkscape anchor), then along
- * a fan of directions around it, until it clears its own hold, the other holds
- * and the labels already placed. Pure geometry in wall coordinates (mm, SVG
- * y-down): no SVG, no assets.
+ * a fan of directions around it, until it clears its own hold, the other holds,
+ * the labels already placed and, when the wall dimensions are known, the wall
+ * frame (`wallFrame`). Pure geometry in wall coordinates (mm, SVG y-down): no
+ * SVG, no assets.
  */
 
 import type { Dimensions, Point } from './types.js';
@@ -66,7 +67,7 @@ export interface LabelPlacement {
   fallback: boolean;
   /** Overlap with its own hold, margin included (mm²) — always ≤ 1e-6 */
   ownOverlap: number;
-  /** Overlap with other holds and labels, margin included (mm²) */
+  /** Overlap with other holds, labels and the wall frame, margin included (mm²) */
   otherOverlap: number;
 }
 
@@ -337,7 +338,8 @@ function otherInsertsFor(request: LabelRequest, inserts: Point[]): Point[] {
  * @param requests - Labels to place; the caller must leave out holds with an empty text
  * @param outlines - Outlines of every hold, indexed by holdIndex
  * @param fontSize - Label font size, in mm
- * @param context - Optional inserts, for the association rule
+ * @param context - Optional inserts, for the association rule, and `wall`
+ * dimensions, to make the wall edge an obstacle
  * @returns Placements, in the order of `requests`
  */
 export function placeHoldLabels(
@@ -405,7 +407,7 @@ export interface ZoneLabelPlacement {
   /** Drop below the start, mm */
   drop: number;
   fallback: boolean;
-  /** Overlap of the inflated box with holds and zone labels, mm² */
+  /** Overlap of the inflated box with holds, zone labels and the wall frame, mm² */
   overlap: number;
 }
 
@@ -469,12 +471,14 @@ function searchZoneCandidate(
  * bottom edge in `LABEL_STEP_MM` steps; if the whole edge is blocked, the
  * label drops by `LABEL_STEP_MM` and slides again, up to `LABEL_WINDOW_EM ×
  * fontSize` below the start. Obstacles are hold outlines, zone labels already
- * placed and fixed hold-label boxes (all not inflated); zone rectangles
- * themselves are not obstacles.
+ * placed, fixed hold-label boxes (all not inflated) and, when `context.wall`
+ * is given, the wall frame (`wallFrame`); zone rectangles themselves are not
+ * obstacles.
  * @param requests - Zone labels to place
  * @param outlines - Outlines of every hold, indexed by holdIndex
  * @param fontSize - Label font size, in mm
  * @param context - Optional fixed obstacles (the hold labels already placed)
+ * and `wall` dimensions, to make the wall edge an obstacle
  * @returns Placements, in the order of `requests`
  */
 export function placeZoneLabels(

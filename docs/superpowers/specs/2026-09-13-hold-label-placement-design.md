@@ -542,7 +542,7 @@ TDD, fichiers co-localisés, Vitest.
   - les étiquettes `SN8 STOP D7 D7 @PAD-U15` (`u15`) et `SN6 STOP B3`
     (`u11-u13`), dans leur propre configuration, ont leur boîte entièrement
     dans le mur à 200 px ;
-  - **le bord du mur, sur les 12 plans de référence** : pour chaque plan
+  - **le bord du mur, sur les 13 plans de référence** : pour chaque plan
     (`getAvailableRouteNames()`), seul sur un mur d'une voie avec
     `panelsHeight: 10` et ses zones d'adhérence, à 40, 120 et 200 px, chaque
     boîte d'étiquette de prise et de zone **hors repli** a ses 4 coins dans
@@ -566,3 +566,8 @@ d'adhérence affichées, en surveillant la fluidité du curseur.
   marge de `0,15 em` doit absorber.
 - La garantie « ne touche pas sa propre prise » porte sur le contour découpé
   (8 segments par Bézier) ; l'écart à la courbe réelle est absorbé par la marge.
+- La garantie « reste dans le mur » ne vaut pas en repli : le cadre du mur y
+  est un obstacle comme un autre, pondéré par son aire de chevauchement, et la
+  préférence pour un candidat associé à sa propre prise peut l'emporter même
+  s'il chevauche le cadre (mesuré : à 200 px, 3 replis sur les plans de
+  référence, tous restés dans le mur).

@@ -271,7 +271,10 @@ describe('placeZoneLabels', () => {
         wall: { width: 1000, height: 150 },
       });
       expect(withWall.fallback).toBe(true);
-      expect(withWall.overlap).toBeGreaterThan(0);
+      // 416 mm² from the ordinary obstacle + 96 mm² from the frame: pins the
+      // frame's own contribution rather than just "some overlap exists".
+      expect(withWall).toMatchObject({ shift: 5, drop: 25 });
+      expect(withWall.overlap).toBeCloseTo(512, 6);
     });
   });
 });

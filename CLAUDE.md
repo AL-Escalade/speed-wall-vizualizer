@@ -179,7 +179,12 @@ unit tests) keeps its old, unassociated behavior.
 
 **Wall edge**: the coordinate margin around the wall carries the column/row
 letters, so both hold and zone labels must stay inside the wall rectangle
-`[0, width] × [0, height]`. `wallFrame(wall: Dimensions)` builds four
+`[0, width] × [0, height]`, except in fallback: there, the frame is only one
+obstacle among others, weighed by overlap area like any other, and the
+association-rule preference for a candidate near its own hold can still win
+even when it crosses the frame (measured: at 200 px, 3 fallbacks across the
+reference plans, and all 3 still landed inside the wall).
+`wallFrame(wall: Dimensions)` builds four
 rectangles framing the wall, thick enough (`width + height`) to catch any
 label box; these four polygons join the obstacle list of every label exactly
 like other obstacles, so the same inflated-box margin (`LABEL_MARGIN_EM ×

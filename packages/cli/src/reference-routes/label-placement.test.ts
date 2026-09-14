@@ -195,12 +195,15 @@ describe('the wall edge as an obstacle, across every reference plan', () => {
   const CORNER_TOLERANCE = 1e-6;
 
   /**
-   * Ceiling on the total fallbacks (hold + zone labels) summed over all 12
-   * reference plans and the 3 font sizes tested (40, 120, 200 px). Measured 3
-   * at implementation time (u11-u13 at 200px: 2, u12-u14 at 200px: 1; every
-   * other plan/size is 0 — the frame only bites where a label was already
-   * being pushed to the wall's own edge); the slack keeps a hold nudged in a
-   * reference route from failing this test for no reason.
+   * Ceiling on the total fallbacks (hold + zone labels) summed over all 13
+   * reference plans (`getAvailableRouteNames()`) and the 3 font sizes tested
+   * (40, 120, 200 px). Measured 3 at implementation time (u11-u13 at 200px: 2
+   * — hold M6 and zone A1; u12-u14 at 200px: 1 — hold M7; every other
+   * plan/size is 0). The frame is not the only cause: u11-u13's A1 falls back
+   * with or without it, and u12-u14's M7 was already inside the wall but only
+   * ~9 mm from the edge (inside the 30 mm label margin at 200px), so the
+   * frame's inflated obstacle is what tips it into fallback. The slack keeps
+   * a hold nudged in a reference route from failing this test for no reason.
    */
   const TOTAL_FALLBACK_CEILING = 6;
 
@@ -213,7 +216,7 @@ describe('the wall edge as an obstacle, across every reference plan', () => {
     }
   }
 
-  it('keeps every non-fallback hold and zone label box inside the wall, for every plan alone on a 1-lane wall, with its zones, at 40/120/200px', async () => {
+  it('keeps every hold and zone label box inside the wall, fallback included, for every plan alone on a 1-lane wall, with its zones, at 40/120/200px', async () => {
     const combos = routeNames.flatMap((source) => FONT_SIZES.map((fontSize) => ({ source, fontSize })));
 
     const results = await Promise.all(
@@ -227,10 +230,7 @@ describe('the wall edge as an obstacle, across every reference plan', () => {
         let fallbacks = 0;
 
         for (const placement of placements) {
-          if (placement.fallback) {
-            fallbacks++;
-            continue;
-          }
+          if (placement.fallback) fallbacks++;
           assertInsideWall(
             `${source}@${fontSize}px hold "${placement.text}"`,
             labelBox(placement.center, placement.width, placement.height, placement.angle),
@@ -239,10 +239,7 @@ describe('the wall edge as an obstacle, across every reference plan', () => {
         }
 
         for (const zone of zonePlacements) {
-          if (zone.fallback) {
-            fallbacks++;
-            continue;
-          }
+          if (zone.fallback) fallbacks++;
           assertInsideWall(
             `${source}@${fontSize}px zone "${zone.text}"`,
             labelBox(zone.center, zone.width, zone.height, 0),
@@ -254,16 +251,7 @@ describe('the wall edge as an obstacle, across every reference plan', () => {
       })
     );
 
-    const fallbacksByPlanAndSize: Record<string, Record<number, number>> = {};
-    let totalFallbacks = 0;
-    for (const result of results) {
-      fallbacksByPlanAndSize[result.source] = fallbacksByPlanAndSize[result.source] ?? {};
-      fallbacksByPlanAndSize[result.source][result.fontSize] = result.fallbacks;
-      totalFallbacks += result.fallbacks;
-    }
-
-    // eslint-disable-next-line no-console
-    console.log('Fallbacks per plan/size (wall-frame obstacle):', JSON.stringify(fallbacksByPlanAndSize));
+    const totalFallbacks = results.reduce((sum, result) => sum + result.fallbacks, 0);
     expect(totalFallbacks).toBeLessThanOrEqual(TOTAL_FALLBACK_CEILING);
   });
 });
