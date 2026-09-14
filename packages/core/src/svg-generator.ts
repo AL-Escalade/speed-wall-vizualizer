@@ -518,6 +518,7 @@ function computeLayout(
   const holdRequests = buildHoldLabelRequests(holds, geometries, outlines, language);
   const holdPlacements = placeHoldLabels(holdRequests, outlines, fontSize, {
     inserts: geometries.map((geometry) => geometry.insert),
+    wall: wallDimensions,
   });
 
   const zoneRequests: ZoneLabelRequest[] = smearingZones.map((zone, zoneIndex) => {
@@ -532,6 +533,7 @@ function computeLayout(
   });
   const zonePlacements = placeZoneLabels(zoneRequests, outlines, fontSize, {
     fixedLabels: holdPlacements.map((placement) => labelBox(placement.center, placement.width, placement.height, placement.angle)),
+    wall: wallDimensions,
   });
 
   return { holds: holdPlacements, zones: zonePlacements };

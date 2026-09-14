@@ -8,7 +8,7 @@
  * y-down): no SVG, no assets.
  */
 
-import type { Point } from './types.js';
+import type { Dimensions, Point } from './types.js';
 import { AREA_EPSILON, aabb, aabbIntersects, overlapArea, type Aabb } from './polygon-clip.js';
 
 /** Estimated glyph advance, in em: core cannot measure a font */
@@ -101,6 +101,32 @@ export function labelBox(center: Point, width: number, height: number, angle: nu
     const dy = (sy * height) / 2;
     return { x: center.x + dx * cos - dy * sin, y: center.y + dx * sin + dy * cos };
   });
+}
+
+/**
+ * Four rectangles framing the wall rectangle `[0, width] × [0, height]` (SVG
+ * coordinates, mm), one outward from each edge: the wall edge as an obstacle
+ * for labels. Thickness `width + height` is large enough to cover any label
+ * box, so a candidate cannot slip past the frame into open space beyond it.
+ */
+export function wallFrame(wall: Dimensions): Point[][] {
+  const { width, height } = wall;
+  const thickness = width + height;
+  const rectangle = (minX: number, minY: number, maxX: number, maxY: number): Point[] => [
+    { x: minX, y: minY }, { x: maxX, y: minY }, { x: maxX, y: maxY }, { x: minX, y: maxY },
+  ];
+  return [
+    rectangle(-thickness, -thickness, 0, height + thickness), // left
+    rectangle(width, -thickness, width + thickness, height + thickness), // right
+    rectangle(0, -thickness, width, 0), // top
+    rectangle(0, height, width, height + thickness), // bottom
+  ];
+}
+
+/** Frame obstacles for `wall`, one per rectangle; empty when `wall` is absent */
+function frameObstacles(wall: Dimensions | undefined): Obstacle[] {
+  if (!wall) return [];
+  return wallFrame(wall).map((polygon) => ({ polygons: [polygon], box: aabb(polygon) }));
 }
 
 /**
@@ -287,6 +313,8 @@ function placeLabel(
 export interface HoldLabelContext {
   /** Insert of every hold, indexed by holdIndex — enables the association rule */
   inserts?: Point[];
+  /** Wall dimensions: the outside of the wall becomes an obstacle (see `wallFrame`) */
+  wall?: Dimensions;
 }
 
 /**
@@ -321,6 +349,7 @@ export function placeHoldLabels(
   if (!Number.isFinite(fontSize) || fontSize <= 0) throw new RangeError(`Label font size must be a positive number, got ${fontSize}`);
   const holdObstacles = outlines.map((polygons, index) => ({ index, polygons, box: aabb(polygons.flat()) }));
   const labelObstacles: Obstacle[] = [];
+  const frame = frameObstacles(context.wall);
   const order = requests
     .map((_, index) => index)
     .sort((a, b) =>
@@ -335,6 +364,7 @@ export function placeHoldLabels(
     const obstacles: Obstacle[] = [
       ...holdObstacles.filter((obstacle) => obstacle.index !== request.holdIndex),
       ...labelObstacles,
+      ...frame,
     ];
     const otherInserts = context.inserts ? otherInsertsFor(request, context.inserts) : undefined;
     const placement = placeLabel(request, fontSize, obstacles, otherInserts);
@@ -359,6 +389,8 @@ export interface ZoneLabelRequest {
 export interface ZoneLabelContext {
   /** Label boxes already fixed on the wall (hold labels): obstacles, not inflated */
   fixedLabels?: Point[][];
+  /** Wall dimensions: the outside of the wall becomes an obstacle (see `wallFrame`) */
+  wall?: Dimensions;
 }
 
 /** Where a zone label ended up */
@@ -454,6 +486,7 @@ export function placeZoneLabels(
   if (!Number.isFinite(fontSize) || fontSize <= 0) throw new RangeError(`Label font size must be a positive number, got ${fontSize}`);
   const holdObstacles: Obstacle[] = outlines.map((polygons) => ({ polygons, box: aabb(polygons.flat()) }));
   const fixedObstacles: Obstacle[] = (context.fixedLabels ?? []).map((polygon) => ({ polygons: [polygon], box: aabb(polygon) }));
+  const frame = frameObstacles(context.wall);
   const labelObstacles: Obstacle[] = [];
   const margin = LABEL_MARGIN_EM * fontSize;
   const height = fontSize;
@@ -480,7 +513,7 @@ export function placeZoneLabels(
     });
     const testBox = (shift: number, drop: number): Point[] => labelBox(at(shift, drop), testWidth, testHeight, 0);
     const shifts = zoneShifts(request.zoneLeft, request.zoneRight, width);
-    const obstacles: Obstacle[] = [...holdObstacles, ...labelObstacles, ...fixedObstacles];
+    const obstacles: Obstacle[] = [...holdObstacles, ...labelObstacles, ...fixedObstacles, ...frame];
 
     const candidates: ZoneCandidate[] = [];
     const found = searchZoneCandidate(shifts, maxDrop, at, testBox, obstacles, candidates);
