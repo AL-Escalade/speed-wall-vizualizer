@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateSvg, layoutHoldLabels } from './svg-generator.js';
+import { generateSvg, layoutHoldLabels, layoutLabels } from './svg-generator.js';
 import { loadHoldSvg } from './hold-svg-parser.js';
 import { labelBox } from './label-placement.js';
 import { overlapArea } from './polygon-clip.js';
@@ -389,6 +389,16 @@ describe('generateSvg', () => {
     it('should not add defs when no zones provided', async () => {
       const svg = await generateSvg(basicConfig, [basicHold], { showSmearingZones: true }, []);
       expect(svg).not.toContain('<defs>');
+    });
+
+    it('renders the zone label at its placement', async () => {
+      const { zones } = await layoutLabels(basicConfig, [basicHold], { showSmearingZones: true }, [basicZone]);
+      const svg = await generateSvg(basicConfig, [basicHold], { showSmearingZones: true }, [basicZone]);
+      const match = /<text x="([^"]+)" y="([^"]+)" text-anchor="middle" dominant-baseline="central"[^>]*>Z1<\/text>/.exec(svg);
+      expect(match).not.toBeNull();
+      const [, x, y] = match!;
+      expect(Number(x)).toBeCloseTo(zones[0].center.x, 6);
+      expect(Number(y)).toBeCloseTo(zones[0].center.y, 6);
     });
   });
 });
