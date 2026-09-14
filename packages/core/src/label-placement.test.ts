@@ -7,6 +7,7 @@ import {
   selectFallbackCandidate,
   type LabelRequest,
   type ZoneLabelRequest,
+  type ZoneLabelContext,
 } from './label-placement.js';
 import { overlapArea } from './polygon-clip.js';
 import type { Point } from './types.js';
@@ -129,16 +130,36 @@ describe('placeHoldLabels', () => {
       const [placement] = placeHoldLabels([DOWN], [[HOLD], [NEIGHBOUR]], FONT_SIZE);
       expect(placement).toMatchObject({ direction: 'ray', d: 65 });
     });
-  });
 
-  describe('fixedLabels', () => {
-    it('is repelled by a fixed label', () => {
-      const fixed = rect(-30, 60, 30, 90);
-      const [placement] = placeHoldLabels([DOWN], [[HOLD]], FONT_SIZE, { fixedLabels: [fixed] });
-      expect(placement.d).not.toBe(65);
-      expect(placement.fallback).toBe(false);
-      const box = labelBox(placement.center, placement.width, placement.height, placement.angle);
-      expect(overlapArea(fixed, box)).toBeLessThanOrEqual(1e-6);
+    it('ignores an insert within 1 mm of its own (the 1 mm same-insert exception)', () => {
+      // (0, 65) is closer to (0, 0.5) than to (0, 0): 64.5 < 65. Without the
+      // exception this insert would refuse the ray candidate and the label
+      // could never associate with its own hold.
+      const nearbyInsert = { x: 0, y: 0.5 };
+      const farAwayOutline = square(1000, 1000, 2);
+      const [placement] = placeHoldLabels(
+        [DOWN],
+        [[HOLD], [farAwayOutline]],
+        FONT_SIZE,
+        { inserts: [{ x: 0, y: 0 }, nearbyInsert] }
+      );
+      expect(placement).toMatchObject({ direction: 'ray', d: 65, fallback: false });
+    });
+
+    it('prefers an associated candidate among the fallback pool', () => {
+      // Every candidate is blocked, but only some are associated (closer to
+      // (0,0) than to (0,80)); the fallback must still prefer one of those.
+      const everywhere = square(0, 0, 4000);
+      const [placement] = placeHoldLabels(
+        [DOWN],
+        [[HOLD], [NEIGHBOUR], [everywhere]],
+        FONT_SIZE,
+        { inserts: INSERTS }
+      );
+      expect(placement.fallback).toBe(true);
+      const ownDistance = Math.hypot(placement.center.x, placement.center.y);
+      const otherDistance = Math.hypot(placement.center.x, placement.center.y - 80);
+      expect(ownDistance).toBeLessThan(otherDistance);
     });
   });
 });
@@ -174,6 +195,25 @@ describe('placeZoneLabels', () => {
     const obstacle = square(0, 0, 4000);
     const [placement] = placeZoneLabels([zoneRequest()], [[obstacle]], FONT_SIZE);
     expect(placement.fallback).toBe(true);
+  });
+
+  describe('fixedLabels (hold labels already placed)', () => {
+    it('a fixed hold label pushes a zone label along the edge', () => {
+      const fixed = rect(0, 100, 40, 140);
+      const context: ZoneLabelContext = { fixedLabels: [fixed] };
+      const [placement] = placeZoneLabels([zoneRequest()], [], FONT_SIZE, context);
+      expect(placement).toMatchObject({ shift: 45, drop: 0 });
+      expect(placement.center).toEqual({ x: 58, y: 115 });
+    });
+
+    it('a rotated fixed label is handled', () => {
+      const fixed = labelBox({ x: 13, y: 115 }, 26, 20, 45);
+      const context: ZoneLabelContext = { fixedLabels: [fixed] };
+      const [placement] = placeZoneLabels([zoneRequest()], [], FONT_SIZE, context);
+      expect(placement.shift).not.toBe(0);
+      const box = labelBox(placement.center, placement.width, placement.height, 0);
+      expect(overlapArea(fixed, box)).toBeLessThanOrEqual(1e-6);
+    });
   });
 
   it('makes a later zone label avoid an earlier one', () => {

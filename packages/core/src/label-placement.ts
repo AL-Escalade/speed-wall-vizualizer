@@ -136,15 +136,23 @@ function distance(a: Point, b: Point): number {
   return Math.hypot(a.x - b.x, a.y - b.y);
 }
 
+function squaredDistance(a: Point, b: Point): number {
+  const dx = a.x - b.x;
+  const dy = a.y - b.y;
+  return dx * dx + dy * dy;
+}
+
 /**
  * Whether `center` is strictly closer to `ownInsert` than to every insert in
  * `otherInserts`. With no `otherInserts` (association disabled) every centre
  * qualifies, so behaviour is unchanged when the caller gives no context.
+ * Compares squared distances: called once per candidate, so the `sqrt` is
+ * worth skipping.
  */
 function isAssociated(center: Point, ownInsert: Point, otherInserts: Point[] | undefined): boolean {
   if (otherInserts === undefined) return true;
-  const ownDistance = distance(center, ownInsert);
-  return otherInserts.every((other) => ownDistance < distance(center, other));
+  const ownDistanceSq = squaredDistance(center, ownInsert);
+  return otherInserts.every((other) => ownDistanceSq < squaredDistance(center, other));
 }
 
 function rotateVector(vector: Point, degrees: number): Point {
@@ -240,6 +248,7 @@ function placeLabel(
       if (ownOverlap > AREA_EPSILON) continue;
 
       const center = at(d);
+      const associated = isAssociated(center, request.insert, otherInserts);
       const candidate: Candidate = {
         center,
         direction: deviation === 0 ? 'ray' : deviation,
@@ -249,10 +258,12 @@ function placeLabel(
         box,
         ownOverlap,
         overlap: 0,
-        associated: isAssociated(center, request.insert, otherInserts),
+        associated,
       };
-      const blocked = obstacles.some((obstacle) => overlapWith(polygon, box, obstacle) > AREA_EPSILON);
-      if (!blocked && candidate.associated) {
+      // An unassociated candidate can never be returned early, so the obstacle
+      // scan is wasted on it: skip straight to collecting it for the fallback.
+      const blocked = !associated || obstacles.some((obstacle) => overlapWith(polygon, box, obstacle) > AREA_EPSILON);
+      if (!blocked) {
         return toPlacement(request, candidate, width, height, false);
       }
       candidates.push(candidate);
@@ -276,8 +287,6 @@ function placeLabel(
 export interface HoldLabelContext {
   /** Insert of every hold, indexed by holdIndex — enables the association rule */
   inserts?: Point[];
-  /** Label boxes already fixed on the wall (e.g. zone labels): obstacles, not inflated */
-  fixedLabels?: Point[][];
 }
 
 /**
@@ -294,11 +303,13 @@ function otherInsertsFor(request: LabelRequest, inserts: Point[]): Point[] {
 
 /**
  * Place hold labels, top of the wall first (then left to right, then by hold
- * index), so the result does not depend on the order of the sections.
+ * index), so the result does not depend on the order of the sections. Zone
+ * labels are not obstacles here: run this before `placeZoneLabels`, which
+ * treats the returned boxes as fixed obstacles instead.
  * @param requests - Labels to place; the caller must leave out holds with an empty text
  * @param outlines - Outlines of every hold, indexed by holdIndex
  * @param fontSize - Label font size, in mm
- * @param context - Optional inserts (association rule) and fixed obstacles (e.g. zone labels)
+ * @param context - Optional inserts, for the association rule
  * @returns Placements, in the order of `requests`
  */
 export function placeHoldLabels(
@@ -309,7 +320,6 @@ export function placeHoldLabels(
 ): LabelPlacement[] {
   if (!Number.isFinite(fontSize) || fontSize <= 0) throw new RangeError(`Label font size must be a positive number, got ${fontSize}`);
   const holdObstacles = outlines.map((polygons, index) => ({ index, polygons, box: aabb(polygons.flat()) }));
-  const fixedObstacles: Obstacle[] = (context.fixedLabels ?? []).map((polygon) => ({ polygons: [polygon], box: aabb(polygon) }));
   const labelObstacles: Obstacle[] = [];
   const order = requests
     .map((_, index) => index)
@@ -325,7 +335,6 @@ export function placeHoldLabels(
     const obstacles: Obstacle[] = [
       ...holdObstacles.filter((obstacle) => obstacle.index !== request.holdIndex),
       ...labelObstacles,
-      ...fixedObstacles,
     ];
     const otherInserts = context.inserts ? otherInsertsFor(request, context.inserts) : undefined;
     const placement = placeLabel(request, fontSize, obstacles, otherInserts);
@@ -344,6 +353,12 @@ export interface ZoneLabelRequest {
   zoneLeft: number;
   zoneRight: number;
   zoneBottom: number;
+}
+
+/** Optional context for placeZoneLabels */
+export interface ZoneLabelContext {
+  /** Label boxes already fixed on the wall (hold labels): obstacles, not inflated */
+  fixedLabels?: Point[][];
 }
 
 /** Where a zone label ended up */
@@ -414,22 +429,31 @@ function searchZoneCandidate(
 /**
  * Place smearing-zone labels, zone bottom ascending in SVG coordinates (top
  * of the wall first), then zone left, then zone index — independent of the
- * order zones were composed in. Meant to run before `placeHoldLabels`: its
- * placements become fixed obstacles for hold labels (`HoldLabelContext.fixedLabels`).
+ * order zones were composed in. Meant to run after `placeHoldLabels`: the
+ * hold labels are not aware of zones, and their placed boxes are passed here
+ * as `context.fixedLabels` so zone labels avoid them instead.
  *
  * Candidates start left-aligned under the zone and slide right along its
  * bottom edge in `LABEL_STEP_MM` steps; if the whole edge is blocked, the
  * label drops by `LABEL_STEP_MM` and slides again, up to `LABEL_WINDOW_EM ×
- * fontSize` below the start. Obstacles are hold outlines and zone labels
- * already placed (not inflated); zone rectangles themselves are not obstacles.
+ * fontSize` below the start. Obstacles are hold outlines, zone labels already
+ * placed and fixed hold-label boxes (all not inflated); zone rectangles
+ * themselves are not obstacles.
  * @param requests - Zone labels to place
  * @param outlines - Outlines of every hold, indexed by holdIndex
  * @param fontSize - Label font size, in mm
+ * @param context - Optional fixed obstacles (the hold labels already placed)
  * @returns Placements, in the order of `requests`
  */
-export function placeZoneLabels(requests: ZoneLabelRequest[], outlines: Point[][][], fontSize: number): ZoneLabelPlacement[] {
+export function placeZoneLabels(
+  requests: ZoneLabelRequest[],
+  outlines: Point[][][],
+  fontSize: number,
+  context: ZoneLabelContext = {}
+): ZoneLabelPlacement[] {
   if (!Number.isFinite(fontSize) || fontSize <= 0) throw new RangeError(`Label font size must be a positive number, got ${fontSize}`);
   const holdObstacles: Obstacle[] = outlines.map((polygons) => ({ polygons, box: aabb(polygons.flat()) }));
+  const fixedObstacles: Obstacle[] = (context.fixedLabels ?? []).map((polygon) => ({ polygons: [polygon], box: aabb(polygon) }));
   const labelObstacles: Obstacle[] = [];
   const margin = LABEL_MARGIN_EM * fontSize;
   const height = fontSize;
@@ -456,7 +480,7 @@ export function placeZoneLabels(requests: ZoneLabelRequest[], outlines: Point[][
     });
     const testBox = (shift: number, drop: number): Point[] => labelBox(at(shift, drop), testWidth, testHeight, 0);
     const shifts = zoneShifts(request.zoneLeft, request.zoneRight, width);
-    const obstacles: Obstacle[] = [...holdObstacles, ...labelObstacles];
+    const obstacles: Obstacle[] = [...holdObstacles, ...labelObstacles, ...fixedObstacles];
 
     const candidates: ZoneCandidate[] = [];
     const found = searchZoneCandidate(shifts, maxDrop, at, testBox, obstacles, candidates);

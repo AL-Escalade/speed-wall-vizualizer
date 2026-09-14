@@ -67,6 +67,7 @@ export type {
   HoldLabelContext,
   ZoneLabelRequest,
   ZoneLabelPlacement,
+  ZoneLabelContext,
 } from './label-placement.js';
 
 // Polygon overlap (used by reference-route regression tests)
