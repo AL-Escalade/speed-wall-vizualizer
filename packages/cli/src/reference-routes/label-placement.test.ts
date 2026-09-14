@@ -62,6 +62,10 @@ function holdKey(hold: ComposedHold): string {
 /** A hold's insert in wall SVG coordinates — the same origin `layoutLabels` places labels from */
 function holdInsertSvg(hold: ComposedHold, wallHeight: number): Point {
   const pos = getInsertPosition(hold.panel, hold.position, hold.laneOffset);
+  if (hold.anchorOffset) {
+    pos.x += hold.anchorOffset.x;
+    pos.y += hold.anchorOffset.y;
+  }
   return { x: pos.x, y: wallHeight - pos.y };
 }
 
@@ -78,10 +82,39 @@ describe('hold label placement on the reference routes', () => {
     expect(placements.filter((placement) => placement.fallback).length).toBeLessThanOrEqual(FALLBACK_CEILING);
   });
 
-  it.each(FONT_SIZES)('no zone label falls back at %ipx', async (fontSize) => {
+  it.each(FONT_SIZES)('no zone label overlaps a hold or a hold label at %ipx', async (fontSize) => {
     const { zonePlacements } = await layout(IFSC_AND_U15_DE, fontSize);
     expect(zonePlacements.length).toBeGreaterThan(0);
-    expect(zonePlacements.filter((placement) => placement.fallback).length).toBe(0);
+    for (const zone of zonePlacements) {
+      expect(zone.fallback, zone.text).toBe(false);
+      expect(zone.overlap, zone.text).toBeLessThanOrEqual(1e-6);
+    }
+  });
+
+  // Independent of `ZoneLabelPlacement.overlap`, which is computed by the code
+  // under test: pins the hold-labels-first / zone-labels-second ordering.
+  it.each(FONT_SIZES)('no zone-label box overlaps a hold-label box, checked independently, at %ipx', async (fontSize) => {
+    const { placements, zonePlacements } = await layout(IFSC_AND_U15_DE, fontSize);
+    for (const zone of zonePlacements) {
+      if (zone.fallback) continue;
+      const zoneBox = labelBox(zone.center, zone.width, zone.height, 0);
+      for (const hold of placements) {
+        const holdBox = labelBox(hold.center, hold.width, hold.height, hold.angle);
+        expect(overlapArea(holdBox, zoneBox), `${zone.text} vs ${hold.text}`).toBeLessThanOrEqual(1e-6);
+      }
+    }
+  });
+
+  it('hold labels do not depend on zones at 200px', async () => {
+    const holds = composeAllRoutes(IFSC_AND_U15_DE.routes, routes);
+    const zones = composeAllSmearingZones(IFSC_AND_U15_DE.routes, routes, holds);
+    const withZones = await layoutLabels(IFSC_AND_U15_DE, holds, { holdLabelFontSize: 200 }, zones);
+    const withoutZones = await layoutLabels(IFSC_AND_U15_DE, holds, { holdLabelFontSize: 200 }, []);
+    expect(withoutZones.holds.length).toBe(withZones.holds.length);
+    withZones.holds.forEach((placement, index) => {
+      expect(withoutZones.holds[index].center.x, placement.text).toBeCloseTo(placement.center.x, 6);
+      expect(withoutZones.holds[index].center.y, placement.text).toBeCloseTo(placement.center.y, 6);
+    });
   });
 
   it.each(FONT_SIZES)("no hold label is nearer another hold's insert than its own at %ipx", async (fontSize) => {
