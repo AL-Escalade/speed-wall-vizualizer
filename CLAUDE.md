@@ -228,3 +228,4 @@ Routes declare their system via `columns` field.
 - When adding user-visible strings in the web app, add translations to all 4 locale files in `packages/web/src/i18n/`
 - Web tests mock `window.matchMedia` and `ResizeObserver` in `packages/web/src/test/setup.ts`
 - Tools run under the Bun runtime (`bun --bun …` in the scripts): Node is not required. Running Vitest through Node (`npx vitest`, plain `bun run vitest`) breaks the jsdom web tests on Node ≥ 25, whose native `localStorage` shadows jsdom's.
+- Bun ≥ 1.4 is required: `@vitest/coverage-v8` needs the `node:inspector` coverage APIs, which Bun 1.3 rejects (`Coverage APIs are not supported`). Keep `packageManager` and the CI `bun-version` in sync.
