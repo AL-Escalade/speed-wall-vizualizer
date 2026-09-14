@@ -5,6 +5,7 @@ import {
   placeHoldLabels,
   placeZoneLabels,
   selectFallbackCandidate,
+  wallFrame,
   type LabelRequest,
   type ZoneLabelRequest,
   type ZoneLabelContext,
@@ -108,6 +109,33 @@ describe('placeHoldLabels', () => {
 
   it.each([Number.NaN, 0, -5])('rejects a non-positive font size of %s', (fontSize) => {
     expect(() => placeHoldLabels([DOWN], [[HOLD]], fontSize)).toThrow(RangeError);
+  });
+
+  describe('the wall edge as an obstacle', () => {
+    // own hold square(200, 500, 100): x in [150,250], y in [450,550]; insert
+    // (200, 500), anchor (260, 500) -> ray (1, 0); text M1, fontSize 20 -> test
+    // box 32 x 26.
+    const ownHold = square(200, 500, 100);
+    const near = request(0, { x: 200, y: 500 }, { x: 260, y: 500 }, ownHold);
+
+    it('turns inward when the whole ray window would leave the wall', () => {
+      const [withoutWall] = placeHoldLabels([near], [[ownHold]], FONT_SIZE);
+      expect(withoutWall).toMatchObject({ direction: 'ray', d0: 70, d: 70, fallback: false });
+      expect(withoutWall.center).toEqual({ x: 270, y: 500 });
+
+      const [withWall] = placeHoldLabels([near], [[ownHold]], FONT_SIZE, {
+        wall: { width: 280, height: 1000 },
+      });
+      expect(withWall).toMatchObject({ direction: 45, d0: 90, d: 90, fallback: false });
+      expect(withWall.center.x).toBeCloseTo(263.6396, 3);
+      expect(withWall.center.y).toBeCloseTo(563.6396, 3);
+      for (const corner of labelBox(withWall.center, withWall.width, withWall.height, withWall.angle)) {
+        expect(corner.x).toBeGreaterThanOrEqual(0);
+        expect(corner.x).toBeLessThanOrEqual(280);
+        expect(corner.y).toBeGreaterThanOrEqual(0);
+        expect(corner.y).toBeLessThanOrEqual(1000);
+      }
+    });
   });
 
   describe('association with inserts', () => {
@@ -229,6 +257,26 @@ describe('placeZoneLabels', () => {
   it.each([Number.NaN, 0, -5])('rejects a non-positive font size of %s', (fontSize) => {
     expect(() => placeZoneLabels([zoneRequest()], [], fontSize)).toThrow(RangeError);
   });
+
+  describe('the wall edge as an obstacle', () => {
+    it('does not let a zone label drop below the wall', () => {
+      // Blocks the whole edge band; the drop that would otherwise be free (40,
+      // box y up to 155 + 10 + 3 = 168) lands outside a 150 mm-tall wall.
+      const obstacle = rect(-10, 100, 210, 140);
+
+      const [withoutWall] = placeZoneLabels([zoneRequest()], [[obstacle]], FONT_SIZE);
+      expect(withoutWall).toMatchObject({ shift: 0, drop: 40, fallback: false });
+
+      const [withWall] = placeZoneLabels([zoneRequest()], [[obstacle]], FONT_SIZE, {
+        wall: { width: 1000, height: 150 },
+      });
+      expect(withWall.fallback).toBe(true);
+      // 416 mm² from the ordinary obstacle + 96 mm² from the frame: pins the
+      // frame's own contribution rather than just "some overlap exists".
+      expect(withWall).toMatchObject({ shift: 5, drop: 25 });
+      expect(withWall.overlap).toBeCloseTo(512, 6);
+    });
+  });
 });
 
 describe('labelBox', () => {
@@ -236,5 +284,26 @@ describe('labelBox', () => {
     const corners = labelBox({ x: 10, y: 10 }, 20, 10, 90);
     expect(corners[0].x).toBeCloseTo(15, 9);
     expect(corners[0].y).toBeCloseTo(0, 9);
+  });
+});
+
+describe('wallFrame', () => {
+  it('returns 4 polygons', () => {
+    expect(wallFrame({ width: 100, height: 50 })).toHaveLength(4);
+  });
+
+  it('has zero overlap with a box fully inside the wall', () => {
+    const frame = wallFrame({ width: 100, height: 50 });
+    const box = rect(10, 10, 90, 40);
+    for (const polygon of frame) {
+      expect(overlapArea(polygon, box)).toBeLessThanOrEqual(1e-6);
+    }
+  });
+
+  it('has overlap 200 for a box crossing the right edge by 10 mm x 20 mm', () => {
+    const frame = wallFrame({ width: 100, height: 50 });
+    const box = rect(95, 10, 110, 30);
+    const totalOverlap = frame.reduce((sum, polygon) => sum + overlapArea(polygon, box), 0);
+    expect(totalOverlap).toBeCloseTo(200, 6);
   });
 });

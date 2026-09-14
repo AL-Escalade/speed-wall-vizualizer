@@ -60,7 +60,7 @@ export { generateSvg, layoutHoldLabels, layoutLabels } from './svg-generator.js'
 export type { SvgOptions } from './svg-generator.js';
 
 // Hold and zone label placement
-export { placeHoldLabels, placeZoneLabels, labelBox } from './label-placement.js';
+export { placeHoldLabels, placeZoneLabels, labelBox, wallFrame } from './label-placement.js';
 export type {
   LabelRequest,
   LabelPlacement,

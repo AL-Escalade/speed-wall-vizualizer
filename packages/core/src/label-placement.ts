@@ -3,12 +3,13 @@
  *
  * Each label starts from its hold's insert and is pushed outward: first along
  * the direction the asset designer drew (insert → Inkscape anchor), then along
- * a fan of directions around it, until it clears its own hold, the other holds
- * and the labels already placed. Pure geometry in wall coordinates (mm, SVG
- * y-down): no SVG, no assets.
+ * a fan of directions around it, until it clears its own hold, the other holds,
+ * the labels already placed and, when the wall dimensions are known, the wall
+ * frame (`wallFrame`). Pure geometry in wall coordinates (mm, SVG y-down): no
+ * SVG, no assets.
  */
 
-import type { Point } from './types.js';
+import type { Dimensions, Point } from './types.js';
 import { AREA_EPSILON, aabb, aabbIntersects, overlapArea, type Aabb } from './polygon-clip.js';
 
 /** Estimated glyph advance, in em: core cannot measure a font */
@@ -66,7 +67,7 @@ export interface LabelPlacement {
   fallback: boolean;
   /** Overlap with its own hold, margin included (mm²) — always ≤ 1e-6 */
   ownOverlap: number;
-  /** Overlap with other holds and labels, margin included (mm²) */
+  /** Overlap with other holds, labels and the wall frame, margin included (mm²) */
   otherOverlap: number;
 }
 
@@ -101,6 +102,32 @@ export function labelBox(center: Point, width: number, height: number, angle: nu
     const dy = (sy * height) / 2;
     return { x: center.x + dx * cos - dy * sin, y: center.y + dx * sin + dy * cos };
   });
+}
+
+/**
+ * Four rectangles framing the wall rectangle `[0, width] × [0, height]` (SVG
+ * coordinates, mm), one outward from each edge: the wall edge as an obstacle
+ * for labels. Thickness `width + height` is large enough to cover any label
+ * box, so a candidate cannot slip past the frame into open space beyond it.
+ */
+export function wallFrame(wall: Dimensions): Point[][] {
+  const { width, height } = wall;
+  const thickness = width + height;
+  const rectangle = (minX: number, minY: number, maxX: number, maxY: number): Point[] => [
+    { x: minX, y: minY }, { x: maxX, y: minY }, { x: maxX, y: maxY }, { x: minX, y: maxY },
+  ];
+  return [
+    rectangle(-thickness, -thickness, 0, height + thickness), // left
+    rectangle(width, -thickness, width + thickness, height + thickness), // right
+    rectangle(0, -thickness, width, 0), // top
+    rectangle(0, height, width, height + thickness), // bottom
+  ];
+}
+
+/** Frame obstacles for `wall`, one per rectangle; empty when `wall` is absent */
+function frameObstacles(wall: Dimensions | undefined): Obstacle[] {
+  if (!wall) return [];
+  return wallFrame(wall).map((polygon) => ({ polygons: [polygon], box: aabb(polygon) }));
 }
 
 /**
@@ -287,6 +314,8 @@ function placeLabel(
 export interface HoldLabelContext {
   /** Insert of every hold, indexed by holdIndex — enables the association rule */
   inserts?: Point[];
+  /** Wall dimensions: the outside of the wall becomes an obstacle (see `wallFrame`) */
+  wall?: Dimensions;
 }
 
 /**
@@ -309,7 +338,8 @@ function otherInsertsFor(request: LabelRequest, inserts: Point[]): Point[] {
  * @param requests - Labels to place; the caller must leave out holds with an empty text
  * @param outlines - Outlines of every hold, indexed by holdIndex
  * @param fontSize - Label font size, in mm
- * @param context - Optional inserts, for the association rule
+ * @param context - Optional inserts, for the association rule, and `wall`
+ * dimensions, to make the wall edge an obstacle
  * @returns Placements, in the order of `requests`
  */
 export function placeHoldLabels(
@@ -321,6 +351,7 @@ export function placeHoldLabels(
   if (!Number.isFinite(fontSize) || fontSize <= 0) throw new RangeError(`Label font size must be a positive number, got ${fontSize}`);
   const holdObstacles = outlines.map((polygons, index) => ({ index, polygons, box: aabb(polygons.flat()) }));
   const labelObstacles: Obstacle[] = [];
+  const frame = frameObstacles(context.wall);
   const order = requests
     .map((_, index) => index)
     .sort((a, b) =>
@@ -335,6 +366,7 @@ export function placeHoldLabels(
     const obstacles: Obstacle[] = [
       ...holdObstacles.filter((obstacle) => obstacle.index !== request.holdIndex),
       ...labelObstacles,
+      ...frame,
     ];
     const otherInserts = context.inserts ? otherInsertsFor(request, context.inserts) : undefined;
     const placement = placeLabel(request, fontSize, obstacles, otherInserts);
@@ -359,6 +391,8 @@ export interface ZoneLabelRequest {
 export interface ZoneLabelContext {
   /** Label boxes already fixed on the wall (hold labels): obstacles, not inflated */
   fixedLabels?: Point[][];
+  /** Wall dimensions: the outside of the wall becomes an obstacle (see `wallFrame`) */
+  wall?: Dimensions;
 }
 
 /** Where a zone label ended up */
@@ -373,7 +407,7 @@ export interface ZoneLabelPlacement {
   /** Drop below the start, mm */
   drop: number;
   fallback: boolean;
-  /** Overlap of the inflated box with holds and zone labels, mm² */
+  /** Overlap of the inflated box with holds, zone labels and the wall frame, mm² */
   overlap: number;
 }
 
@@ -437,12 +471,14 @@ function searchZoneCandidate(
  * bottom edge in `LABEL_STEP_MM` steps; if the whole edge is blocked, the
  * label drops by `LABEL_STEP_MM` and slides again, up to `LABEL_WINDOW_EM ×
  * fontSize` below the start. Obstacles are hold outlines, zone labels already
- * placed and fixed hold-label boxes (all not inflated); zone rectangles
- * themselves are not obstacles.
+ * placed, fixed hold-label boxes (all not inflated) and, when `context.wall`
+ * is given, the wall frame (`wallFrame`); zone rectangles themselves are not
+ * obstacles.
  * @param requests - Zone labels to place
  * @param outlines - Outlines of every hold, indexed by holdIndex
  * @param fontSize - Label font size, in mm
  * @param context - Optional fixed obstacles (the hold labels already placed)
+ * and `wall` dimensions, to make the wall edge an obstacle
  * @returns Placements, in the order of `requests`
  */
 export function placeZoneLabels(
@@ -454,6 +490,7 @@ export function placeZoneLabels(
   if (!Number.isFinite(fontSize) || fontSize <= 0) throw new RangeError(`Label font size must be a positive number, got ${fontSize}`);
   const holdObstacles: Obstacle[] = outlines.map((polygons) => ({ polygons, box: aabb(polygons.flat()) }));
   const fixedObstacles: Obstacle[] = (context.fixedLabels ?? []).map((polygon) => ({ polygons: [polygon], box: aabb(polygon) }));
+  const frame = frameObstacles(context.wall);
   const labelObstacles: Obstacle[] = [];
   const margin = LABEL_MARGIN_EM * fontSize;
   const height = fontSize;
@@ -480,7 +517,7 @@ export function placeZoneLabels(
     });
     const testBox = (shift: number, drop: number): Point[] => labelBox(at(shift, drop), testWidth, testHeight, 0);
     const shifts = zoneShifts(request.zoneLeft, request.zoneRight, width);
-    const obstacles: Obstacle[] = [...holdObstacles, ...labelObstacles, ...fixedObstacles];
+    const obstacles: Obstacle[] = [...holdObstacles, ...labelObstacles, ...fixedObstacles, ...frame];
 
     const candidates: ZoneCandidate[] = [];
     const found = searchZoneCandidate(shifts, maxDrop, at, testBox, obstacles, candidates);

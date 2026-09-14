@@ -13,7 +13,7 @@ import {
   type Point,
   type ZoneLabelPlacement,
 } from '@voie-vitesse/core';
-import { loadRoutes } from './index.js';
+import { getAvailableRouteNames, loadRoutes } from './index.js';
 
 const routes = loadRoutes();
 
@@ -187,5 +187,71 @@ describe('hold label placement on the reference routes', () => {
         expect(corner.y).toBeLessThanOrEqual(wall.height);
       }
     }
+  });
+});
+
+describe('the wall edge as an obstacle, across every reference plan', () => {
+  const routeNames = getAvailableRouteNames();
+  const CORNER_TOLERANCE = 1e-6;
+
+  /**
+   * Ceiling on the total fallbacks (hold + zone labels) summed over all 13
+   * reference plans (`getAvailableRouteNames()`) and the 3 font sizes tested
+   * (40, 120, 200 px). Measured 3 at implementation time (u11-u13 at 200px: 2
+   * — hold M6 and zone A1; u12-u14 at 200px: 1 — hold M7; every other
+   * plan/size is 0). The frame is not the only cause: u11-u13's A1 falls back
+   * with or without it, and u12-u14's M7 was already inside the wall but only
+   * ~9 mm from the edge (inside the 30 mm label margin at 200px), so the
+   * frame's inflated obstacle is what tips it into fallback. The slack keeps
+   * a hold nudged in a reference route from failing this test for no reason.
+   */
+  const TOTAL_FALLBACK_CEILING = 6;
+
+  function assertInsideWall(label: string, box: Point[], wall: { width: number; height: number }): void {
+    for (const corner of box) {
+      expect(corner.x, label).toBeGreaterThanOrEqual(-CORNER_TOLERANCE);
+      expect(corner.x, label).toBeLessThanOrEqual(wall.width + CORNER_TOLERANCE);
+      expect(corner.y, label).toBeGreaterThanOrEqual(-CORNER_TOLERANCE);
+      expect(corner.y, label).toBeLessThanOrEqual(wall.height + CORNER_TOLERANCE);
+    }
+  }
+
+  it('keeps every hold and zone label box inside the wall, fallback included, for every plan alone on a 1-lane wall, with its zones, at 40/120/200px', async () => {
+    const combos = routeNames.flatMap((source) => FONT_SIZES.map((fontSize) => ({ source, fontSize })));
+
+    const results = await Promise.all(
+      combos.map(async ({ source, fontSize }) => {
+        const config: Config = {
+          wall: { lanes: 1, panelsHeight: 10 },
+          routes: [{ segments: [{ source, laneOffset: 0 }] }],
+        };
+        const wall = getWallDimensions(config.wall.lanes, config.wall.panelsHeight);
+        const { placements, zonePlacements } = await layout(config, fontSize);
+        let fallbacks = 0;
+
+        for (const placement of placements) {
+          if (placement.fallback) fallbacks++;
+          assertInsideWall(
+            `${source}@${fontSize}px hold "${placement.text}"`,
+            labelBox(placement.center, placement.width, placement.height, placement.angle),
+            wall
+          );
+        }
+
+        for (const zone of zonePlacements) {
+          if (zone.fallback) fallbacks++;
+          assertInsideWall(
+            `${source}@${fontSize}px zone "${zone.text}"`,
+            labelBox(zone.center, zone.width, zone.height, 0),
+            wall
+          );
+        }
+
+        return { source, fontSize, fallbacks };
+      })
+    );
+
+    const totalFallbacks = results.reduce((sum, result) => sum + result.fallbacks, 0);
+    expect(totalFallbacks).toBeLessThanOrEqual(TOTAL_FALLBACK_CEILING);
   });
 });
