@@ -3,17 +3,16 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "packageManager": "bun@1.3.11",
+  "packageManager": "bun@1.4.2",
   "engines": {
-    "node": ">=24.0.0",
-    "bun": ">=1.3.0"
+    "bun": ">=1.4.0"
   },
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
-    "lint": "oxlint --type-aware -A prefer-named-capture-group packages/",
-    "build": "tsc -b && tsc --noEmit -p packages/cli/tsconfig.scripts.json && bun run --filter='@voie-vitesse/web' build:web",
+    "lint": "bun --bun oxlint --type-aware -A prefer-named-capture-group packages/",
+    "build": "bun --bun tsc -b && bun --bun tsc --noEmit -p packages/cli/tsconfig.scripts.json && bun run --filter='@voie-vitesse/web' build:web",
     "build:core": "bun run --filter='@voie-vitesse/core' build",
     "build:cli": "bun run --filter='@voie-vitesse/cli' build",
     "build:web": "bun run --filter='@voie-vitesse/web' build:web",
@@ -22,9 +21,9 @@
     "generate:base": "bun run --filter='@voie-vitesse/cli' generate -- -c ../../data/base.json -o ../../output/base.svg",
     "generate:assets": "bun scripts/generate-bundled-assets.ts",
     "generate:doc-images": "bun run --filter='@voie-vitesse/cli' generate:doc-images",
-    "test": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "test:ui": "vitest --ui"
+    "test": "bun --bun vitest",
+    "test:coverage": "bun --bun vitest run --coverage",
+    "test:ui": "bun --bun vitest --ui"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.1.9",

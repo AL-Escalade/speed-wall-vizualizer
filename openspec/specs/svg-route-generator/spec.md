@@ -154,15 +154,15 @@ The system SHALL support multiple output formats: SVG, PDF, and PNG.
 The system SHALL provide a CLI interface to generate the wall visualization.
 
 #### Scenario: Generate from config file
-- **WHEN** executing `tsx src/cli.ts --config wall-config.json`
+- **WHEN** executing `bun src/cli.ts --config wall-config.json`
 - **THEN** an output file is generated according to the configuration
 
 #### Scenario: Output to custom file
-- **WHEN** executing `tsx src/cli.ts --config wall-config.json --output wall.svg`
+- **WHEN** executing `bun src/cli.ts --config wall-config.json --output wall.svg`
 - **THEN** the output is written to the file `wall.svg`
 
 #### Scenario: Specify output format
-- **WHEN** executing `tsx src/cli.ts --config wall-config.json --format pdf`
+- **WHEN** executing `bun src/cli.ts --config wall-config.json --format pdf`
 - **THEN** a PDF file is generated
 
 ### Requirement: Column Coordinate System Declaration

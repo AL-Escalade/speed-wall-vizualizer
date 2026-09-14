@@ -10,12 +10,12 @@ Ensures TypeScript compiles and web app builds without errors.
 
 ## 2. Tests
 ```bash
-npx vitest run
+bun run test run
 ```
 Run all tests. For a specific area:
 ```bash
-npx vitest run packages/core    # Core tests only
-npx vitest run packages/web     # Web tests only (jsdom)
+bun run test run packages/core    # Core tests only
+bun run test run packages/web     # Web tests only (jsdom)
 ```
 
 ## 3. Lint
