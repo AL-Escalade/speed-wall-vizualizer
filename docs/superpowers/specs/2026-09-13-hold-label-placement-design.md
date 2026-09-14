@@ -227,8 +227,32 @@ croissant, puis `holdIndex`. Le résultat est renvoyé dans l'ordre de `requests
   contour propre est retesté à chaque pas : sur une prise concave, un bras peut
   recouper le rayon après `d₀`).
 - **Libre** : admissible, associé (voir ci-dessous), et ne chevauche ni une
-  autre prise, ni une étiquette déjà placée (de prise ou de zone). Le test
-  s'arrête au premier obstacle d'aire positive.
+  autre prise, ni une étiquette déjà placée (de prise ou de zone), ni le
+  **cadre du mur** (voir ci-dessous). Le test s'arrête au premier obstacle
+  d'aire positive.
+
+**Bord du mur (obstacle).** La marge de coordonnées autour du mur porte les
+lettres de colonnes/rangées : une étiquette doit rester dans le rectangle du
+mur `[0, largeur] × [0, hauteur]` (repère SVG, mm). L'extérieur du mur est
+représenté par quatre rectangles encadrant le mur, exportés par
+`wallFrame(wall: Dimensions): Point[][]` (`label-placement.ts`) : gauche
+`[−T, 0] × [−T, hauteur+T]`, droite `[largeur, largeur+T] × [−T, hauteur+T]`,
+haut `[0, largeur] × [−T, 0]`, bas `[0, largeur] × [hauteur, hauteur+T]`, avec
+une épaisseur `T = largeur + hauteur` (assez grande pour couvrir n'importe
+quelle boîte d'étiquette : aucun candidat ne peut se glisser au-delà du cadre).
+Ces quatre polygones rejoignent la liste des obstacles de **chaque** étiquette
+(de prise et de zone), exactement comme les autres : un candidat dont la boîte
+gonflée chevauche le cadre n'est pas libre, et en repli l'aire de dépassement
+compte dans la somme de chevauchement. Comme la boîte testée est gonflée de
+`LABEL_MARGIN_EM × fontSize`, les étiquettes gardent cette marge de recul par
+rapport au bord du mur.
+
+`HoldLabelContext` et `ZoneLabelContext` gagnent un champ optionnel
+`wall?: Dimensions`. Absent (comme dans la plupart des tests unitaires
+synthétiques) : pas de cadre, comportement inchangé. `computeLayout`
+(`svg-generator.ts`) transmet systématiquement les dimensions du mur aux deux
+contextes. Rien d'autre ne change : ordre de recherche, règle d'association,
+glissement-puis-descente des zones, ordre étiquettes-de-prises-d'abord.
 
 **Association** (`HoldLabelContext.inserts`) : un candidat n'est **associé** que
 si son centre est strictement plus proche de l'`insert` de sa propre prise que
@@ -285,6 +309,8 @@ zone, puis descendre si tout le bord est bloqué.
 interface ZoneLabelContext {
   /** Boîtes d'étiquettes déjà fixées sur le mur (étiquettes de prises) : obstacles, non gonflées */
   fixedLabels?: Point[][];
+  /** Dimensions du mur : l'extérieur du mur devient un obstacle (voir `wallFrame`, §2) */
+  wall?: Dimensions;
 }
 ```
 
@@ -299,12 +325,14 @@ interface ZoneLabelContext {
   `LABEL_MARGIN_EM × fontSize` de chaque côté (comme pour les étiquettes de
   prise) ; les obstacles ne sont pas gonflés.
 - **Obstacles** : le contour de chaque prise, les étiquettes de zones déjà
-  placées, et `context.fixedLabels` — les boîtes des étiquettes de prises déjà
-  placées, non gonflées, telles que rendues (avec leur rotation). Le
-  chevauchement avec une boîte de prise pivotée utilise
-  `overlapArea(boîteFixe, boîteDeZoneGonflée)` (sujet = obstacle, découpe =
-  boîte de zone convexe), comme partout ailleurs. Le rectangle de la zone
-  elle-même n'est **pas** un obstacle.
+  placées, `context.fixedLabels` — les boîtes des étiquettes de prises déjà
+  placées, non gonflées, telles que rendues (avec leur rotation) —, et le
+  **cadre du mur** (`context.wall`, `wallFrame`, §2) — une étiquette de zone
+  peut être repoussée jusqu'en repli si tout le bord de la zone sort du mur
+  une fois descendue au maximum. Le chevauchement avec une boîte de prise
+  pivotée utilise `overlapArea(boîteFixe, boîteDeZoneGonflée)` (sujet =
+  obstacle, découpe = boîte de zone convexe), comme partout ailleurs. Le
+  rectangle de la zone elle-même n'est **pas** un obstacle.
 - **Ordre** : bas de zone croissant en coordonnées SVG (haut du mur d'abord),
   puis gauche de zone, puis index de zone.
 - **Choix** : le premier candidat libre (glissement croissant à chaque
@@ -374,10 +402,10 @@ Chaque étiquette de zone, à son emplacement placé (`ZoneLabelPlacement.center
   rectangles, sont inchangés.
 
 `placeHoldLabels`, `placeZoneLabels`, `layoutHoldLabels`, `layoutLabels`,
-`overlapArea` et les types `LabelRequest`, `LabelPlacement`, `HoldLabelContext`,
-`ZoneLabelRequest`, `ZoneLabelPlacement`, `ZoneLabelContext` sont exportés par
-`packages/core/src/index.ts`. Le type exporté `LabelZone` change de forme ;
-aucun autre package ne l'utilise.
+`overlapArea`, `wallFrame` et les types `LabelRequest`, `LabelPlacement`,
+`HoldLabelContext`, `ZoneLabelRequest`, `ZoneLabelPlacement`, `ZoneLabelContext`
+sont exportés par `packages/core/src/index.ts`. Le type exporté `LabelZone`
+change de forme ; aucun autre package ne l'utilise.
 
 ### 4. Web
 
@@ -454,6 +482,18 @@ TDD, fichiers co-localisés, Vitest.
     (mêmes valeurs numériques que le test de glissement ci-dessus) ; une
     étiquette de prise fixe **pivotée** est gérée (`labelBox(…, 45)`) et le
     chevauchement avec la boîte retenue reste nul.
+  - **le bord du mur comme obstacle** (`HoldLabelContext.wall` /
+    `ZoneLabelContext.wall`) : une étiquette de prise près du bord droit dont
+    tout le rayon et tout l'éventail à ±22,5° sortiraient du mur bascule sur
+    le premier candidat à +45° qui y reste (valeurs calculées à la main : sans
+    `wall`, rayon, `d 70`, centre `(270, 500)` ; avec `wall: {280, 1000}`,
+    `direction 45`, `d0 90`, `d 90`, boîte dans `[0, 280] × [0, 1000]`) ; une
+    étiquette de zone dont la seule descente libre sortirait du mur tombe en
+    repli (`fallback === true`, chevauchement avec le cadre `> 0`) alors que
+    sans `wall` le même appel donne `drop 40, fallback false` ; `wallFrame`
+    seule : 4 polygones, boîte intérieure → chevauchement nul avec les
+    quatre, boîte qui déborde le bord droit de `10 × 20` mm → chevauchement
+    `200`.
 - `svg-generator.test.ts` :
   - via `layoutHoldLabels` : chaque type de prise × 4 directions, au centre et
     aux deux bords de secteur (rotation centre ± 44°), à 40 et 200 px →
@@ -501,7 +541,15 @@ TDD, fichiers co-localisés, Vitest.
   - inverser l'ordre des routes donne un placement identique ;
   - les étiquettes `SN8 STOP D7 D7 @PAD-U15` (`u15`) et `SN6 STOP B3`
     (`u11-u13`), dans leur propre configuration, ont leur boîte entièrement
-    dans le mur à 200 px.
+    dans le mur à 200 px ;
+  - **le bord du mur, sur les 12 plans de référence** : pour chaque plan
+    (`getAvailableRouteNames()`), seul sur un mur d'une voie avec
+    `panelsHeight: 10` et ses zones d'adhérence, à 40, 120 et 200 px, chaque
+    boîte d'étiquette de prise et de zone **hors repli** a ses 4 coins dans
+    `[0, largeur] × [0, hauteur]` (tolérance `1e-6`) ; les replis sont
+    comptés par plan et par taille et leur somme totale reste sous un
+    plafond documenté (mesuré 3 à l'implémentation : `u11-u13` à 200 px = 2,
+    `u12-u14` à 200 px = 1, tout le reste = 0), jamais une égalité exacte.
 - `Sidebar.test.tsx` : le curseur accepte 200.
 
 Vérification finale : `bun run lint`, `bun run build`, `bun run test`,
@@ -511,8 +559,6 @@ d'adhérence affichées, en surveillant la fluidité du curseur.
 
 ## Limites connues
 
-- Le bord du mur n'est pas un obstacle : une étiquette poussée près du bord peut
-  en sortir (dans la marge des coordonnées ou hors du SVG).
 - Les flèches et les rectangles de zones d'adhérence peuvent être recouverts
   (seules leurs étiquettes sont évitées).
 - La largeur du texte est estimée ; une police de repli plus large que

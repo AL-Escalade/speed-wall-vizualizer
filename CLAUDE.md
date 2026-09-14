@@ -158,10 +158,11 @@ no config migration is involved.
 Hold labels are placed by `packages/core/src/label-placement.ts`, not drawn at a
 fixed spot. Each label starts from its hold's **insert** and is pushed outward
 until its box (text width estimated at 0.65 em per character, plus a 0.15 em
-margin) clears its own hold outline — a hard guarantee — then the other holds
-and, when `HoldLabelContext.inserts` is given, any candidate nearer another
-hold's insert than its own. Zone labels are **not** obstacles for hold
-labels — they are placed afterward and move out of the way instead:
+margin) clears its own hold outline — a hard guarantee — then the other holds,
+the outside of the wall (see below), and, when `HoldLabelContext.inserts` is
+given, any candidate nearer another hold's insert than its own. Zone labels are
+**not** obstacles for hold labels — they are placed afterward and move out of
+the way instead:
 
 1. along the **ray** from the insert toward the asset's Inkscape anchor;
 2. if the ray is blocked for `2 × fontSize` past lift-off, along a **fan** of
@@ -175,6 +176,18 @@ sharing an insert (within 1 mm) never block each other. `layoutLabels()`/
 `generateSvg()` always pass every hold's insert, so the rule is always
 enforced there; `placeHoldLabels()` called without a `context` (e.g. existing
 unit tests) keeps its old, unassociated behavior.
+
+**Wall edge**: the coordinate margin around the wall carries the column/row
+letters, so both hold and zone labels must stay inside the wall rectangle
+`[0, width] × [0, height]`. `wallFrame(wall: Dimensions)` builds four
+rectangles framing the wall, thick enough (`width + height`) to catch any
+label box; these four polygons join the obstacle list of every label exactly
+like other obstacles, so the same inflated-box margin (`LABEL_MARGIN_EM ×
+fontSize`) keeps labels clear of the edge. `HoldLabelContext.wall` and
+`ZoneLabelContext.wall` are optional — absent, there is no frame, so existing
+callers and unit tests that build synthetic scenarios are unaffected;
+`computeLayout()` (`svg-generator.ts`) always passes the wall dimensions to
+both.
 
 Labels are placed top of the wall first, so the result does not depend on the
 order of the sections. `layoutHoldLabels()` returns the placements (direction,
