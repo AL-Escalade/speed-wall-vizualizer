@@ -6153,133 +6153,133 @@
   <rect x="1375" y="12562.5" width="500" height="375" fill="#FF0000" fill-opacity="0.2" />
   <rect x="1375" y="12562.5" width="500" height="375" fill="url(#smearing-hatch-FF0000)" />
   <rect x="1375" y="12562.5" width="500" height="375" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
-  <text x="1375" y="12942.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A1</text>
+  <text x="1401" y="12962.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" font-weight="bold">A1</text>
 </g>
 <g class="smearing-zone" data-label="A2">
   <rect x="1125" y="11062.5" width="625" height="500" fill="#FF0000" fill-opacity="0.2" />
   <rect x="1125" y="11062.5" width="625" height="500" fill="url(#smearing-hatch-FF0000)" />
   <rect x="1125" y="11062.5" width="625" height="500" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
-  <text x="1125" y="11567.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A2</text>
+  <text x="1151" y="11587.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" font-weight="bold">A2</text>
 </g>
 <g class="smearing-zone" data-label="A3">
   <rect x="2250" y="8437.5" width="500" height="375" fill="#FF0000" fill-opacity="0.2" />
   <rect x="2250" y="8437.5" width="500" height="375" fill="url(#smearing-hatch-FF0000)" />
   <rect x="2250" y="8437.5" width="500" height="375" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
-  <text x="2250" y="8817.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A3</text>
+  <text x="2276" y="8837.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" font-weight="bold">A3</text>
 </g>
 <g class="smearing-zone" data-label="A4">
   <rect x="750" y="7437.5" width="625" height="375" fill="#FF0000" fill-opacity="0.2" />
   <rect x="750" y="7437.5" width="625" height="375" fill="url(#smearing-hatch-FF0000)" />
   <rect x="750" y="7437.5" width="625" height="375" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
-  <text x="750" y="7817.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A4</text>
+  <text x="776" y="7837.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" font-weight="bold">A4</text>
 </g>
 <g class="smearing-zone" data-label="A5">
   <rect x="1000" y="3000" width="1000" height="562.5" fill="#FF0000" fill-opacity="0.2" />
   <rect x="1000" y="3000" width="1000" height="562.5" fill="url(#smearing-hatch-FF0000)" />
   <rect x="1000" y="3000" width="1000" height="562.5" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
-  <text x="1000" y="3567.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A5</text>
+  <text x="1026" y="3587.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" font-weight="bold">A5</text>
 </g>
 <g class="smearing-zone" data-label="A6">
   <rect x="1125" y="2062.5" width="375" height="375" fill="#FF0000" fill-opacity="0.2" />
   <rect x="1125" y="2062.5" width="375" height="375" fill="url(#smearing-hatch-FF0000)" />
   <rect x="1125" y="2062.5" width="375" height="375" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
-  <text x="1125" y="2442.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A6</text>
+  <text x="1151" y="2462.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" font-weight="bold">A6</text>
 </g>
 <g class="smearing-zone" data-label="A1">
   <rect x="4375" y="12562.5" width="500" height="375" fill="#FF0000" fill-opacity="0.2" />
   <rect x="4375" y="12562.5" width="500" height="375" fill="url(#smearing-hatch-FF0000)" />
   <rect x="4375" y="12562.5" width="500" height="375" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
-  <text x="4375" y="12942.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A1</text>
+  <text x="4401" y="12962.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" font-weight="bold">A1</text>
 </g>
 <g class="smearing-zone" data-label="A2">
   <rect x="4125" y="11062.5" width="625" height="500" fill="#FF0000" fill-opacity="0.2" />
   <rect x="4125" y="11062.5" width="625" height="500" fill="url(#smearing-hatch-FF0000)" />
   <rect x="4125" y="11062.5" width="625" height="500" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
-  <text x="4125" y="11567.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A2</text>
+  <text x="4151" y="11587.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" font-weight="bold">A2</text>
 </g>
 <g class="smearing-zone" data-label="A3">
   <rect x="5250" y="8437.5" width="500" height="375" fill="#FF0000" fill-opacity="0.2" />
   <rect x="5250" y="8437.5" width="500" height="375" fill="url(#smearing-hatch-FF0000)" />
   <rect x="5250" y="8437.5" width="500" height="375" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
-  <text x="5250" y="8817.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A3</text>
+  <text x="5276" y="8837.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" font-weight="bold">A3</text>
 </g>
 <g class="smearing-zone" data-label="A4">
   <rect x="3750" y="7437.5" width="625" height="375" fill="#FF0000" fill-opacity="0.2" />
   <rect x="3750" y="7437.5" width="625" height="375" fill="url(#smearing-hatch-FF0000)" />
   <rect x="3750" y="7437.5" width="625" height="375" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
-  <text x="3750" y="7817.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A4</text>
+  <text x="3776" y="7837.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" font-weight="bold">A4</text>
 </g>
 <g class="smearing-zone" data-label="A5">
   <rect x="4000" y="3000" width="1000" height="562.5" fill="#FF0000" fill-opacity="0.2" />
   <rect x="4000" y="3000" width="1000" height="562.5" fill="url(#smearing-hatch-FF0000)" />
   <rect x="4000" y="3000" width="1000" height="562.5" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
-  <text x="4000" y="3567.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A5</text>
+  <text x="4026" y="3587.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" font-weight="bold">A5</text>
 </g>
 <g class="smearing-zone" data-label="A6">
   <rect x="4125" y="2062.5" width="375" height="375" fill="#FF0000" fill-opacity="0.2" />
   <rect x="4125" y="2062.5" width="375" height="375" fill="url(#smearing-hatch-FF0000)" />
   <rect x="4125" y="2062.5" width="375" height="375" fill="none" stroke="#FF0000" stroke-width="10" stroke-opacity="0.3" />
-  <text x="4125" y="2442.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A6</text>
+  <text x="4151" y="2462.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF0000" font-weight="bold">A6</text>
 </g>
 <g class="smearing-zone" data-label="A1">
   <rect x="125" y="13437.5" width="500" height="500" fill="#00AAFF" fill-opacity="0.2" />
   <rect x="125" y="13437.5" width="500" height="500" fill="url(#smearing-hatch-00AAFF)" />
   <rect x="125" y="13437.5" width="500" height="500" fill="none" stroke="#00AAFF" stroke-width="10" stroke-opacity="0.3" />
-  <text x="125" y="13942.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A1</text>
+  <text x="151" y="13962.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" font-weight="bold">A1</text>
 </g>
 <g class="smearing-zone" data-label="A2">
   <rect x="625" y="9937.5" width="625" height="375" fill="#00AAFF" fill-opacity="0.2" />
   <rect x="625" y="9937.5" width="625" height="375" fill="url(#smearing-hatch-00AAFF)" />
   <rect x="625" y="9937.5" width="625" height="375" fill="none" stroke="#00AAFF" stroke-width="10" stroke-opacity="0.3" />
-  <text x="625" y="10317.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A2</text>
+  <text x="651" y="10337.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" font-weight="bold">A2</text>
 </g>
 <g class="smearing-zone" data-label="A3">
   <rect x="125" y="9062.5" width="500" height="500" fill="#00AAFF" fill-opacity="0.2" />
   <rect x="125" y="9062.5" width="500" height="500" fill="url(#smearing-hatch-00AAFF)" />
   <rect x="125" y="9062.5" width="500" height="500" fill="none" stroke="#00AAFF" stroke-width="10" stroke-opacity="0.3" />
-  <text x="125" y="9567.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A3</text>
+  <text x="151" y="9587.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" font-weight="bold">A3</text>
 </g>
 <g class="smearing-zone" data-label="A1">
   <rect x="3125" y="13437.5" width="500" height="500" fill="#00AAFF" fill-opacity="0.2" />
   <rect x="3125" y="13437.5" width="500" height="500" fill="url(#smearing-hatch-00AAFF)" />
   <rect x="3125" y="13437.5" width="500" height="500" fill="none" stroke="#00AAFF" stroke-width="10" stroke-opacity="0.3" />
-  <text x="3125" y="13942.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A1</text>
+  <text x="3151" y="13962.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" font-weight="bold">A1</text>
 </g>
 <g class="smearing-zone" data-label="A2">
   <rect x="3625" y="9937.5" width="625" height="375" fill="#00AAFF" fill-opacity="0.2" />
   <rect x="3625" y="9937.5" width="625" height="375" fill="url(#smearing-hatch-00AAFF)" />
   <rect x="3625" y="9937.5" width="625" height="375" fill="none" stroke="#00AAFF" stroke-width="10" stroke-opacity="0.3" />
-  <text x="3625" y="10317.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A2</text>
+  <text x="3651" y="10337.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" font-weight="bold">A2</text>
 </g>
 <g class="smearing-zone" data-label="A3">
   <rect x="3125" y="9062.5" width="500" height="500" fill="#00AAFF" fill-opacity="0.2" />
   <rect x="3125" y="9062.5" width="500" height="500" fill="url(#smearing-hatch-00AAFF)" />
   <rect x="3125" y="9062.5" width="500" height="500" fill="none" stroke="#00AAFF" stroke-width="10" stroke-opacity="0.3" />
-  <text x="3125" y="9567.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A3</text>
+  <text x="3151" y="9587.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#00AAFF" font-weight="bold">A3</text>
 </g>
 <g class="smearing-zone" data-label="A3">
   <rect x="3875" y="14562.5" width="500" height="375" fill="#FF6600" fill-opacity="0.2" />
   <rect x="3875" y="14562.5" width="500" height="375" fill="url(#smearing-hatch-FF6600)" />
   <rect x="3875" y="14562.5" width="500" height="375" fill="none" stroke="#FF6600" stroke-width="10" stroke-opacity="0.3" />
-  <text x="3875" y="14942.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF6600" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A3</text>
+  <text x="3901" y="14962.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF6600" font-weight="bold">A3</text>
 </g>
 <g class="smearing-zone" data-label="A4">
   <rect x="2375" y="13562.5" width="625" height="375" fill="#FF6600" fill-opacity="0.2" />
   <rect x="2375" y="13562.5" width="625" height="375" fill="url(#smearing-hatch-FF6600)" />
   <rect x="2375" y="13562.5" width="625" height="375" fill="none" stroke="#FF6600" stroke-width="10" stroke-opacity="0.3" />
-  <text x="2375" y="13942.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF6600" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A4</text>
+  <text x="2401" y="13962.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF6600" font-weight="bold">A4</text>
 </g>
 <g class="smearing-zone" data-label="A5">
   <rect x="2625" y="9125" width="1000" height="562.5" fill="#FF6600" fill-opacity="0.2" />
   <rect x="2625" y="9125" width="1000" height="562.5" fill="url(#smearing-hatch-FF6600)" />
   <rect x="2625" y="9125" width="1000" height="562.5" fill="none" stroke="#FF6600" stroke-width="10" stroke-opacity="0.3" />
-  <text x="2625" y="9692.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF6600" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A5</text>
+  <text x="2651" y="9712.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF6600" font-weight="bold">A5</text>
 </g>
 <g class="smearing-zone" data-label="A6">
   <rect x="2750" y="8187.5" width="375" height="375" fill="#FF6600" fill-opacity="0.2" />
   <rect x="2750" y="8187.5" width="375" height="375" fill="url(#smearing-hatch-FF6600)" />
   <rect x="2750" y="8187.5" width="375" height="375" fill="none" stroke="#FF6600" stroke-width="10" stroke-opacity="0.3" />
-  <text x="2750" y="8567.5" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF6600" text-anchor="start" dominant-baseline="text-before-edge" font-weight="bold">A6</text>
+  <text x="2776" y="8587.5" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" fill="#FF6600" font-weight="bold">A6</text>
 </g>
 </g>
 <g id="arrows">
@@ -7066,7 +7066,7 @@
 <text x="4000.508671027406" y="8887.498275005402" transform="rotate(0, 4000.508671027406, 8887.498275005402)" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" font-weight="500" fill="#FF0000">P6</text>
 <text x="4956.3155422770915" y="8650.748414060437" transform="rotate(324.96715, 4956.3155422770915, 8650.748414060437)" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" font-weight="500" fill="#FF0000">M8</text>
 <text x="4375.508671027405" y="8262.498275005402" transform="rotate(0, 4375.508671027405, 8262.498275005402)" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" font-weight="500" fill="#FF0000">P7</text>
-<text x="3625.9495192511577" y="8202.496780010084" transform="rotate(0, 3625.9495192511577, 8202.496780010084)" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" font-weight="500" fill="#FF0000">P8</text>
+<text x="3542.0863464682825" y="8097.504657661836" transform="rotate(0, 3542.0863464682825, 8097.504657661836)" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" font-weight="500" fill="#FF0000">P8</text>
 <text x="5237.427011556984" y="7877.769955357468" transform="rotate(-29.434547000000002, 5237.427011556984, 7877.769955357468)" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" font-weight="500" fill="#FF0000">M9</text>
 <text x="4998.802046116606" y="7362.485647004848" transform="rotate(0, 4998.802046116606, 7362.485647004848)" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" font-weight="500" fill="#B22222">Q3</text>
 <text x="4008.2014140179867" y="7307.219408652505" transform="rotate(-30.009740000000008, 4008.2014140179867, 7307.219408652505)" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" font-weight="500" fill="#FF0000">M10</text>
@@ -7127,7 +7127,7 @@
 <text x="2459.9602823618034" y="12618.55731253115" transform="rotate(-41.2205, 2459.9602823618034, 12618.55731253115)" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" font-weight="500" fill="#FF6600">M12</text>
 <text x="3134.7376716896156" y="11570.911886094176" transform="rotate(-55.99959817707798, 3134.7376716896156, 11570.911886094176)" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" font-weight="500" fill="#FF6600">M13</text>
 <text x="2560.8757148969516" y="11040.912510538063" transform="rotate(-56.57479117707801, 2560.8757148969516, 11040.912510538063)" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" font-weight="500" fill="#FF6600">M14</text>
-<text x="3470.563413327754" y="10928.118484824654" transform="rotate(0, 3470.563413327754, 10928.118484824654)" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" font-weight="500" fill="#FF6600">P9</text>
+<text x="3293.746750852856" y="10837.458155040631" transform="rotate(0, 3293.746750852856, 10837.458155040631)" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" font-weight="500" fill="#FF6600">P9</text>
 <text x="3758.302920986631" y="10501.967522855231" transform="rotate(360, 3758.302920986631, 10501.967522855231)" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" font-weight="500" fill="#FF6600">P10</text>
 <text x="2845.2587011571236" y="10635.276275481006" transform="rotate(-7.53043247402023, 2845.2587011571236, 10635.276275481006)" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" font-weight="500" fill="#FF6600">M15</text>
 <text x="2784.650980744162" y="10307.601247010462" transform="rotate(-8.46779882292202, 2784.650980744162, 10307.601247010462)" text-anchor="middle" dominant-baseline="central" font-size="40" font-family="'Lucida Grande', sans-serif" font-weight="500" fill="#FF6600">M16</text>
