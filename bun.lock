@@ -55,7 +55,7 @@
         "lucide-react": "^1.7.0",
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
-        "react-intl": "^10.1.14",
+        "react-intl": "^12.1.1",
         "react-router-dom": "^7.13.1",
         "zustand": "^5.0.13",
       },
@@ -143,11 +143,11 @@
 
     "@formatjs/fast-memoize": ["@formatjs/fast-memoize@3.1.7", "", {}, "sha512-zXfhLpvA6T7+efdt9JLbBwZ00tT7NsBMDVnDu8rpHeNNv8KfRZAMo2gkG0k9lK/Nzc//3kJ9pImsfuJxk3KhUA=="],
 
-    "@formatjs/icu-messageformat-parser": ["@formatjs/icu-messageformat-parser@3.5.15", "", { "dependencies": { "@formatjs/icu-skeleton-parser": "2.1.11" } }, "sha512-5o4grXKotAB3JqQuisLApHG43g17N+paoRTa92Jiz35Zvfemq0cVf4EDvuxyHAzmsJji7igaEowicLO/VmfJ8Q=="],
+    "@formatjs/icu-messageformat-parser": ["@formatjs/icu-messageformat-parser@3.5.20", "", { "dependencies": { "@formatjs/icu-skeleton-parser": "2.1.12" } }, "sha512-DUzCb2iskGDKvLU7P+nz/rjpmN59luoTRbWHFFNYNnZTxWCKvwPI94rNll99TGZaI6XoTbDF0QGegk21GFrQZQ=="],
 
-    "@formatjs/icu-skeleton-parser": ["@formatjs/icu-skeleton-parser@2.1.11", "", {}, "sha512-j8cUmOJzVgkHuS0QiQ6ga76UIoLOFSAMWhs7aZJztH3aAdCOAE6vpC8KVvFB4cU10ON0y2/5oOVmPJ43s2lTwA=="],
+    "@formatjs/icu-skeleton-parser": ["@formatjs/icu-skeleton-parser@2.1.12", "", {}, "sha512-ca7tZMLpfHX3sUD7hP6gE/qr6Iq89EDd3ZLeRhbsB7r0UD55DGJq+tmFLzrGrnx5StahUevQmQQVtbDRHsfDHA=="],
 
-    "@formatjs/intl": ["@formatjs/intl@4.1.17", "", { "dependencies": { "@formatjs/fast-memoize": "3.1.7", "@formatjs/icu-messageformat-parser": "3.5.15", "intl-messageformat": "11.2.12" } }, "sha512-IxluRkzOZH8ahaDip5g8YH9kJi1munUZi9i1BJs1wVFQIY2pROoCSiOlybZegyiPsZlMaYfADkD99zP2xmBfjQ=="],
+    "@formatjs/intl": ["@formatjs/intl@6.1.2", "", { "dependencies": { "@formatjs/fast-memoize": "3.1.7", "@formatjs/icu-messageformat-parser": "3.5.20", "intl-messageformat": "12.1.2" } }, "sha512-YH3Ldfa2vmavWgBlCyrT9WiobphTXlNHnHxhhB6nLSUOxmitJ6Bzqzg61uBcnc6yhKTU+YRo8hLhEatOZrVJUg=="],
 
     "@humanfs/core": ["@humanfs/core@0.19.2", "", { "dependencies": { "@humanfs/types": "^0.15.0" } }, "sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA=="],
 
@@ -585,7 +585,7 @@
 
     "indent-string": ["indent-string@4.0.0", "", {}, "sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg=="],
 
-    "intl-messageformat": ["intl-messageformat@11.2.12", "", { "dependencies": { "@formatjs/fast-memoize": "3.1.7", "@formatjs/icu-messageformat-parser": "3.5.15" } }, "sha512-KW70Xxfcvy7vV3qODfvShWkFDPMqKDAa4N+hSyVBWGNtVhTUFYaqlD/l88DaYPKiVcPP4rPQ3qnH7i5K82Mg7g=="],
+    "intl-messageformat": ["intl-messageformat@12.1.2", "", { "dependencies": { "@formatjs/fast-memoize": "3.1.7", "@formatjs/icu-messageformat-parser": "3.5.20" } }, "sha512-Y7ZnMtT/04nVJnjf1/x/AkfP5we/iN0AhckDdlFPtnetk6/VTuj2OPW5SE7steMd3UNaOtky4KJJY6jwyvWfJg=="],
 
     "iobuffer": ["iobuffer@5.4.0", "", {}, "sha512-DRebOWuqDvxunfkNJAlc3IzWIPD5xVxwUNbHr7xKB8E6aLJxIPfNX3CoMJghcFjpv6RWQsrcJbghtEwSPoJqMA=="],
 
@@ -725,7 +725,7 @@
 
     "react-dom": ["react-dom@19.2.7", "", { "dependencies": { "scheduler": "^0.27.0" }, "peerDependencies": { "react": "^19.2.7" } }, "sha512-t0BRVXvbiE/o20Hfw669rLbMCDWtYZLvmJigy2f0MxsXF+71pxhR3xOkspmsO8h3ZlNzyibAmtCa3l4lYKk6gQ=="],
 
-    "react-intl": ["react-intl@10.1.18", "", { "dependencies": { "@formatjs/icu-messageformat-parser": "3.5.15", "@formatjs/intl": "4.1.17", "intl-messageformat": "11.2.12" }, "peerDependencies": { "@types/react": ">=18.0.0", "react": ">=18.0.0" } }, "sha512-4JMOYakqVn/IajJt8Ad341Iwd6RDtiP1WQZiHRcFpHDBhVW4E9T0vkypSOk69Adg3dEbIYOE4HKTehH/1sSwnw=="],
+    "react-intl": ["react-intl@12.1.2", "", { "dependencies": { "@formatjs/icu-messageformat-parser": "3.5.20", "@formatjs/intl": "6.1.2", "intl-messageformat": "12.1.2" }, "peerDependencies": { "@types/react": ">=18.0.0", "react": ">=18.0.0" } }, "sha512-+vRvVasUvksPtilKw00ayU5/HrXD+/XmlN7CG5782nkK8GhUc59uw4GsAzqBkf90Ei6a+4JSAgB1AFLS7kEDDg=="],
 
     "react-is": ["react-is@17.0.2", "", {}, "sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w=="],
 
