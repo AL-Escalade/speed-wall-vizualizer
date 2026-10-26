@@ -100,8 +100,8 @@ jobs:
       - name: Build web application
         run: bun run build:web
         env:
-          UMAMI_WEBSITE_ID: ${{ secrets.UMAMI_WEBSITE_ID }}
-          UMAMI_SCRIPT_URL: ${{ secrets.UMAMI_SCRIPT_URL }}
+          LIWAN_SCRIPT_URL: ${{ vars.LIWAN_SCRIPT_URL }}
+          LIWAN_ENTITY: ${{ vars.LIWAN_ENTITY }}
 
       - name: Upload build artifacts
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
